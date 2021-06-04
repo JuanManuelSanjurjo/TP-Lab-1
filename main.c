@@ -605,13 +605,3 @@ void Tienda(stPersonaje player)
     }
     while(tolower(control)=='s');
 }
-
-
-
-
-
-
-
-
-    return 0;
-}
