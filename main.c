@@ -11,6 +11,10 @@
 #define PRECIOCALAVERA 50
 #define PRECIOHACHA 50
 #define PRECIODAGA 50
+/**para barras de vida y mana*/
+/**Con este numero de dimension, el arreglo tiene 22 cubos*/
+/**Para que el numero de cubos sea parejo, el numero de dimension debe ser impar*/
+#define DIMENSION 21
 
 typedef struct
 {
@@ -47,6 +51,8 @@ typedef struct
 
 /**prototipados*/
 void Tienda(stPersonaje player); /**funcion tienda recibe la estructura personaje*/
+int CargarBarra(char a[],int DIM); /*funcion para cargar la barra de vida o mana*/
+void MostrarBarra(char a[],int v); /*funcion para mostrar barra de vida o mana*/
 
 int main()
 {
@@ -62,6 +68,25 @@ int main()
     stPersonaje aux;
     
     Tienda(aux);
+    
+    /**prueba de función Cargar barra y mostrar barra*/
+    
+    char vida[DIMENSION];
+    char mana[DIMENSION];
+    int validosV = CargarBarra(vida,DIMENSION);
+    int validosM = CargarBarra(mana,DIMENSION);
+
+    printf("Antes del golpe:\n\n");
+    printf("HP\n");
+    MostrarBarra(vida,validosV);
+    printf("MP\n\n");
+    MostrarBarra(mana,validosM);
+    /**supongamos que la hp es de jugador, y recibe un golpe de 11*/
+    printf("Despues del golpe:\n\n");
+    /**se modifica validos*/
+    validosV = validosV - 11;
+    MostrarBarra(vida,validosV);
+
 
     return 0;
 }
@@ -604,4 +629,25 @@ void Tienda(stPersonaje player)
         }
     }
     while(tolower(control)=='s');
+}
+int CargarBarra(char a[],int dim)
+{
+    int i = 0;
+
+    for(i = 0; i < dim; i++)
+    {
+        a[i] = 219;
+    }
+
+    return i;
+}
+void MostrarBarra(char a[],int v)
+{
+    int i = 0;
+
+    for(i = 0; i < v; i++)
+    {
+        printf("%c",a[i]);
+    }
+    printf("\n");
 }
