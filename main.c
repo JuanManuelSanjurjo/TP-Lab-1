@@ -767,3 +767,190 @@ void crearPersonajeNuevo ()
 
 }
 
+void funcionDeCombatesPorNivel ()
+{
+    stPersonaje aux;
+
+
+    do
+    {
+
+
+
+    switch (aux.nivelDeJuego)
+    {
+    case 1:
+        ///Nivel 1, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+    case 2:
+        ///Nivel 2, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+    case 3:
+        ///Nivel 3, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 4:
+        ///Nivel 4, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 5:
+        ///Nivel 5, batalla con primer jefe
+        ///funcion de primer jefe
+        break;
+
+    case 6:
+        ///Nivel 6, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 7:
+        ///Nivel 7, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 8:
+        ///Nivel 8, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 9:
+        ///Nivel 9, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 10:
+        ///Nivel 10, batalla con segundo jefe
+        ///funcion de segundo jefe
+        break;
+
+    case 11:
+        ///Nivel 11, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 12:
+        ///Nivel 12, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 13:
+        ///Nivel 13, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 14:
+        ///Nivel 14, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 15:
+        ///Nivel 15, batalla con tercer jefe
+        ///funcion de tercer jefe
+        break;
+
+    case 16:
+        ///Nivel 16, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 17:
+        ///Nivel 17, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 18:
+        ///Nivel 18, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 19:
+        ///Nivel 19, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 20:
+        ///Nivel 20, batalla con cuarto jefe
+        ///funcion de cuarto jefe
+        break;
+
+    case 21:
+        ///Nivel 21, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 22:
+        ///Nivel 22, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 23:
+        ///Nivel 23, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 24:
+        ///Nivel 24, batalla con moustruo basico
+        ///funcion de mounstruo basico
+        break;
+
+    case 25:
+        ///Nivel 25, batalla con jefe final
+        ///funcion de jefe final
+        break;
+
+
+
+
+
+
+
+
+    }while((continuar=='s')&&(aux.nivel<25)&&(aux.hp>0));
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+}
+
+
+
+void nivel1 ()
+{
+
+    int hpMonstruo=100;
+
+
+
+    do
+    {
+
+
+
+
+
+
+    }while ()
+
+
+
+
+
+
+}
