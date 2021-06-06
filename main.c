@@ -24,30 +24,33 @@ typedef struct
     int magia;
     int defensa;
 
-}stAtributos ;
+} stAtributos ;
 
 typedef struct
 {
+    int id;
     int dinero;
     int pocioneshp;
     int pocionesmp;
     char arma[20];
     char escudo[20];
 
-}stInventario;
+} stInventario;
 
 typedef struct
 {
+    int id ;
     char nombre[15];                             /**Nombre que elegió el jugador*/
     char genero[15];                             /**Elegido por el jugador**/
     char clase[15];                              /**guerrero, mago**/
     int nivel;                                   /**del personaje*/
+    int nivelDeJuego;
     stAtributos atribPersonaje;                  /**estructura anidada,dentro tiene otra estructura, que tiene atributos como fuerza,destreza. Varia según la clase elegida*/
     stInventario inv;
     int hp;
     int mp;
 
-}stPersonaje;
+} stPersonaje;
 
 /**prototipados*/
 void Tienda(stPersonaje player); /**funcion tienda recibe la estructura personaje*/
@@ -58,19 +61,29 @@ int main()
 {
 
     FILE * archi=NULL;
-    char save []={"save.dat"};
+    char save []= {"save.dat"};
+
+    if(fopen(save,"rb")==NULL)
+    {
+        archi=fopen(save,"wb");
+        fclose(archi);
+    }
 
     srand(time(NULL));
 
+
+
     inicioDePersonaje(save);
-    
+
+    mostrarPersonaje(save);
+
     /*prueba de función tienda*/
     stPersonaje aux;
-    
+
     Tienda(aux);
-    
+
     /**prueba de función Cargar barra y mostrar barra*/
-    
+
     char vida[DIMENSION];
     char mana[DIMENSION];
     int validosV = CargarBarra(vida,DIMENSION);
@@ -91,50 +104,67 @@ int main()
     return 0;
 }
 
-void inicioDePersonaje (char save [])
+void inicioDePersonaje (char save [],int idjug)
 {
-    FILE * archi=fopen(save,"wb");
+    FILE * archi=fopen(save,"ab");
 
-    stPersonaje per;
-    int tipo=0;
-
-    printf("\nIngrese su nombre\n");
-    gets(per.nombre);
-
-    printf("Indica el genero con el cual te identificas\n");
-    gets(per.nombre);
-
-    printf("Se le presentaran las siguientes clases las cual puede elegir\n");
-
-    tipo=obtenerClase(per.clase);
-
-    per.nivel=1;
-
-    switch (tipo)
+    if (archi!=NULL)
     {
-    case 1:
-        atributosGuerrero(&per.atribPersonaje);
-        strcpy(per.inv.arma,"Espada basica");
-        break;
-    case 2:
-        atributosNigromante(&per.atribPersonaje);
-        strcpy(per.inv.arma,"Baculo basico");
-        break;
-    case 3:
-        atributosAsesino(&per.atribPersonaje);
-        strcpy(per.inv.arma,"Daga basica");
-        break;
-    case 4:
-        atributosHechicero(&per.atribPersonaje);
-        strcpy(per.inv.arma,"Baculo basico");
-        break;
 
+
+        stPersonaje per;
+        int tipo=0;
+
+        printf("\nIngrese su nombre\n");
+        gets(per.nombre);
+
+        printf("Indica el genero con el cual te identificas\n");
+        gets(per.genero);
+
+        printf("Se le presentaran las siguientes clases las cual puede elegir\n");
+
+        tipo=obtenerClase(per.clase);
+
+        per.nivel=1;
+        per.nivelDeJuego=0;
+        per.id=idjug;
+
+        switch (tipo)
+        {
+        case 1:
+            atributosGuerrero(&per.atribPersonaje);
+            strcpy(per.inv.arma,"Espada basica");
+            strcpy(per.inv.escudo,"");
+            break;
+        case 2:
+            atributosNigromante(&per.atribPersonaje);
+            strcpy(per.inv.arma,"Baculo basico");
+            strcpy(per.inv.escudo,"");
+            break;
+        case 3:
+            atributosAsesino(&per.atribPersonaje);
+            strcpy(per.inv.arma,"Daga basica");
+            strcpy(per.inv.escudo,"");
+            break;
+        case 4:
+            atributosHechicero(&per.atribPersonaje);
+            strcpy(per.inv.arma,"Baculo basico");
+            strcpy(per.inv.escudo,"");
+            break;
+
+        }
+
+
+        per.hp=100;
+        per.mp=100;
+        per.inv.dinero=0;
+        per.inv.pocioneshp=1;
+        per.inv.pocionesmp=1;
+
+
+        fwrite(&per,sizeof(stPersonaje),1,archi);
+        fclose(archi);
     }
-
-    per.inv.dinero=0;
-    per.inv.pocioneshp=1;
-    per.inv.pocionesmp=1;
-
 }
 
 
@@ -143,12 +173,12 @@ int obtenerClase (char clase[])
     int opc=0,tipo=0;
 
 
-    printf("1. Guerrero: Clásico combatiente perfectamente ideado para el combate directo,\n con sus propias capacidades de aguante que hacen trizas a los enemigos en un abrir y cerrar de ojos.\nSu arma afín serían las hachas, tanto de una como de dos manos, así como los martillos.\n ");
-    printf("2. Nigromante: Los nigromantes usan el poder de la misma muerte para sacarle todo el provecho posible y causar estragos y temores a los enemigos,\nincluso utiliza los cadáveres ya sea como para curarse, como para invocar en su lugar caídos y siervos,\no transformarse en un poderoso liche. Su arma afín es el baculo. ");
-    printf("3. Asesino: Expertos verdugos escurridizos que se tienen que exponer normalmente bastante,\npero con una cantidad de daño brutal con habilidades capaces de deshacerse de los enemigos en un pispas\nprovocando muertes por doquier. Su arma afín sería la daga y/o el cuchillo.\n");
-    printf("4. Hechicero: Siempre causarán estragos elementales entre las filas enemigas.\nSus hechizos elementales van desde ataques devastadores a protectores e incluso curadores,\nsiempre dispuestos a entrar en pleno fragor de la batalla. El arma afín son los báculos.\n");
+    printf("1. Guerrero: Clasico combatiente perfectamente ideado para el combate directo,\ncon sus propias capacidades de aguante que hacen trizas a los enemigos en un abrir y cerrar de ojos.\nSu arma afin serian las hachas, tanto de una como de dos manos, asi como los martillos.\n\n");
+    printf("2. Nigromante: Los nigromantes usan el poder de la misma muerte para sacarle todo el provecho posible\ny causar estragos y temores a los enemigos, incluso utiliza los cadáveres ya sea como para curarse,\ncomo para invocar en su lugar caidos y siervos, no transformarse en un poderoso liche. Su arma afin es el baculo.\n\n",164);
+    printf("3. Asesino: Expertos verdugos escurridizos que se tienen que exponer normalmente bastante,\npero con una cantidad de da%co brutal con habilidades capaces de deshacerse de los enemigos en un abrir y cerrar de ojos\nprovocando muertes por doquier. Su arma afin seria la daga y/o el cuchillo.\n\n");
+    printf("4. Hechicero: Siempre causaran estragos elementales entre las filas enemigas.\nSus hechizos elementales van desde ataques devastadores a protectores e incluso curadores,\nsiempre dispuestos a entrar en pleno fragor de la batalla. El arma afin son los baculos.\n\n");
 
-    printf("\nDentro de estas clases, ¿cual crees que sera la mas adecuada para ti?\n");
+    printf("\nDentro de estas clases, %ccual crees que sera la mas adecuada para ti?\n",168);
     scanf("%d",&opc);
 
     while ((opc>4)&&(opc<1))
@@ -168,7 +198,7 @@ int obtenerClase (char clase[])
         strcpy(clase,"Nigromante");
         break;
     case 3:
-       strcpy(clase,"Asesino");
+        strcpy(clase,"Asesino");
         break;
     case 4:
         strcpy(clase,"Hechicero");
@@ -241,7 +271,7 @@ void Tienda(stPersonaje player)
     int flag = 1; /**controla el bucle del menu objeto*/
     char decision = 0; /**controla la decision de compra*/
     char op = 0; /**en caso de no haber dinero, permite volver al menu anterior o salir del menu objeto*/
-    
+
     /**la siguiente serie de variables, sirven para determinar la cantidad de objetos que hay disponibles*/
     /**todo armamento se puede comprar solo una vez,excepto la daga*/
     /**el maximo de pociones de hp y mp son 10*/
@@ -651,3 +681,89 @@ void MostrarBarra(char a[],int v)
     }
     printf("\n");
 }
+
+void mostrarPersonaje (char save [])
+{
+    FILE * archi=fopen(save,"rb");
+
+    stPersonaje aux;
+
+    fread(&aux,sizeof(stPersonaje),1,archi);
+
+    printf("\n----------------------------------------------------------\n");
+    printf("\nDatos del jugador");
+    printf("\nNombre:..............:%s",aux.nombre);
+    printf("\nGenero:..............:%s",aux.genero);
+    printf("\nNivel:...............:%d",aux.nivel);
+    printf("\nMana:................:%d",aux.mp);
+    printf("\nVida:................:%d",aux.hp);
+    printf("\nNivel Actual:........:%d",aux.nivelDeJuego);
+    printf("\n----------------------------------------------------------");
+    printf("\nAtributos del jugador");
+    printf("\nFuerza:..............:[%d]",aux.atribPersonaje.fuerza);
+    printf("\nMagia:...............:[%d]",aux.atribPersonaje.magia);
+    printf("\nDefensa:.............:[%d]",aux.atribPersonaje.defensa);
+    printf("\nDestreza:............:[%d]",aux.atribPersonaje.destreza);
+    printf("\nInteligencia:........:[%d]",aux.atribPersonaje.inteligencia);
+    printf("\n----------------------------------------------------------");
+    printf("\nInventario del jugador");
+    printf("\nArma:................:[%s]",aux.inv.arma);
+    printf("\nDinero:..............:[%d]",aux.inv.dinero);
+    printf("\nPociones de vida:....:[%d]",aux.inv.pocioneshp);
+    printf("\nPociones de mana:....:[%d]",aux.inv.pocionesmp);
+    printf("\nEscudo:..............:[%s]",aux.inv.escudo);
+    printf("\n----------------------------------------------------------\n");
+
+    fclose(archi);
+}
+
+void nuevaPartida (char archivo [])
+{
+    ///A modo de prueba para asignarle un id
+
+    FILE * archi=fopen(archivo,"rb");
+    stPersonaje aux;
+
+    if (archi!=NULL)
+    {
+
+        fread(&aux,sizeof(stPersonaje),1,archi);
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+}
+
+
+void crearPersonajeNuevo ()
+{
+    printf("%cDesea crear un personaje nuevo?",168)
+
+
+
+
+
+
+
+
+
+}
+
