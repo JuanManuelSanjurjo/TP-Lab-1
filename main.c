@@ -11,10 +11,10 @@
 #define PRECIOCALAVERA 50
 #define PRECIOHACHA 50
 #define PRECIODAGA 50
-/**para barras de vida y mana*/
-/**Con este numero de dimension, el arreglo tiene 22 cubos*/
-/**Para que el numero de cubos sea parejo, el numero de dimension debe ser impar*/
-#define DIMENSION 21
+/**vida maxima que pueda tener todo personaje*/
+#define VIDAMAXIMA 40
+/**mana maxima que pueda tener todo personaje*/
+#define MANAMAXIMA 25
 
 typedef struct
 {
@@ -53,9 +53,12 @@ typedef struct
 } stPersonaje;
 
 /**prototipados*/
-void Tienda(stPersonaje player); /**funcion tienda recibe la estructura personaje*/
-int CargarBarra(char a[],int DIM); /*funcion para cargar la barra de vida o mana*/
-void MostrarBarra(char a[],int v); /*funcion para mostrar barra de vida o mana*/
+/**sistema pausa*/
+void SistemaPausa(stPersonaje *player);
+/**contiene**/
+void SistemaInventario(stInventario *inv);
+void SistemaArmamento(stInventario *inv);
+void SistemaEstado(stPersonaje *player);
 
 int main()
 {
@@ -78,28 +81,17 @@ int main()
     mostrarPersonaje(save);
 
     /*prueba de función tienda*/
-    stPersonaje aux;
-
+    stPersonaje aux; /**esta estructura viene por medio de la save**/
+    
     Tienda(aux);
+    
+    /**prueba de funcion pausa,donde el jugador puede ver su inventario, su armamento y sus atributos actuales*/
+    
+    stPersonaje player; /**esta estructura viene por medio de la save**/
 
-    /**prueba de función Cargar barra y mostrar barra*/
+    SistemaPausa(&player);
 
-    char vida[DIMENSION];
-    char mana[DIMENSION];
-    int validosV = CargarBarra(vida,DIMENSION);
-    int validosM = CargarBarra(mana,DIMENSION);
-
-    printf("Antes del golpe:\n\n");
-    printf("HP\n");
-    MostrarBarra(vida,validosV);
-    printf("MP\n\n");
-    MostrarBarra(mana,validosM);
-    /**supongamos que la hp es de jugador, y recibe un golpe de 11*/
-    printf("Despues del golpe:\n\n");
-    /**se modifica validos*/
-    validosV = validosV - 11;
-    MostrarBarra(vida,validosV);
-
+    
 
     return 0;
 }
@@ -660,28 +652,6 @@ void Tienda(stPersonaje player)
     }
     while(tolower(control)=='s');
 }
-int CargarBarra(char a[],int dim)
-{
-    int i = 0;
-
-    for(i = 0; i < dim; i++)
-    {
-        a[i] = 219;
-    }
-
-    return i;
-}
-void MostrarBarra(char a[],int v)
-{
-    int i = 0;
-
-    for(i = 0; i < v; i++)
-    {
-        printf("%c",a[i]);
-    }
-    printf("\n");
-}
-
 void mostrarPersonaje (char save [])
 {
     FILE * archi=fopen(save,"rb");
@@ -954,3 +924,108 @@ void nivel1 ()
 
 
 }
+
+void SistemaPausa(stPersonaje *player)
+{
+    int opcionmenuinterior = 0;
+    char controlbucle = 0;
+    char controlcaso = 0;
+
+    do
+    {
+        printf("%66s","PAUSA\n");
+        printf("1:\tInventario\n2:\tArmamento\n3:\tEstado\n4:\tSalir\n");
+        scanf("%i",&opcionmenuinterior);
+        system("cls");
+        switch(opcionmenuinterior)
+        {
+        case 1:
+            SistemaInventario(&player->inv);
+            getchar();
+            break;
+        case 2:
+            SistemaArmamento(&player->inv);
+            getchar();
+            break;
+        case 3:
+            SistemaEstado(&player);
+            getchar();
+            break;
+        case 4:
+            controlbucle = 's';
+            break;
+        }
+        if(opcionmenuinterior != 4)
+        {
+        printf("Salir? s/n\n");
+        fflush(stdin);
+        scanf("%c",&controlbucle);
+        }
+        system("cls");
+    } while(controlbucle =='n');
+}
+
+void SistemaInventario(stInventario *inv)
+{
+    printf("%66s","INVENTARIO\n");
+
+    inv->dinero = 1000;
+    inv->pocioneshp = 10;
+    inv->pocionesmp = 10;
+
+    printf("*************************************************\n");
+    printf("\n\t\tDinero: %i\n\n",inv->dinero);
+    printf("\n\t\tPociones HP: %i\n\n",inv->pocioneshp);
+    printf("\n\t\tPociones MP: %i\n\n\n",inv->pocionesmp);
+    printf("*************************************************\n");
+}
+
+void PausaLimpia()
+{
+    fflush(stdin);
+    getchar();
+    system("cls");
+}
+
+void SistemaArmamento(stInventario *inv)
+{
+    printf("%66s","ARMAMENTO\n");
+    strcpy(inv->arma,"ESPADA BASICA");
+    strcpy(inv->escudo,"ESCUDO BASICO");
+    printf("***************************************************\n");
+    printf("\n\t\tESPADA: %s\n\n",inv->arma);
+    printf("\n\t\tESCUDO: %s\n\n\n",inv->escudo);
+    printf("***************************************************\n");
+}
+
+void SistemaEstado(stPersonaje *player)
+{
+    printf("%66s","ESTADO\n");
+    player->hp = 22;
+    player->mp = 12;
+    strcpy(player->nombre,"PEPE");
+    strcpy(player->genero,"Masculino");
+    strcpy(player->clase,"Guerrero");
+    player->nivel = 1;
+    player->atribPersonaje.fuerza = 7;
+    player->atribPersonaje.defensa = 7;
+    player->atribPersonaje.destreza = 5;
+    player->atribPersonaje.inteligencia = 3;
+    player->atribPersonaje.magia = 3;
+
+    printf("***********************************************************\n");
+    printf("\n\t\tHP: %i/%i\n",player->hp,VIDAMAXIMA);
+    printf("\n\t\tMP: %i/%i\n",player->mp,MANAMAXIMA);
+    printf("\n\t\t%s\n",player->nombre);
+    printf("\n\t\t%s\n",player->genero);
+    printf("\n\t\t%s\n",player->clase);
+    printf("\n\t\tNivel:%i\n\n",player->nivel);
+    printf("***********************************************************\n");
+    printf("\n\t\tFuerza:\t\t%i\n",player->atribPersonaje.fuerza);
+    printf("\t\tDefensa:\t%i\n",player->atribPersonaje.defensa);
+    printf("\t\tDestreza:\t%i\n",player->atribPersonaje.destreza);
+    printf("\t\tInteligencia:\t%i\n",player->atribPersonaje.inteligencia);
+    printf("\t\tMagia:\t\t%i\n\n",player->atribPersonaje.magia);
+    printf("***********************************************************\n");
+}
+
