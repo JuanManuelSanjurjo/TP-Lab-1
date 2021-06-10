@@ -42,8 +42,8 @@ typedef struct
     int id ;
     char nombre[15];                             /**Nombre que elegió el jugador*/
     char genero[15];                             /**Elegido por el jugador**/
-    char clase[15];                              /**guerrero, mago**/
-    int nivel;                                   /**del personaje*/
+    char tipoClase[15];                              /**guerrero, mago**/
+    int clase;
     int nivelDeJuego;
     stAtributos atribPersonaje;                  /**estructura anidada,dentro tiene otra estructura, que tiene atributos como fuerza,destreza. Varia según la clase elegida*/
     stInventario inv;
@@ -56,6 +56,7 @@ typedef struct
 void Tienda(stPersonaje player); /**funcion tienda recibe la estructura personaje*/
 int CargarBarra(char a[],int DIM); /*funcion para cargar la barra de vida o mana*/
 void MostrarBarra(char a[],int v); /*funcion para mostrar barra de vida o mana*/
+void nivel1 (stPersonaje * aux);
 
 int main()
 {
@@ -123,9 +124,8 @@ void inicioDePersonaje (char save [],int idjug)
 
         printf("Se le presentaran las siguientes clases las cual puede elegir\n");
 
-        tipo=obtenerClase(per.clase);
+        tipo=obtenerClase(per.tipoClase);
 
-        per.nivel=1;
         per.nivelDeJuego=0;
         per.id=idjug;
 
@@ -135,21 +135,25 @@ void inicioDePersonaje (char save [],int idjug)
             atributosGuerrero(&per.atribPersonaje);
             strcpy(per.inv.arma,"Espada basica");
             strcpy(per.inv.escudo,"");
+            per.clase=1;
             break;
         case 2:
             atributosNigromante(&per.atribPersonaje);
             strcpy(per.inv.arma,"Baculo basico");
             strcpy(per.inv.escudo,"");
+            per.clase=2;
             break;
         case 3:
             atributosAsesino(&per.atribPersonaje);
             strcpy(per.inv.arma,"Daga basica");
             strcpy(per.inv.escudo,"");
+            per.clase=3;
             break;
         case 4:
             atributosHechicero(&per.atribPersonaje);
             strcpy(per.inv.arma,"Baculo basico");
             strcpy(per.inv.escudo,"");
+            per.clase=4;
             break;
 
         }
@@ -239,7 +243,7 @@ void atributosAsesino (stAtributos * aux)
     aux->fuerza=rand()%10+6;
     aux->inteligencia=rand()%10+11;
     aux->magia=rand()%5+6;
-    aux->defensa=rand()%5+10;
+    aux->defensa=0;
 
     return aux;
 }
@@ -694,7 +698,6 @@ void mostrarPersonaje (char save [])
     printf("\nDatos del jugador");
     printf("\nNombre:..............:%s",aux.nombre);
     printf("\nGenero:..............:%s",aux.genero);
-    printf("\nNivel:...............:%d",aux.nivel);
     printf("\nMana:................:%d",aux.mp);
     printf("\nVida:................:%d",aux.hp);
     printf("\nNivel Actual:........:%d",aux.nivelDeJuego);
@@ -753,7 +756,7 @@ void nuevaPartida (char archivo [])
 }
 
 
-void crearPersonajeNuevo ()
+/*void crearPersonajeNuevo ()
 {
     printf("%cDesea crear un personaje nuevo?",168)
 
@@ -765,9 +768,9 @@ void crearPersonajeNuevo ()
 
 
 
-}
+}*/
 
-void funcionDeCombatesPorNivel ()
+/*void funcionDeCombatesPorNivel ()
 {
     stPersonaje aux;
 
@@ -909,7 +912,7 @@ void funcionDeCombatesPorNivel ()
 
 
 
-    }while((continuar=='s')&&(aux.nivel<25)&&(aux.hp>0));
+    }///while((continuar=='s')&&(aux.nivel<25)&&(aux.hp>0));
 
 
 
@@ -918,11 +921,72 @@ void funcionDeCombatesPorNivel ()
 
 
 
+    }*/
+
+
+
+
+
+
+
+
+
+
+
+
+int cicloDePelea (stPersonaje * aux,int hpMonstruo,int danoMon,char nombreM [])
+{
+    int opc=0;
+    int pasaNivel=0;
+    do
+    {
+        printf("te encontraste con %s",nombreM);
+        scanf("%d",&opc);
+        switch(opc)
+        {
+        case 1:
+            ///ataque normal
+            hpMonstruo=hpMonstruo-ataqueBasico(aux);
+
+            break;
+
+        case 2:
+            ///ataque especial
+            hpMonstruo=hpMonstruo-ataqueCargado(aux);
+            aux->mp=aux->mp-10;
+            break;
+
+        case 3:
+            ///pocion de vida
+            aux->hp=aux->hp+20;
+            break;
+
+        case 4:
+            ///pocion de mana
+            aux->mp=aux->mp+20;
+            break;
+        }
+
+        ///turno del monstruo
+        aux->hp=aux->hp-(rand()%6+danoMon-aux->atribPersonaje.defensa);
+
+
+
+    }while ((aux->hp>0)&&(hpMonstruo>0));
+
+    if(hpMonstruo<=0)
+    {
+        pasaNivel=1;
     }
 
 
+    return pasaNivel;
+}
 
+void subeAtributos (stPersonaje * aux, int atrib)
+{
 
+    ///Se modifican parajo todos los atributos de acuerdo al nivel
 
 
 
@@ -930,27 +994,59 @@ void funcionDeCombatesPorNivel ()
 }
 
 
-
-void nivel1 ()
+int ataqueBasico (stPersonaje aux)
 {
-
-    int hpMonstruo=100;
-
-
-
-    do
+    int ataque1=0;
+    int caso=0;
+    caso=aux.clase;
+    switch (caso)
     {
+    case 1:
+        ataque1=rand()%5+aux.atribPersonaje.fuerza;
+        break;
 
+    case 2:
+        ataque1=rand()%5+aux.atribPersonaje.magia;
+        break;
 
+    case 3:
+        ataque1=rand()%10+aux.atribPersonaje.destreza;
+        break;
 
+    case 4:
+        ataque1=rand()%5+aux.atribPersonaje.inteligencia;
+        break;
 
+    }
 
+    return ataque1;
+}
 
-    }while ()
+int ataqueCargado(stPersonaje aux)
+{
+    int ataque2=0;
+    int caso=0;
+    caso=aux.clase;
+    switch (caso)
+    {
+    case 1:
+        ataque2=rand()%5+aux.atribPersonaje.fuerza+10;
+        break;
 
+    case 2:
+        ataque2=rand()%5+aux.atribPersonaje.magia+10;
+        break;
 
+    case 3:
+        ataque2=rand()%10+aux.atribPersonaje.destreza+10;
+        break;
 
+    case 4:
+        ataque2=rand()%5+aux.atribPersonaje.inteligencia+10;
+        break;
 
+    }
 
+    return ataque2;
 
 }
