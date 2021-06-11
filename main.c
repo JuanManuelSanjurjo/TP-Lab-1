@@ -11,10 +11,6 @@
 #define PRECIOCALAVERA 50
 #define PRECIOHACHA 50
 #define PRECIODAGA 50
-/**para barras de vida y mana*/
-/**Con este numero de dimension, el arreglo tiene 22 cubos*/
-/**Para que el numero de cubos sea parejo, el numero de dimension debe ser impar*/
-#define DIMENSION 21
 
 typedef struct
 {
@@ -53,9 +49,15 @@ typedef struct
 } stPersonaje;
 
 /**prototipados*/
-void Tienda(stPersonaje player); /**funcion tienda recibe la estructura personaje*/
-int CargarBarra(char a[],int DIM); /*funcion para cargar la barra de vida o mana*/
-void MostrarBarra(char a[],int v); /*funcion para mostrar barra de vida o mana*/
+void Tienda(stPersonaje *player);
+int CompraPocionesHp(stInventario *inv,int pocioneshpcant);
+int CompraPocionesMP(stInventario *inv,int pocionesmpcant);
+int CompraEspada(stPersonaje *player, int espadacant);
+int CompraHacha(stPersonaje *player,int hachacant);
+int CompraEscudo(stPersonaje *player,int escudocant);
+int CompraCalavera(stPersonaje *player,int calaveracant);
+int CompraBaston(stPersonaje *player,int bastoncant);
+int CompraDaga(stPersonaje *player,int dagacant);
 void nivel1 (stPersonaje * aux);
 
 int main()
@@ -79,27 +81,6 @@ int main()
     mostrarPersonaje(save);
 
     /*prueba de función tienda*/
-    stPersonaje aux;
-
-    Tienda(aux);
-
-    /**prueba de función Cargar barra y mostrar barra*/
-
-    char vida[DIMENSION];
-    char mana[DIMENSION];
-    int validosV = CargarBarra(vida,DIMENSION);
-    int validosM = CargarBarra(mana,DIMENSION);
-
-    printf("Antes del golpe:\n\n");
-    printf("HP\n");
-    MostrarBarra(vida,validosV);
-    printf("MP\n\n");
-    MostrarBarra(mana,validosM);
-    /**supongamos que la hp es de jugador, y recibe un golpe de 11*/
-    printf("Despues del golpe:\n\n");
-    /**se modifica validos*/
-    validosV = validosV - 11;
-    MostrarBarra(vida,validosV);
 
 
     return 0;
@@ -258,27 +239,11 @@ void atributosHechicero (stAtributos * aux)
 
     return aux;
 }
-void Tienda(stPersonaje player)
+void Tienda(stPersonaje *player)
 {
-    /**tomo los campos de dinero,pocionhp y  pocion mp y los igualo a variables LOCALES para
-    trabajar más cómodo*/
-    int dinero = player.inv.dinero;
-    dinero = 1000; /**para la prueba*/
-    int pocioneshp = player.inv.pocioneshp; /**en inventario*/
-    pocioneshp = 0; /**para prueba*/
-    int pocionesmp = player.inv.pocionesmp; /**en inventario*/
-    pocionesmp = 0; /**para prueba*/
-    int seleccion = 0; /**selecciona el case del menu compra, esto es qué comprar*/
-    char control = 0; /**controla la repetición del menu compra, permite seguir o salir del mismo*/
-    int cantidad = 0; /**cantidad de objetos a comprar, se multiplica por la constante precio*/
-    int compra = 0; /**precio final de la compra, debe ser menor a dinero del jugador*/
-    int flag = 1; /**controla el bucle del menu objeto*/
-    char decision = 0; /**controla la decision de compra*/
-    char op = 0; /**en caso de no haber dinero, permite volver al menu anterior o salir del menu objeto*/
+    int seleccion = 0; /**control case*/
+    char control = 0; /**control menu**/
 
-    /**la siguiente serie de variables, sirven para determinar la cantidad de objetos que hay disponibles*/
-    /**todo armamento se puede comprar solo una vez,excepto la daga*/
-    /**el maximo de pociones de hp y mp son 10*/
     int hayespada = 1;
     int hayhacha = 1;
     int hayescudo = 1;
@@ -292,81 +257,21 @@ void Tienda(stPersonaje player)
     {
         printf("\nBienvenido/a a la tienda! Que desea??\n");
 
-        printf("\nDINERO: %i\n",dinero);
-        printf("\nPOCIONES HP en inventario: %i\n",pocioneshp);
-        printf("\nPOCIONES MP en inventario: %i\n\n",pocionesmp);
+        printf("\nDINERO: %i\n",player->inv.dinero);
+        printf("\nPOCIONES HP en inventario: %i\n",player->inv.pocioneshp);
+        printf("\nPOCIONES MP en inventario: %i\n\n",player->inv.pocionesmp);
 
         printf("\tOBJETO\t\tCANTIDAD\n\n");
         printf("1:\tPocion HP\t%i\n2:\tPocion MP\t%i\n3:\tEspada\t\t%i\n4:\tBaston\t\t%i\n5:\tCalavera\t%i\n6:\tEscudo\t\t%i\n7:\tHacha\t\t%i\n8:\tDaga\t\t%i\n9:\tSalir\n\n",haypocionhp,haypocionmp,hayespada,haybaston,haycalavera,hayescudo,hayhacha,haydaga);
 
         scanf("%i",&seleccion);
 
-        /**esto es menu compra(general)*/
         switch(seleccion)
         {
         case 1:
-            /**esto es un menu objeto, en este caso 1, pociones vida*/
             if(haypocionhp > 0)
             {
-                while(flag == 1)
-                {
-                    do
-                    {
-                        do
-                        {
-                            printf("Cuantas pociones de hp desea?\n");
-                            scanf("%i",&cantidad);
-                            if( cantidad < 1 || cantidad > 10)
-                            {
-                                printf("No puedes comprar esa cantidad!\n");
-                            }
-                        }
-                        while( cantidad < 1 || cantidad > 10);
-                        compra = cantidad * PRECIOHP;
-                        printf("El total es: %i\n",compra);
-                        printf("Esta seguro? s/n");
-                        scanf("\n%c",&decision);
-                        if(decision=='s')
-                        {
-
-                            if(compra <= dinero)
-                            {
-                                printf("Gracias por su compra!\n");
-                                dinero = dinero - compra;
-                                pocioneshp = pocioneshp + cantidad;
-                                haypocionhp = haypocionhp - cantidad;
-                                flag = 0;
-                            }
-                            else
-                            {
-                                printf("No tienes suficiente dinero!\n");
-                                printf("Deseas volver? s/n\n");
-                                scanf("\n%c",&op);
-                                if(op=='s')
-                                {
-                                    decision == 's';
-                                }
-                                else
-                                {
-                                    flag = 0;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            flag = 0;
-                        }
-                    }
-                    while(tolower(decision)=='s' && flag!= 0);
-                }
-                /**todas las variables usadas vuelven a inicializarse para usarse de nuevo*/
-                seleccion = 0;
-                control = 0;
-                cantidad = 0;
-                compra = 0;
-                flag = 1;
-                decision = 0;
-                op = 0;
+                haypocionhp = CompraPocionesHp(&player->inv,haypocionhp); /**recibe inventario porque usa el dinero y pocionhp*/
             }
             else
             {
@@ -374,67 +279,9 @@ void Tienda(stPersonaje player)
             }
             break;
         case 2:
-            /**menu objeto 2 pociones mana*/
             if(haypocionmp > 0)
             {
-                while(flag == 1)
-                {
-                    do
-                    {
-                        do
-                        {
-                            printf("Cuantas pociones de mp desea?\n");
-                            scanf("%i",&cantidad);
-                            if(cantidad < 1 || cantidad > 10)
-                            {
-                                printf("No puedes comprar esa cantidad!!\n");
-                            }
-                        }
-                        while(cantidad < 1 || cantidad > 10);
-                        compra = cantidad * PRECIOMP;
-                        printf("El total es: %i\n",compra);
-                        printf("Esta seguro? s/n");
-                        scanf("\n%c",&decision);
-                        if(decision=='s')
-                        {
-
-                            if(compra <= dinero)
-                            {
-                                printf("Gracias por su compra!\n");
-                                dinero = dinero - compra;
-                                pocionesmp = pocionesmp + cantidad;
-                                haypocionmp = haypocionmp - cantidad;
-                                flag = 0;
-                            }
-                            else
-                            {
-                                printf("No tienes suficiente dinero!\n");
-                                printf("Deseas volver? s/n\n");
-                                scanf("\n%c",&op);
-                                if(op=='s')
-                                {
-                                    decision == 's';
-                                }
-                                else
-                                {
-                                    flag = 0;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            flag = 0;
-                        }
-                    }
-                    while(tolower(decision)=='s' && flag!= 0);
-                }
-                seleccion = 0;
-                control = 0;
-                cantidad = 0;
-                compra = 0;
-                flag = 1;
-                decision = 0;
-                op = 0;
+                haypocionmp = CompraPocionesMP(&player->inv,haypocionmp);
             }
             else
             {
@@ -444,31 +291,7 @@ void Tienda(stPersonaje player)
         case 3:
             if(hayespada == 1)
             {
-                printf("El precio de la espada es: %i\n",PRECIOESPADA);
-                printf("Desea comprar la espada?\n");
-                scanf("\n%c",&control);
-                if(control == 's')
-                {
-                    compra = PRECIOESPADA;
-                    if( dinero >= compra)
-                    {
-                        /**la espada sube 5 de fuerza*/
-                        player.atribPersonaje.fuerza = player.atribPersonaje.fuerza + 5;
-                        /** y ademas sube 3 de destreza*/
-                        player.atribPersonaje.destreza = player.atribPersonaje.destreza + 3;
-                        /**le cobramos*/
-                        dinero = dinero - compra;
-                        hayespada = 0;
-                        printf("Gracias por su compra!\n");
-                    }
-                    else
-                    {
-                        printf("No tienes suficiente dinero!! =( \n");
-                    }
-                }
-                seleccion = 0;
-                control = 0;
-                compra = 0;
+                hayespada = CompraEspada(player,hayespada);
             }
             else
             {
@@ -478,31 +301,7 @@ void Tienda(stPersonaje player)
         case 4:
             if(haybaston = 1)
             {
-                printf("El precio del baston es: %i\n",PRECIOBASTON);
-                printf("Desea comprar el baston?\n");
-                scanf("\n%c",&control);
-                if(control == 's')
-                {
-                    compra = PRECIOBASTON;
-                    if( dinero >= compra)
-                    {
-                        /**el baston sube 5 de magia*/
-                        player.atribPersonaje.magia = player.atribPersonaje.magia + 5;
-                        /** y ademas sube 3 de inteligencia*/
-                        player.atribPersonaje.inteligencia = player.atribPersonaje.inteligencia + 3;
-                        /**le cobramos*/
-                        dinero = dinero - compra;
-                        haybaston = 0;
-                        printf("Gracias por su compra!\n");
-                    }
-                    else
-                    {
-                        printf("No tienes suficiente dinero!! =( \n");
-                    }
-                }
-                seleccion = 0;
-                control = 0;
-                compra = 0;
+                haybaston = CompraBaston(player,haybaston);
             }
             else
             {
@@ -512,31 +311,7 @@ void Tienda(stPersonaje player)
         case 5:
             if(haycalavera = 1)
             {
-                printf("El precio de la calavera es: %i\n",PRECIOCALAVERA);
-                printf("Desea comprar la calavera?\n");
-                scanf("\n%c",&control);
-                if(control == 's')
-                {
-                    compra = PRECIOCALAVERA;
-                    if( dinero >= compra)
-                    {
-                        /**la calavera sube 5 de defensa*/
-                        player.atribPersonaje.defensa = player.atribPersonaje.defensa + 5;
-                        /** y ademas sube 3 de magia*/
-                        player.atribPersonaje.magia = player.atribPersonaje.magia + 3;
-                        /**le cobramos*/
-                        dinero = dinero - compra;
-                        haycalavera = 0;
-                        printf("Gracias por su compra!\n");
-                    }
-                    else
-                    {
-                        printf("No tienes suficiente dinero!! =( \n");
-                    }
-                }
-                seleccion = 0;
-                control = 0;
-                compra = 0;
+                haycalavera = CompraCalavera(player,haycalavera);
             }
             else
             {
@@ -546,31 +321,7 @@ void Tienda(stPersonaje player)
         case 6:
             if(hayescudo = 1)
             {
-                printf("El precio del escudo es: %i\n",PRECIOESCUDO);
-                printf("Desea comprar el escudo?\n");
-                scanf("\n%c",&control);
-                if(control == 's')
-                {
-                    compra = PRECIOESCUDO;
-                    if( dinero >= compra)
-                    {
-                        /**el escudo sube 5 de defensa*/
-                        player.atribPersonaje.defensa = player.atribPersonaje.defensa + 5;
-                        /** y ademas sube 3 de fuerza*/
-                        player.atribPersonaje.defensa = player.atribPersonaje.defensa + 3;
-                        /**le cobramos*/
-                        dinero = dinero - compra;
-                        hayescudo = 0;
-                        printf("Gracias por su compra!\n");
-                    }
-                    else
-                    {
-                        printf("No tienes suficiente dinero!! =( \n");
-                    }
-                }
-                seleccion = 0;
-                control = 0;
-                compra = 0;
+                hayescudo = CompraEscudo(player,hayescudo);
             }
             else
             {
@@ -580,31 +331,7 @@ void Tienda(stPersonaje player)
         case 7:
             if(hayhacha = 1)
             {
-                printf("El precio del hacha es:%i\n",PRECIOHACHA);
-                printf("Desea comprar el hacha?\n");
-                scanf("\n%c",&control);
-                if(control == 's')
-                {
-                    compra = PRECIOHACHA;
-                    if( dinero >= compra)
-                    {
-                        /**el hacha sube 5 de fuerza*/
-                        player.atribPersonaje.fuerza = player.atribPersonaje.fuerza + 5;
-                        /** y ademas sube 3 de destreza*/
-                        player.atribPersonaje.destreza = player.atribPersonaje.destreza + 3;
-                        /**le cobramos*/
-                        dinero = dinero - compra;
-                        hayhacha = 0;
-                        printf("Gracias por su compra!\n");
-                    }
-                    else
-                    {
-                        printf("No tienes suficiente dinero!! =( \n");
-                    }
-                }
-                seleccion = 0;
-                control = 0;
-                compra = 0;
+                hayhacha = CompraHacha(player,hayhacha);
             }
             else
             {
@@ -614,31 +341,7 @@ void Tienda(stPersonaje player)
         case 8:
             if(haydaga > 0 )
             {
-                printf("El precio de la daga es: %i\n",PRECIODAGA);
-                printf("Desea comprar la daga?\n");
-                scanf("\n%c",&control);
-                if(control == 's')
-                {
-                    compra = PRECIODAGA;
-                    if( dinero >= compra)
-                    {
-                        /**la daga sube 3 de fuerza*/
-                        player.atribPersonaje.fuerza = player.atribPersonaje.fuerza + 3;
-                        /** y ademas sube 3 de destreza*/
-                        player.atribPersonaje.destreza = player.atribPersonaje.destreza + 3;
-                        /**le cobramos*/
-                        dinero = dinero - compra;
-                        haydaga = haydaga - 1;
-                        printf("Gracias por su compra!\n");
-                    }
-                    else
-                    {
-                        printf("No tienes suficiente dinero!! =( \n");
-                    }
-                }
-                seleccion = 0;
-                control = 0;
-                compra = 0;
+                haydaga = CompraDaga(player,haydaga);
             }
             else
             {
@@ -646,7 +349,6 @@ void Tienda(stPersonaje player)
             }
             break;
         case 9:
-            /**salir del menu*/
             control = 'n';
             break;
         }
@@ -662,28 +364,331 @@ void Tienda(stPersonaje player)
             system("cls");
         }
     }
-    while(tolower(control)=='s');
+    while( control =='s');
 }
-int CargarBarra(char a[],int dim)
-{
-    int i = 0;
 
-    for(i = 0; i < dim; i++)
+int CompraPocionesHp(stInventario *inv,int pocioneshpcant)
+{
+    int seleccion = 0;
+    char control = 0;
+    int cantidad = 0;
+    int compra = 0;
+    int flag = 1;
+    char decision = 0;
+    char op = 0;
+
+    while(flag == 1)
     {
-        a[i] = 219;
+        do
+        {
+            do
+            {
+                printf("Cuantas pociones de hp desea?\n");
+                scanf("%i",&cantidad);
+                if( cantidad < 1 || cantidad > 10)
+                {
+                    printf("No puedes comprar esa cantidad!\n");
+                }
+            }
+            while( cantidad < 1 || cantidad > 10);
+            compra = cantidad * PRECIOHP;
+            printf("El total es: %i\n",compra);
+            printf("Esta seguro? s/n");
+            scanf("\n%c",&decision);
+            if(decision=='s')
+            {
+
+                if(compra <= inv->dinero)
+                {
+                    printf("Gracias por su compra!\n");
+                    inv->dinero = inv->dinero - compra;
+                    inv->pocioneshp = inv->pocioneshp + cantidad;
+                    pocioneshpcant = pocioneshpcant - cantidad;
+                    flag = 0;
+                }
+                else
+                {
+                    printf("No tienes suficiente dinero!\n");
+                    printf("Deseas volver? s/n\n");
+                    scanf("\n%c",&op);
+                    if(op=='s')
+                    {
+                        decision == 's';
+                    }
+                    else
+                    {
+                        flag = 0;
+                    }
+                }
+            }
+            else
+            {
+                flag = 0;
+            }
+        }
+        while( decision =='s' && flag!= 0);
     }
 
-    return i;
+    return pocioneshpcant;
 }
-void MostrarBarra(char a[],int v)
-{
-    int i = 0;
 
-    for(i = 0; i < v; i++)
+int CompraPocionesMP(stInventario *inv,int pocionesmpcant)
+{
+
+    int seleccion = 0;
+    char control = 0;
+    int cantidad = 0;
+    int compra = 0;
+    int flag = 1;
+    char decision = 0;
+    char op = 0;
+
+    while(flag == 1)
     {
-        printf("%c",a[i]);
+        do
+        {
+            do
+            {
+                printf("Cuantas pociones de hp desea?\n");
+                scanf("%i",&cantidad);
+                if( cantidad < 1 || cantidad > 10)
+                {
+                    printf("No puedes comprar esa cantidad!\n");
+                }
+            }
+            while( cantidad < 1 || cantidad > 10);
+            compra = cantidad * PRECIOMP;
+            printf("El total es: %i\n",compra);
+            printf("Esta seguro? s/n");
+            scanf("\n%c",&decision);
+            if(decision=='s')
+            {
+
+                if(compra <= inv->dinero)
+                {
+                    printf("Gracias por su compra!\n");
+                    inv->dinero = inv->dinero - compra;
+                    inv->pocionesmp = inv->pocionesmp + cantidad;
+                    pocionesmpcant = pocionesmpcant - cantidad;
+                    flag = 0;
+                }
+                else
+                {
+                    printf("No tienes suficiente dinero!\n");
+                    printf("Deseas volver? s/n\n");
+                    scanf("\n%c",&op);
+                    if(op=='s')
+                    {
+                        decision == 's';
+                    }
+                    else
+                    {
+                        flag = 0;
+                    }
+                }
+            }
+            else
+            {
+                flag = 0;
+            }
+        }
+        while( decision =='s' && flag!= 0);
     }
-    printf("\n");
+
+    return pocionesmpcant;
+}
+
+int CompraEspada(stPersonaje *player, int espadacant)
+{
+    int seleccion = 0;
+    char control = 0;
+    int compra = 0;
+
+    printf("El precio de la espada es: %i\n",PRECIOESPADA);
+    printf("Desea comprar la espada?\n");
+    scanf("\n%c",&control);
+    if(control == 's')
+    {
+        compra = PRECIOESPADA;
+        if( player->inv.dinero >= compra)
+        {
+            /**la espada sube 5 de fuerza*/
+            player->atribPersonaje.fuerza = player->atribPersonaje.fuerza + 5;
+            /** y ademas sube 3 de destreza*/
+            player->atribPersonaje.destreza = player->atribPersonaje.destreza + 3;
+            /**le cobramos*/
+            player->inv.dinero = player->inv.dinero - compra;
+            espadacant = 0;
+            printf("Gracias por su compra!\n");
+        }
+        else
+        {
+            printf("No tienes suficiente dinero!! =( \n");
+        }
+    }
+
+    return espadacant;
+}
+
+int CompraBaston(stPersonaje *player, int bastoncant)
+{
+    int seleccion = 0;
+    char control = 0;
+    int compra = 0;
+
+    printf("El precio del bast%cn es: %i\n",162,PRECIOBASTON);
+    printf("Desea comprar el bast%cn?\n",162);
+    scanf("\n%c",&control);
+    if(control == 's')
+    {
+        compra = PRECIOBASTON;
+        if( player->inv.dinero >= compra)
+        {
+            /**el bastón sube 5 de magia*/
+            player->atribPersonaje.magia = player->atribPersonaje.magia + 5;
+            /** y ademas sube 3 de inteligencia*/
+            player->atribPersonaje.inteligencia = player->atribPersonaje.inteligencia + 3;
+            /**le cobramos*/
+            player->inv.dinero = player->inv.dinero - compra;
+            bastoncant = 0;
+            printf("Gracias por su compra!\n");
+        }
+        else
+        {
+            printf("No tienes suficiente dinero!! =( \n");
+        }
+    }
+
+    return bastoncant;
+}
+
+int CompraCalavera(stPersonaje *player, int calaveracant)
+{
+    int seleccion = 0;
+    char control = 0;
+    int compra = 0;
+
+    printf("El precio de la calavera es: %i\n",PRECIOCALAVERA);
+    printf("Desea comprar la calavera?\n");
+    scanf("\n%c",&control);
+    if(control == 's')
+    {
+        compra = PRECIOCALAVERA;
+        if( player->inv.dinero >= compra)
+        {
+            /**la calavera sube 5 de defensa*/
+            player->atribPersonaje.defensa = player->atribPersonaje.defensa + 5;
+            /** y ademas sube 3 de magia*/
+            player->atribPersonaje.magia = player->atribPersonaje.magia + 3;
+            /**le cobramos*/
+            player->inv.dinero = player->inv.dinero - compra;
+            calaveracant = 0;
+            printf("Gracias por su compra!\n");
+        }
+        else
+        {
+            printf("No tienes suficiente dinero!! =( \n");
+        }
+    }
+
+    return calaveracant;
+}
+
+int CompraEscudo(stPersonaje *player, int escudocant)
+{
+    int seleccion = 0;
+    char control = 0;
+    int compra = 0;
+
+    printf("El precio del escudo es: %i\n",PRECIOESCUDO);
+    printf("Desea comprar el escudo?\n");
+    scanf("\n%c",&control);
+    if(control == 's')
+    {
+        compra = PRECIOESCUDO;
+        if( player->inv.dinero >= compra)
+        {
+            /**la calavera sube 5 de defensa*/
+            player->atribPersonaje.defensa = player->atribPersonaje.defensa + 5;
+            /** y ademas sube 3 de destreza*/
+            player->atribPersonaje.destreza = player->atribPersonaje.destreza + 3;
+            /**le cobramos*/
+            player->inv.dinero = player->inv.dinero - compra;
+            escudocant = 0;
+            printf("Gracias por su compra!\n");
+        }
+        else
+        {
+            printf("No tienes suficiente dinero!! =( \n");
+        }
+    }
+
+    return escudocant;
+}
+
+int CompraHacha(stPersonaje *player, int hachacant)
+{
+    int seleccion = 0;
+    char control = 0;
+    int compra = 0;
+
+    printf("El precio del hacha es: %i\n",PRECIOHACHA);
+    printf("Desea comprar el hacha?\n");
+    scanf("\n%c",&control);
+    if(control == 's')
+    {
+        compra = PRECIOHACHA;
+        if( player->inv.dinero >= compra)
+        {
+            /**el sube 5 de fuerza*/
+            player->atribPersonaje.fuerza = player->atribPersonaje.fuerza + 5;
+            /** y ademas sube 3 de destreza*/
+            player->atribPersonaje.destreza = player->atribPersonaje.destreza + 3;
+            /**le cobramos*/
+            player->inv.dinero = player->inv.dinero - compra;
+            hachacant = 0;
+            printf("Gracias por su compra!\n");
+        }
+        else
+        {
+            printf("No tienes suficiente dinero!! =( \n");
+        }
+    }
+
+    return hachacant;
+}
+
+int CompraDaga(stPersonaje *player, int dagacant)
+{
+
+    int seleccion = 0;
+    char control = 0;
+    int compra = 0;
+
+    printf("El precio de la daga es: %i\n",PRECIODAGA);
+    printf("Desea comprar la daga?\n");
+    scanf("\n%c",&control);
+    if(control == 's')
+    {
+        compra = PRECIODAGA;
+        if( player->inv.dinero >= compra)
+        {
+            /**la daga sube 3 de fuerza*/
+            player->atribPersonaje.fuerza = player->atribPersonaje.fuerza + 3;
+            /** y ademas sube 3 de destreza*/
+            player->atribPersonaje.destreza = player->atribPersonaje.destreza + 3;
+            /**le cobramos*/
+            player->inv.dinero = player->inv.dinero - compra;
+            dagacant = dagacant - 1;
+            printf("Gracias por su compra!\n");
+        }
+        else
+        {
+            printf("No tienes suficiente dinero!! =( \n");
+        }
+    }
+
+    return dagacant;
 }
 
 void mostrarPersonaje (char save [])
