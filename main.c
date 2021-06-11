@@ -48,6 +48,15 @@ typedef struct
 
 } stPersonaje;
 
+typedef struct /** IN PROGREZ*/
+{
+    int idMarcador;  
+    int idPersonaje;
+    int Puntaje; 
+    int nivelMaximo;
+    int tiempoJuego;
+}stMarcador;
+
 /**prototipados*/
 void Tienda(stPersonaje *player);
 int CompraPocionesHp(stInventario *inv,int pocioneshpcant);
@@ -92,15 +101,15 @@ void inicioDePersonaje (char save [],int idjug)
 
     if (archi!=NULL)
     {
-
-
         stPersonaje per;
         int tipo=0;
 
         printf("\nIngrese su nombre\n");
+        fflush(stdin);
         gets(per.nombre);
-
+        
         printf("Indica el genero con el cual te identificas\n");
+        fflush(stdin);
         gets(per.genero);
 
         printf("Se le presentaran las siguientes clases las cual puede elegir\n");
