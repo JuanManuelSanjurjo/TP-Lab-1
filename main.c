@@ -19,23 +19,21 @@ typedef struct
     int destreza;
     int magia;
     int defensa;
-
-} stAtributos ;
+}stAtributos ;
 
 typedef struct
 {
-    int id;
+    int idInventario;
     int dinero;
     int pocioneshp;
     int pocionesmp;
     char arma[20];
     char escudo[20];
-
-} stInventario;
+}stInventario;
 
 typedef struct
 {
-    int id ;
+    int idPersonaje;
     char nombre[15];                             /**Nombre que elegió el jugador*/
     char genero[15];                             /**Elegido por el jugador**/
     char tipoClase[15];                              /**guerrero, mago**/
@@ -45,8 +43,7 @@ typedef struct
     stInventario inv;
     int hp;
     int mp;
-
-} stPersonaje;
+}stPersonaje;
 
 typedef struct /** IN PROGREZ*/
 {
@@ -82,9 +79,7 @@ int main()
     }
 
     srand(time(NULL));
-
-
-
+    
     inicioDePersonaje(save);
 
     mostrarPersonaje(save);
