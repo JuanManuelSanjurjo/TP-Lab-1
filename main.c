@@ -19,7 +19,7 @@ typedef struct
     int destreza;
     int magia;
     int defensa;
-}stAtributos ;
+} stAtributos ;
 
 typedef struct
 {
@@ -29,7 +29,7 @@ typedef struct
     int pocionesmp;
     char arma[20];
     char escudo[20];
-}stInventario;
+} stInventario;
 
 typedef struct
 {
@@ -43,16 +43,16 @@ typedef struct
     stInventario inv;
     int hp;
     int mp;
-}stPersonaje;
+} stPersonaje;
 
 typedef struct /** IN PROGREZ*/
 {
-    int idMarcador;  
+    int idMarcador;
     int idPersonaje;
-    int Puntaje; 
+    int Puntaje;
     int nivelMaximo;
     int tiempoJuego;
-}stMarcador;
+} stMarcador;
 
 /**prototipados*/
 void Tienda(stPersonaje *player);
@@ -72,37 +72,59 @@ int main()
     FILE * archi=NULL;
     char save []= {"save.dat"};
 
-    if(fopen(save,"rb")==NULL)
-    {
-        archi=fopen(save,"wb");
-        fclose(archi);
-    }
+//    if(fopen(save,"rb")==NULL)
+//    {
+//
+//    }
 
     srand(time(NULL));
-    
-    inicioDePersonaje(save);
 
-    mostrarPersonaje(save);
+    archi=fopen(save,"r+b");
+
+
+
+    stPersonaje jugador;
+
+    fread(&jugador,sizeof(stPersonaje),1,archi);
+
+    mostrarPersonaje2(jugador);
+
+    ///inicioDePersonaje(save);
+    funcionDeCombatesPorNivel(&jugador);
+
+    mostrarPersonaje2(jugador);
+
+
+    //mostrarPersonaje2(jugador);
+
+    //cicloDePelea(&jugador,100,5,"carlos");
+
+    //inicioDePersonaje(save);
+
+    //mostrarPersonaje(save);
 
     /*prueba de función tienda*/
 
-
+    fclose(archi);
     return 0;
 }
 
-void inicioDePersonaje (char save [],int idjug)
+void inicioDePersonaje (char save [])
 {
     FILE * archi=fopen(save,"ab");
 
     if (archi!=NULL)
     {
+
+        int idjug=0;
+        idjug++;
         stPersonaje per;
         int tipo=0;
 
         printf("\nIngrese su nombre\n");
         fflush(stdin);
         gets(per.nombre);
-        
+
         printf("Indica el genero con el cual te identificas\n");
         fflush(stdin);
         gets(per.genero);
@@ -111,8 +133,8 @@ void inicioDePersonaje (char save [],int idjug)
 
         tipo=obtenerClase(per.tipoClase);
 
-        per.nivelDeJuego=0;
-        per.id=idjug;
+        per.nivelDeJuego=1;
+        per.idPersonaje=idjug;
 
         switch (tipo)
         {
@@ -765,173 +787,177 @@ void nuevaPartida (char archivo [])
 }
 
 
-/*void crearPersonajeNuevo ()
-{
-    printf("%cDesea crear un personaje nuevo?",168)
 
-
-
-
-
-
-
-
-
-}*/
-
-/*void funcionDeCombatesPorNivel ()
+void funcionDeCombatesPorNivel (stPersonaje * personaje)
 {
     stPersonaje aux;
+    char continuar='s';
+    int pasaNivel=0;
 
+    int nivel=personaje->nivelDeJuego;
+
+    printf("BIENVENIDO AL COMBATE\n");
+
+    printf("%d\n",nivel);
 
     do
     {
 
+        switch (nivel)
+        {
+        case 1:
+            ///Nivel 1, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            printf("llegue\n");
+            subeAtributos(&personaje,5);
 
+            break;
+        case 2:
+            ///Nivel 2, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Pelado");
+            subeAtributos(&personaje,5);
 
-    switch (aux.nivelDeJuego)
-    {
-    case 1:
-        ///Nivel 1, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
-    case 2:
-        ///Nivel 2, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
-    case 3:
-        ///Nivel 3, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+            break;
+        case 3:
+            ///Nivel 3, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 4:
-        ///Nivel 4, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 4:
+            ///Nivel 4, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 5:
-        ///Nivel 5, batalla con primer jefe
-        ///funcion de primer jefe
-        break;
+        case 5:
+            ///Nivel 5, batalla con primer jefe
+            ///funcion de primer jefe
+            break;
 
-    case 6:
-        ///Nivel 6, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 6:
+            ///Nivel 6, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 7:
-        ///Nivel 7, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 7:
+            ///Nivel 7, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 8:
-        ///Nivel 8, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 8:
+            ///Nivel 8, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 9:
-        ///Nivel 9, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 9:
+            ///Nivel 9, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 10:
-        ///Nivel 10, batalla con segundo jefe
-        ///funcion de segundo jefe
-        break;
+        case 10:
+            ///Nivel 10, batalla con segundo jefe
+            ///funcion de segundo jefe
+            break;
 
-    case 11:
-        ///Nivel 11, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 11:
+            ///Nivel 11, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 12:
-        ///Nivel 12, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 12:
+            ///Nivel 12, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 13:
-        ///Nivel 13, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 13:
+            ///Nivel 13, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 14:
-        ///Nivel 14, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 14:
+            ///Nivel 14, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 15:
-        ///Nivel 15, batalla con tercer jefe
-        ///funcion de tercer jefe
-        break;
+        case 15:
+            ///Nivel 15, batalla con tercer jefe
+            ///Funcion de tercer jefe
+            break;
 
-    case 16:
-        ///Nivel 16, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 16:
+            ///Nivel 16, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 17:
-        ///Nivel 17, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 17:
+            ///Nivel 17, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 18:
-        ///Nivel 18, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 18:
+            ///Nivel 18, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 19:
-        ///Nivel 19, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 19:
+            ///Nivel 19, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 20:
-        ///Nivel 20, batalla con cuarto jefe
-        ///funcion de cuarto jefe
-        break;
+        case 20:
+            ///Nivel 20, batalla con cuarto jefe
+            ///funcion de cuarto jefe
+            break;
 
-    case 21:
-        ///Nivel 21, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 21:
+            ///Nivel 21, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 22:
-        ///Nivel 22, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 22:
+            ///Nivel 22, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 23:
-        ///Nivel 23, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 23:
+            ///Nivel 23, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 24:
-        ///Nivel 24, batalla con moustruo basico
-        ///funcion de mounstruo basico
-        break;
+        case 24:
+            ///Nivel 24, batalla con moustruo basico
+            pasaNivel=cicloDePelea(&personaje,100,10,"Carlos");
+            subeAtributos(&personaje,5);
+            break;
 
-    case 25:
-        ///Nivel 25, batalla con jefe final
-        ///funcion de jefe final
-        break;
+        case 25:
+            ///Nivel 25, batalla con jefe final
+            ///funcion de jefe final
+            break;
 
+        }
+        printf("%cDesea continuar con el siguiente nivel?\ts/n\n",168);
+        fflush(stdin);
+        scanf("%c",&continuar);
 
-
-
-
-
-
-
-    }///while((continuar=='s')&&(aux.nivel<25)&&(aux.hp>0));
-
-
-
-
-
-
-
-
-    }*/
-
+    }while((continuar=='s')&&(personaje->hp>0));
+}
 
 
 
@@ -945,23 +971,37 @@ void nuevaPartida (char archivo [])
 
 int cicloDePelea (stPersonaje * aux,int hpMonstruo,int danoMon,char nombreM [])
 {
+
     int opc=0;
     int pasaNivel=0;
+    int ataqBasic=0;
+    int ataqCarg=0;
+
+    printf("te encontraste con %s\n",nombreM);
+
     do
     {
-        printf("te encontraste con %s",nombreM);
+
+        printf("VIDA Heroe %d\n",aux->hp);
+        printf("Vida %s %d\n",nombreM,hpMonstruo);
+
+
         scanf("%d",&opc);
+
         switch(opc)
         {
         case 1:
             ///ataque normal
-            hpMonstruo=hpMonstruo-ataqueBasico(aux);
-
+            ataqBasic=ataqueBasico(*aux);
+            hpMonstruo=hpMonstruo-ataqBasic;
+            printf("ataque basico: %d\n",ataqBasic);
             break;
 
         case 2:
             ///ataque especial
-            hpMonstruo=hpMonstruo-ataqueCargado(aux);
+            ataqCarg=ataqueCargado(*aux);
+            hpMonstruo=hpMonstruo-ataqCarg;
+            printf("Ataque Cargado: %d\n",ataqCarg);
             aux->mp=aux->mp-10;
             break;
 
@@ -981,7 +1021,8 @@ int cicloDePelea (stPersonaje * aux,int hpMonstruo,int danoMon,char nombreM [])
 
 
 
-    }while ((aux->hp>0)&&(hpMonstruo>0));
+    }
+    while((aux->hp>0)&&(hpMonstruo>0));
 
     if(hpMonstruo<=0)
     {
@@ -995,10 +1036,48 @@ int cicloDePelea (stPersonaje * aux,int hpMonstruo,int danoMon,char nombreM [])
 void subeAtributos (stPersonaje * aux, int atrib)
 {
 
-    ///Se modifican parajo todos los atributos de acuerdo al nivel
+    ///No lo suma por algun motivo
 
+    int opc=aux->clase;
 
+    printf("clase %d",opc);
 
+    ///Definir que atributos mejorara
+
+    switch (opc)
+    {
+    case 1:
+        aux->atribPersonaje.destreza=aux->atribPersonaje.destreza+ 5; ///rand()%5+atrib
+        aux->atribPersonaje.fuerza=aux->atribPersonaje.fuerza+rand()%10+atrib;
+        aux->atribPersonaje.inteligencia=aux->atribPersonaje.inteligencia+rand()%5+atrib;
+        aux->atribPersonaje.magia=aux->atribPersonaje.magia+rand()%5+atrib;
+        aux->atribPersonaje.defensa=aux->atribPersonaje.defensa+rand()%10+atrib;
+        break;
+
+    case 2:
+        aux->atribPersonaje.destreza=aux->atribPersonaje.destreza+rand()%5+atrib;
+        aux->atribPersonaje.fuerza=aux->atribPersonaje.fuerza+rand()%5+atrib;
+        aux->atribPersonaje.inteligencia=aux->atribPersonaje.inteligencia+rand()%10+atrib;
+        aux->atribPersonaje.magia=aux->atribPersonaje.magia+rand()%10+atrib;
+        aux->atribPersonaje.defensa=aux->atribPersonaje.defensa+rand()%5+atrib;
+        break;
+
+    case 3:
+        aux->atribPersonaje.destreza=aux->atribPersonaje.destreza+rand()%10+atrib;
+        aux->atribPersonaje.fuerza=aux->atribPersonaje.fuerza+rand()%10+atrib;
+        aux->atribPersonaje.inteligencia=aux->atribPersonaje.inteligencia+rand()%10+atrib;
+        aux->atribPersonaje.magia=aux->atribPersonaje.magia+rand()%5+atrib;
+        aux->atribPersonaje.defensa=aux->atribPersonaje.defensa+atrib;
+        break;
+
+    case 4:
+        aux->atribPersonaje.destreza=aux->atribPersonaje.destreza+rand()%5+atrib;
+        aux->atribPersonaje.fuerza=aux->atribPersonaje.fuerza+rand()%5+atrib;
+        aux->atribPersonaje.inteligencia=aux->atribPersonaje.inteligencia+rand()%10+atrib;
+        aux->atribPersonaje.magia=aux->atribPersonaje.magia+rand()%10+atrib;
+        aux->atribPersonaje.defensa=aux->atribPersonaje.defensa+rand()%5+atrib;
+        break;
+    }
 
 }
 
@@ -1059,3 +1138,33 @@ int ataqueCargado(stPersonaje aux)
     return ataque2;
 
 }
+
+void mostrarPersonaje2 (stPersonaje aux)
+{
+
+    printf("\n----------------------------------------------------------\n");
+    printf("\nDatos del jugador");
+    printf("\nNombre:..............:%s",aux.nombre);
+    printf("\nGenero:..............:%s",aux.genero);
+    printf("\nMana:................:%d",aux.mp);
+    printf("\nVida:................:%d",aux.hp);
+    printf("\nNivel Actual:........:%d",aux.nivelDeJuego);
+    printf("\n----------------------------------------------------------");
+    printf("\nAtributos del jugador");
+    printf("\nFuerza:..............:[%d]",aux.atribPersonaje.fuerza);
+    printf("\nMagia:...............:[%d]",aux.atribPersonaje.magia);
+    printf("\nDefensa:.............:[%d]",aux.atribPersonaje.defensa);
+    printf("\nDestreza:............:[%d]",aux.atribPersonaje.destreza);
+    printf("\nInteligencia:........:[%d]",aux.atribPersonaje.inteligencia);
+    printf("\n----------------------------------------------------------");
+    printf("\nInventario del jugador");
+    printf("\nArma:................:[%s]",aux.inv.arma);
+    printf("\nDinero:..............:[%d]",aux.inv.dinero);
+    printf("\nPociones de vida:....:[%d]",aux.inv.pocioneshp);
+    printf("\nPociones de mana:....:[%d]",aux.inv.pocionesmp);
+    printf("\nEscudo:..............:[%s]",aux.inv.escudo);
+    printf("\n----------------------------------------------------------\n");
+
+
+}
+

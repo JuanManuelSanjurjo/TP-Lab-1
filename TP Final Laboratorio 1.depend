@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1623004325 source:c:\users\mariano\documents\github\tp-lab-1\main.c
+1623618668 source:c:\users\mariano\documents\github\tp-lab-1\main.c
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
