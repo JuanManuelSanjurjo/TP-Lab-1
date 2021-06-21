@@ -1,7 +1,10 @@
 #include <stdlib.h>
+#include <conio.h>
+#include <stdio.h>
 #include <time.h>
 #include <windows.h>
 #include <string.h>
+#include "gotoxy.h"
 /**para tienda*/
 #define PRECIOHP 20
 #define PRECIOMP 20
@@ -75,6 +78,26 @@ typedef struct
 const int DIM = sizeof(stPersonaje); /** para las funciones de archivo**/
 const int DIMG = sizeof(stGuardado); /** para las funciones de archivo **/
 const int DIMMAR = sizeof(stMarcador); /**para las funciones de archivo**/
+
+/// constantes visuales
+const int continuarX=135;
+const int linea1=46;
+const int linea2=47;
+const int linea3=48;
+
+/// VISULAES
+void fadeIN(char frase[],int x,int y);
+void continuar();
+int acertijoEsfigie();
+int validacionYresultado (int opcion,int correcta);
+void fadeOUT(char frase[],int x,int y);
+void fadeInOut (char frase[],int x,int y);
+void cascadaTexto(char texto[], int x,int y);
+void limpiaLinea (int x, int y);
+void pantallaInicio();
+void fadeINPantalla(char frase[]);
+void golpe();
+
 
 /**tienda*/
 void Tienda(stPersonaje *player);
@@ -1878,4 +1901,307 @@ void MostrarMenuTienda(char p[][30],int a[])
     }
     printf(" %s\n",p[i]);
 }
+
+/// FUNCIONES VISULAES
+
+/** \brief secuencia de acertijo esfige
+ * \return devuelve pasaSinPelear 1 o 0
+ */
+int acertijoEsfigie (){
+    int opRand=1;
+    int opcion;
+    int pasaSinPelear=0;
+
+    opRand=rand()%6;
+    fadeInOut("\nTe he de presentar un acertijo para probar tu valia!",0,4);
+    fadeInOut("\nSi eres digno y eliges correctamente de las opciones que te ofrecere, te dejare pasar",0,5);
+    fadeInOut("\nDecide con cuidado...\n",0,6);
+
+    switch(opRand){
+        case 1:
+            _sleep(500);
+            printf("\nCual es la criatura que en la maniana camina en cuatro patas, al medio dia en dos y en la noche en tres? ");
+            _sleep(1000);
+            printf("\n 1. m-r-b-e-h-o hombre    2. g-t-t-r-o-u-a tortuga     3. o-m-o-n mono\n");
+            scanf("%d",&opcion);
+            pasaSinPelear=validacionYresultado(opcion,1);
+            break;
+        case 2:
+            _sleep(500);
+            printf("\nDe noche llegan y no las llamaron. De dia no estan, pero no las robaron ");
+            _sleep(1000);
+            printf("\n 1. c-h-a-z-e-l-u Lechuzas     2. e-l-l-t-s-a-e-r-s Estrellas    3. n-u-l-a Luna\n");
+            scanf("%d",&opcion);
+            pasaSinPelear=validacionYresultado(opcion,2);
+            break;
+        case 3:
+            _sleep(500);
+            printf("\nPequenio como un pulgar, en el aire soy ligero. Si no me has visto ya, descuida, porque me escucharas primero.");
+            _sleep(1000);
+            printf("\n 1. j-o-s-a-h hojas     2. b-j-a-e-a abeja    3. l-i-o-c-r-i-b Colibri\n");
+            scanf("%d",&opcion);
+            pasaSinPelear=validacionYresultado(opcion,3);
+            break;
+        case 4:
+            _sleep(500);
+            printf("\nIncansable y sin fatiga, va de colina en colina. Y aunque ni anda ni corre con piernas, solo hay frio tras su huida.");
+            _sleep(1000);
+            printf("\n 1. e-l-l-t-s-a-e-r Estrella     2. l-o-s Sol    3. b-r-a-c-a Cabra\n");
+            scanf("%d",&opcion);
+            pasaSinPelear=validacionYresultado(opcion,2);
+            break;
+        case 5:
+            _sleep(500);
+            printf("\nQue nace, pero nunca llora, que discurre sin andar, desemboca sin hablar, que tiene lecho mas nunca reposa?");
+            _sleep(1000);
+            printf("\n 1. b-r-o-l-a Arbol     2. o-g-l-a Lago    3. o-r-i Rio\n");
+            scanf("%d",&opcion);
+            pasaSinPelear=validacionYresultado(opcion,3);
+            break;
+        case 6:
+            _sleep(500);
+            printf("\nQué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?");
+            _sleep(1000);
+            printf("\n 1. n-u-l-a Luna     2. p-e-z-a-e-r-n-s-a Esperanza    3. o-c-p-a Copa\n");
+            scanf("%d",&opcion);
+            pasaSinPelear=validacionYresultado(opcion,1);
+            break;
+        default:
+            _sleep(500);
+            printf("\nCual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ");
+            _sleep(200);
+            printf("\n 1. m-r-b-e-h-o hombre    2. g-t-t-r-o-u-a tortuga     3. o-m-o-n mono\n");
+            scanf("%d",&opcion);
+            pasaSinPelear=validacionYresultado(opcion,1);
+    }
+
+    return pasaSinPelear;
+}
+
+/** \brief  valida entrada de 1 a 3
+ *          devueve a secuencia o muestra resultado
+ * \param   opcion elegida
+ * \param   opcion correcta
+ * \return resultado 1 o 0
+ */
+int validacionYresultado (int opcion,int correcta){
+    int resultado=0;
+
+    while(opcion>3 || opcion<1){
+        printf("\No te he dado esa opcion, te dare otra oportunidad\n");
+        printf("\n Opcion 1.    Opcion 2.     Opcion 3.\n");
+        scanf("%d",&opcion);
+        }
+    if (opcion==correcta){
+        limpiaLinea(0,linea1);
+        cascadaTexto("Has acertado! y por eso te has ganado mi favor...>",0,linea1);
+        cascadaTexto("te dejare pasar>",0,linea2);
+        cascadaTexto("Pero no creas que tu camino seguira siendo tan amable.>",0,linea3);
+        resultado=1;
+    } else{
+        limpiaLinea(0,linea1);
+        cascadaTexto("Dicen que la ignorancia es una bendicion...>",0,linea1);
+        cascadaTexto("aunque a un alto costo...>",0,linea2);
+        cascadaTexto("y por eso lo pagaras con tu vida!>",0,linea3);
+
+    }
+    return resultado;
+}
+
+/** \brief Espera un input para continuar */
+void continuar(){
+    int i=0;
+    int x=continuarX;
+    int y=linea1;
+    int col[]={8,7,15,7,8,0};
+    do{
+        hidecursor(0);
+        gotoxy(x,y);
+        color(col[i]);
+        printf("Continuar");
+        _sleep(100);
+        i++;
+        if(i>5){
+            i=0;
+        }
+    }while(!kbhit());
+    getch();
+    gotoxy(x,y);
+    printf("          ");
+    color(7);
+}
+/** \brief Limpia las 3 linea con espacios
+ * \param x: deberia ir '0' por defecto
+ * \param y: 'linea1' por defecto.
+ */
+void limpiaLinea (int x, int y){
+    gotoxy(x,y);
+    printf("                                                                                            ");
+    gotoxy(x,y+1);
+    printf("                                                                                            ");
+    gotoxy(x,y+2);
+    printf("                                                                                            ");
+    color(7);
+}
+/** \brief fade IN de texto, texto queda, NO se borra
+ * \param frase[] char TEXTO a presentar
+ * \param x int        Eje X
+ * \param y int        Eje Y
+ */
+void fadeIN(char frase[],int x,int y){
+    int i=0;
+    int col[]={0,8,7,15,7};
+
+    hidecursor(0);
+    while(i<5){
+        color(col[i]);
+        gotoxy(x,y);
+        printf("%s",frase);
+        _sleep(150);
+        i++;
+    }
+    hidecursor(1);
+}
+/** \brief fade OUT y regresa color normal de texto
+ * \param frase[] char Texto MISMO que en fadeIN
+ * \param x int        Eje X MISMO que en fadeIN
+ * \param y int        Eje Y MISMO que en fadeIN
+ */
+void fadeOUT(char frase[],int x,int y){
+    int i=0;
+    int col[]={15,7,8,0};
+
+    hidecursor(0);
+    while(i<4){
+        color(col[i]);
+        gotoxy(x,y);
+        printf("%s",frase);
+        _sleep(150);
+        i++;
+    }
+    hidecursor(1);
+    color(7);
+}
+/** \brief Presenta texto en fade in, espera un input, fade out
+ * \param  eje X: deberia ser '0' por defecto
+ * \param  eje y: Numero de linea donde imprimir
+ */
+void fadeInOut (char frase[],int x,int y){
+    fadeIN(frase,x,y);
+    if(getch())
+        fadeOUT(frase,x,y);
+}
+
+/** \brief Imprime caracteres por uno en cascada.
+ *          cuando encuentra el '/0' corta el ciclo
+ * \param texto[] char: Cadena de texto a mostrar
+ * \param x int:        eje X siempre ira '0' salvo que se quiera alinear al centro
+ * \param y int:        ira linea1,linea2,linea3 o cualquier linea del eje Y para imprimir
+ */
+void cascadaTexto(char texto[], int x,int y){
+    int i=0;
+    int flag=0;
+
+    gotoxy(x,y);
+    while((texto[i]!= '\0' &&flag==0)){
+        color(15);
+        printf("%c",texto[i]);
+        _sleep(70);
+        gotoxy(whereX()-1,y);
+        color(7);
+        printf("%c",texto[i]);
+        i++;
+        if(kbhit()){
+            getch();
+            gotoxy(x,y);
+            printf("%s",texto);
+            flag=1;
+        }
+    }
+    if(getch);
+}
+
+/** \brief Presenta pantalla de inicio hacia el menu */
+void pantallaInicio (){
+    int i=0;
+    hidecursor(0);
+    while(i<1){
+        system("COLOR 07");
+        _sleep(50);
+        system("COLOR 87");
+        _sleep(50);
+        system("COLOR 77");
+        _sleep(50);
+        system("COLOR F7");
+        _sleep(50);
+        system("COLOR 77");
+        _sleep(50);
+        system("COLOR 87");
+        _sleep(50);
+        system("COLOR 07");
+        i++;
+    }
+    Sleep(1000);
+    cascadaTexto("LA LEYENDA DE C >",65,23);
+    Sleep(1000);
+    continuar();
+    fadeOUT("LA LEYENDA DE C >",65,23);
+    system("cls");
+    Sleep(500);
+    fadeInOut("\nBlanco Santiago\nFernandez Mariano\nOcampo Lautaro\nSanjurjo Juan Manuel",5,35);
+    system("cls");
+}
+
+void fadeINPantalla(char frase[]){
+    int i=0;
+    //"COLOR 00","COLOR 08","COLOR 07"};
+
+    hidecursor(0);
+    //while(i<3){
+        system("COLOR 00");
+        printf("%s",frase);
+        _sleep(150);
+        system("COLOR 08");
+        printf("%s",frase);
+        _sleep(150);
+        system("COLOR 07");
+        printf("%s",frase);
+        _sleep(150);
+
+//        i++;
+//    }
+    hidecursor(1);
+}
+
+/** \brief visual golpe con tono a 90hz*/
+void golpe(){
+    int i=0;
+    while(i<2){
+        system("COLOR F4");
+        _sleep(50);
+        system("COLOR 07");
+        _sleep(50);
+        i++;
+    }
+    Beep(90,500);
+    system("COLOR 07");
+}
+/*
+0 = Black
+1 = Blue
+2 = Green
+3 = Aqua
+4 = Red
+5 = Purple
+6 = Yellow
+7 = White
+8 = Gray
+9 = Light Blue
+A = Light Green
+B = Light Aqua
+C = Light Red
+D = Light Purple
+E = Light Yellow
+F = Bright White
+*/
 
