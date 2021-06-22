@@ -2237,3 +2237,115 @@ E = Light Yellow
 F = Bright White
 */
 
+int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
+{
+    int opc=0;
+    int pasaNivel=0;
+    int golpePj = 0;
+    int golpeMon = 0;
+
+    printf("*BATALLA*\n");
+    printf("Te encuentras con %s\n",nombreMon);
+    printf("El cual es un zorro muy conocido de la mitologia japonesa\n");
+    printf("No te la hara nada sencillo de ganarle, tienes la posibilidad de golperlo dos veces en cada turno, pero no por eso sera mas facil\n");
+    printf("El da%co que te hara sera brutal pero podras resistirlo si estas preparado para el desafio\n",164);
+    printf("Ten en cuenta las pociones de vida y la cantidad de vida y mana en todo momento\n",164);
+    printf("Su hp es de: %i\n",hpMon);
+    printf("Su ataque es de: %i\n\n",danoMon);
+
+    do
+    {
+        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
+        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+        scanf("%d",&opc);
+        switch(opc)
+        {
+        case 1:
+            ///ataque normal
+            printf("%s le hace un ataque normal a %s ",aux->nombre,nombreMon);
+            golpePj = AtaqueBasico(aux);
+            printf("y le infringe un golpe de %i\n",golpePj);
+            hpMon = hpMon - golpePj;
+            break;
+        case 2:
+            ///ataque especial
+            printf("Ataque cargado...\n");
+            golpePj = AtaqueCargado(aux);
+            printf("tu golpe es de %i\n",golpePj);
+            hpMon = hpMon - golpePj;
+            aux->mp = aux-> mp-10;
+            break;
+        case 3:
+            ///pocion de vida
+            printf("Tomas una pocion HP...\n");
+            aux->hp = aux->hp + 25;
+            aux->inv.pocioneshp = aux->inv.pocioneshp - 1;
+            break;
+        case 4:
+            ///pocion de mana
+            printf("Tomas una pocion MP...\n");
+            aux->mp= aux->mp+ 25;
+            aux->inv.pocionesmp = aux->inv.pocionesmp - 1;
+            break;
+        }
+
+        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
+        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+        scanf("%d",&opc);
+        switch(opc)
+        {
+        case 1:
+            ///ataque normal
+            printf("%s le hace un ataque normal a %s ",aux->nombre,nombreMon);
+            golpePj = AtaqueBasico(aux);
+            printf("y le infringe un golpe de %i\n",golpePj);
+            hpMon = hpMon - golpePj;
+            break;
+        case 2:
+            ///ataque especial
+            printf("Ataque cargado...\n");
+            golpePj = AtaqueCargado(aux);
+            printf("tu golpe es de %i\n",golpePj);
+            hpMon = hpMon - golpePj;
+            aux->mp = aux-> mp-10;
+            break;
+        case 3:
+            ///pocion de vida
+            printf("Tomas una pocion HP...\n");
+            aux->hp = aux->hp + 25;
+            aux->inv.pocioneshp = aux->inv.pocioneshp - 1;
+            break;
+        case 4:
+            ///pocion de mana
+            printf("Tomas una pocion MP...\n");
+            aux->mp= aux->mp+ 25;
+            aux->inv.pocionesmp = aux->inv.pocionesmp - 1;
+            break;
+        }
+
+        ///turno del monstruo
+
+        printf("%s ataca a %s ",nombreMon,aux->nombre);
+        golpeMon = (rand()%7 + danoMon)-aux->atribPersonaje.defensa;
+        aux->hp = aux->hp - golpeMon;
+        printf("y le infringe un golpe de %i\n",golpeMon);
+
+        PausaLimpia();
+
+    }
+    while ( (aux->hp > 0) && ( hpMon > 0 ));
+
+    if(hpMon <= 0)
+    {
+        printf("Has derrotado a %s\n",nombreMon);
+        pasaNivel = 1;
+    }
+    else
+    {
+        printf("Has perdido!\n");
+        pasaNivel = 0;
+    }
+
+
+    return pasaNivel;
+}
