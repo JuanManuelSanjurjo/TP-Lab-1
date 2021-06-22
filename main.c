@@ -167,7 +167,7 @@ int main()
     SetConsoleTitle("THE LEYEND OF C");
     srand(time(NULL));
     system("mode 150, 50");
-    pantallaInicio();
+    //pantallaInicio();
 
     stPersonaje partida; /**estructura de la partida: se modifica segun la save o se crea
     una nueva si no hay save anterior*/
@@ -1001,7 +1001,7 @@ int CicloPelea(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
         printf("Has perdido!\n");
         pasaNivel = 0;
     }
-
+    continuar();
 
     return pasaNivel;
 }
