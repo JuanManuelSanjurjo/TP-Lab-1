@@ -33,7 +33,6 @@ typedef struct
 
 typedef struct
 {
-    int idInventario;
     int dinero;
     int pocioneshp;
     int pocionesmp;
@@ -54,7 +53,6 @@ typedef struct
     int hp;
     int mp;
     int validez; /**variable flag por si se desea eliminar un registro, no se va a mostrar*/
-
 } stPersonaje;
 
 typedef struct
@@ -63,12 +61,10 @@ typedef struct
     char clase[15];
     int nivelMaximo;
     stInventario invMarcador;
-
 } stMarcador;
 
 /**Constantes tamaño de estructuras**/
 const int DIM = sizeof(stPersonaje); /** para las funciones de archivo**/
-const int DIMG = sizeof(stGuardado); /** para las funciones de archivo **/
 const int DIMMAR = sizeof(stMarcador); /**para las funciones de archivo**/
 
 /// constantes visuales
@@ -78,18 +74,18 @@ const int linea2=47;
 const int linea3=48;
 
 /// VISULAES
-void fadeIN(char frase[],int x,int y);
-void fadeINTimed(char frase[],int x,int y, int time);
-void continuar();
-int acertijoEsfigie();
-int validacionYresultado (int opcion,int correcta);
-void fadeOUT(char frase[],int x,int y);
-void fadeInOut (char frase[],int x,int y);
-void cascadaTexto(char texto[], int x,int y);
-void limpiaLinea (int x, int y);
-void pantallaInicio();
-void fadeINPantalla(char frase[],int x, int y);
-void golpe();
+//void fadeIN(char frase[],int x,int y);
+//void fadeINTimed(char frase[],int x,int y, int time);
+//void continuar();
+//int acertijoEsfigie();
+//int validacionYresultado (int opcion,int correcta);
+//void fadeOUT(char frase[],int x,int y);
+//void fadeInOut (char frase[],int x,int y);
+//void cascadaTexto(char texto[], int x,int y);
+//void limpiaLinea (int x, int y);
+//void pantallaInicio();
+//void fadeINPantalla(char frase[],int x, int y);
+//void golpe();
 
 
 /**tienda*/
@@ -118,9 +114,8 @@ void AtributosAsesino(stAtributos *aux);
 /**cargar juego**/
 void CargaJuego(); /**incluye cargar personaje ya creado desde el archivo**/
 void MuestraArchivoSave(); /**Muestra todo el archivo save para ver los registros (partidas)*/
-void MuestraUnaPartida(stGuardado aux); /**Muestra las partidas, una parte de stPersonaje*/
-void CargaDePersonaje(stPersonaje *player,int registroPartida); /**carga un registro para copiar a stPersonaje*/
-stPersonaje CargarDatos(stGuardado aux);
+void MuestraUnaPartida(stPersonaje player); /**Muestra las partidas, una parte de stPersonaje*/
+stPersonaje CargaDePersonaje(int registroPartida); /**carga un registro para copiar a stPersonaje*/
 void MuestraArchivoMarcadores(); /**abre el archivo y muestra una tabla de posiciones**/
 void MuestraUnMarcador(stMarcador aux);
 /**juego**/
@@ -128,10 +123,10 @@ void GuardarProgreso(stPersonaje *player); /**guarda progreso en el archivo*/
 int CuentaRegistros(); /**para guardar la partida**/
 void CrearNuevoSlot(stPersonaje * player); /**para guardar la partida*/
 void GuardarSiguienteSlot(stPersonaje *player); /**para guardar la partida*/
-stGuardado EscribirDatos(stPersonaje *player); /**para guardar la partida*/
 int Jugar(stPersonaje *player); /**va a ser llamada ya por NuevoJuego o CargarJuego, contiene todos los
 niveles, la tienda y todo el gameplay. Devuelve flag para saber si sigue jugando o murio*/
 int CicloPelea(stPersonaje *aux, int hpMon, int danoMon, char nombreMon[]);
+int cicloPeleaBossN(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[]);
 void RecompensaPelea(stPersonaje *aux, int mejoraAtrib, int dinero); /**sube atrib y el dinero*/
 /**niveles del juego**/
 int Nivel1(stPersonaje *player);
@@ -151,14 +146,16 @@ int AtaqueBicho4(stPersonaje *aux,int danoMon);
 void PausaLimpia();
 /**Historia del juego**/
 void Introduccion();
-/**para hacer*/
 /**marcadores*/
+void mostrarMarcadores();
+void mostrarUnMarcador(stMarcador aux);
+void guardarEnArchivoMarcadores(stPersonaje *aux);
 
 int main()
 {
     SetConsoleTitle("THE LEYEND OF C");
     srand(time(NULL));
-    system("mode 150, 50");
+    system("mode 130, 50");
     //pantallaInicio();
 
     stPersonaje partida; /**estructura de la partida: se modifica segun la save o se crea
@@ -186,7 +183,7 @@ int main()
         CargaJuego(&partida);
         break;
     case 3:
-        MuestraArchivoMarcadores();
+        mostrarMarcadores();
         break;
     case 4:
         break;
@@ -225,8 +222,6 @@ void InicioDePersonaje(stPersonaje *player)
         player->clase = obtenerClase(player->tipoClase);
 
         player->nivelDeJuego = 1;
-        player->idPersonaje = 1;
-        player->idMarcador = 1;
 
         switch (player->clase)
         {
@@ -875,8 +870,6 @@ int CompraDaga(stPersonaje *player, int dagacant)
 void MostrarPersonaje(stPersonaje *player)
 {
 
-    fadeINTimed("\n----------------------------------------------------------",0,7,50);
-    fadeINTimed("\nDatos del jugador",0,whereY(),50);
     printf("\nNombre:..............:\t\t%s",player->nombre);
     printf("\nGenero:..............:\t\t%s",player->genero);
     printf("\nClase:...............:\t\t%s",player->tipoClase);
@@ -1072,7 +1065,7 @@ void NuevoJuego(stPersonaje *player)
 
     //PausaLimpia();
 
-    Introduccion(player->nombre,player->tipoClase); /**te muestra la introduccion de la historia**/
+    Introduccion(); /**te muestra la introduccion de la historia**/
     continuar();
     system("cls");
 
@@ -1094,9 +1087,9 @@ void NuevoJuego(stPersonaje *player)
 
         GuardarProgreso(player); /**escribe en el archivo**/
 
-        /*printf("SE GUARDO EL PROGRESO, SE ESCRIBE EN MARCADORES.\n");
+        printf("SE GUARDO EL PROGRESO, SE ESCRIBE EN MARCADORES.\n");
 
-        *GuardarMarcadores(&player);*/
+        guardarEnArchivoMarcadores(player);
     }
     else
     {
@@ -1134,7 +1127,6 @@ int Jugar(stPersonaje *player)
     fadeIN("Empiezas desde el nivel : ",0,whereY()+1);
     gotoxy(whereX(),whereY());
     printf("%i\n",player->nivelDeJuego);
-
 
     while(flagGame == 1)
     {
@@ -1261,6 +1253,7 @@ int Jugar(stPersonaje *player)
         }
 
         flagGame = 0;
+
     }
 
     return flagGame;
@@ -1415,18 +1408,15 @@ void CargaJuego(stPersonaje*player)
     char decisionguarda = 0;
     int opcionpartida = 0;
 
-    printf("Contenidos del archivo SAVE.\n");
     MuestraArchivoSave();
 
     printf("Selecciona la partida para cargar.\n");
     scanf("%i",&opcionpartida);
-    CargaDePersonaje(player,opcionpartida);
-
-    printf("TRAS LA LECTURA DEL ARCHIVO, ESTE ES TU PERSONAJE.\n");
+    *player = CargaDePersonaje(opcionpartida);
 
     MostrarPersonaje(player);
 
-    //PausaLimpia();
+    PausaLimpia();
 
     do
     {
@@ -1444,11 +1434,11 @@ void CargaJuego(stPersonaje*player)
     {
         printf("*SE GUARDARA TU PROGRESO EN EL ARCHIVO\n");
 
-        GuardarProgreso(player); /**escribe en el archivo**/
+        GuardarProgreso(&player); /**escribe en el archivo**/
 
-        /*printf("SE GUARDO EL PROGRESO, SE ESCRIBE EN MARCADORES.\n");
+        printf("SE GUARDO EL PROGRESO, SE ESCRIBE EN MARCADORES...\n");
 
-        *GuardarMarcadores(&player);*/
+        guardarEnArchivoMarcadores(&player);
     }
     else
     {
@@ -1459,17 +1449,60 @@ void CargaJuego(stPersonaje*player)
 void MuestraArchivoSave()
 {
     FILE* pfile = NULL;
-    stGuardado aux;
+    stPersonaje aux;
     int cerroarchivo = 0;
+    int opc = 0;
+    char nombreBuscar[15];
     pfile = fopen(SAVE,"rb");
+    char opcion = 0;
+    int i = 1;
 
     if(pfile!=NULL)
     {
         rewind(pfile);
 
-        while(fread(&aux,DIMG,1,pfile) > 0  )
+        printf("1:\tMostrar todas las partidas\n2:\tBuscar por nombre\n");
+        scanf("%i", &opc);
+        system("cls");
+
+        switch(opc)
         {
-            MuestraUnaPartida(aux);
+        case 1:
+
+            rewind(pfile);
+
+            while(fread(&aux,DIM,1,pfile) > 0  )
+            {
+                printf("%i:\n",i);
+                MuestraUnaPartida(aux);
+            }
+            break;
+
+        case 2:
+
+            do
+            {
+                printf("Introduzca su nombre:\n");
+                fflush(stdin);
+                gets(nombreBuscar);
+
+                while(fread(&aux,DIM,1,pfile) > 0)
+                {
+                    if(strcmp(aux.nombre,nombreBuscar) == 0)
+                    {
+                        printf("%i:\n");
+                        MuestraUnaPartida(aux);
+                        opcion = 'n';
+                    }
+                    else
+                    {
+                        printf("No se encontro el nombre %s\n. Buscar otro? s/n\n");
+                        scanf("\n%c",&opcion);
+                    }
+                }
+            }
+            while(opcion == 's');
+            break;
         }
 
         cerroarchivo = fclose(pfile);
@@ -1486,12 +1519,13 @@ void MuestraArchivoSave()
     }
 }
 
-void MuestraUnaPartida(stGuardado aux)
+void MuestraUnaPartida(stPersonaje player)
 {
+    stPersonaje aux = player;
     printf("*********************************************************\n");
-    printf("Nombre.................: %s\n",aux.nombre);
-    printf("Clase..................: %s\n",aux.clase);
-    printf("Nivel..................: %i\n",aux.nivelJuego);
+    printf("Nombre.................: %s\n",player.nombre);
+    printf("Clase..................: %s\n",player.tipoClase);
+    printf("Nivel..................: %i\n",player.nivelDeJuego);
     printf("*********************************************************\n");
 }
 
@@ -1499,20 +1533,24 @@ int CuentaRegistros()
 {
     FILE* pfile = NULL;
     int cerrarArchivo = 0;
-    int bytesArchivo = 0; /**nos va a decir los bytes del archivo*/
+    long bytesArchivo = 0; /**nos va a decir los bytes del archivo*/
     int numRegistros = 0; /**cantidad de registros**/
+    int punteroSeek = 0;
 
     pfile = fopen(SAVE,"rb");
 
     if(pfile!=NULL)
     {
-        rewind(pfile);
+        punteroSeek = fseek(pfile,0,SEEK_SET);
+
+        if(punteroSeek!=0)
+            printf("SE HA SOBREPASADO LOS LIMITES DEL ARCHIVO.\n");
 
         bytesArchivo = ftell(pfile);
 
         if(bytesArchivo > 0)
         {
-            numRegistros = bytesArchivo/DIMG;
+            numRegistros = (int) bytesArchivo/DIM;
         }
 
         cerrarArchivo = fclose(pfile);
@@ -1536,13 +1574,11 @@ void CrearNuevoSlot(stPersonaje *player)
     pfile = fopen(SAVE,"wb");
     int cerrarArchivo = 0;
     int escribirArchivo = 0;
-    stGuardado aux;
 
     if(pfile!=NULL)
     {
-        aux = EscribirDatos(player);
 
-        escribirArchivo = fwrite(&aux,DIMG,1,pfile);
+        escribirArchivo = fwrite(player,DIM,1,pfile);
 
         if(escribirArchivo < 1)
         {
@@ -1569,13 +1605,10 @@ void GuardarSiguienteSlot(stPersonaje *player)
     int cerrarArchivo = 0;
     int escribirArchivo = 0;
     pfile = fopen(SAVE,"ab");
-    stGuardado aux;
 
     if(pfile!=NULL)
     {
-        aux = EscribirDatos(player);
-
-        escribirArchivo = fwrite(&aux,DIMG,1,pfile);
+        escribirArchivo = fwrite(player,DIM,1,pfile);
 
         if(escribirArchivo < 1)
         {
@@ -1595,29 +1628,12 @@ void GuardarSiguienteSlot(stPersonaje *player)
     }
 }
 
-stGuardado EscribirDatos(stPersonaje *player)
-{
-    stGuardado aux;
-
-    aux.pj = *player;
-
-    strcpy(aux.nombre,player->nombre);
-
-    strcpy(aux.clase,player->tipoClase);
-
-    aux.nivelJuego = player->nivelDeJuego;
-
-    aux.validez = 1;
-
-    return aux;
-}
-
-void CargaDePersonaje(stPersonaje * player,int registroPartida)
+stPersonaje CargaDePersonaje(int registroPartida)
 {
     FILE* pfile = NULL;
-    stGuardado aux;
     int cerrarArchivo = 0;
     int leerArchivo = 0;
+    stPersonaje aux;
     int limitesArchivo = 0; /** para fseek si devuelve distinto de cero, hubo error*/
     pfile = fopen(SAVE,"r+b");
 
@@ -1626,11 +1642,8 @@ void CargaDePersonaje(stPersonaje * player,int registroPartida)
         /**leer desde el principio del archivo**/
         rewind(pfile);
         /**bajar hasta la partida que indicó el jugador por parametro**/
-        limitesArchivo = fseek(pfile,DIMG*(registroPartida - 1),SEEK_SET);
-        /**leer los datos de ese registro stGuardado**/
-        leerArchivo = fread(&aux,DIMG,1,pfile);
-        /**copiar los datos de ese registro stGuardado a stPersonaje**/
-        *player = CargarDatos(aux);
+        limitesArchivo = fseek(pfile,DIM*(registroPartida - 1),SEEK_SET);
+        leerArchivo = fread(&aux,DIM,1,pfile);
 
         if(leerArchivo < 1)
         {
@@ -1648,63 +1661,8 @@ void CargaDePersonaje(stPersonaje * player,int registroPartida)
     {
         printf("NO SE PUDO ABRIR EL ARCHIVO EN CargaDePersonaje()\n");
     }
-}
 
-stPersonaje CargarDatos(stGuardado aux)
-{
-    stPersonaje aux2;
-
-    aux2 = aux.pj;
-
-    return aux2;
-}
-
-void MuestraArchivoMarcadores()
-{
-    FILE*  pfile = NULL;
-    stMarcador aux;
-    int cerrarArchivo = 0;
-    int bytesArchivo = 0;
-    pfile = fopen(MARCADORES,"rb");
-
-    if(pfile!=NULL)
-    {
-
-        bytesArchivo = ftell(pfile);
-
-        if(bytesArchivo == 0)
-        {
-            printf("NO HAY DATOS PARA LEER EN Marcadores.dat");
-        }
-        else
-        {
-            rewind(pfile);
-
-            while( (fread(&aux,DIMMAR,1,pfile)) > 0 )
-            {
-                MuestraUnMarcador(aux);
-            }
-
-        }
-
-        cerrarArchivo = fclose(pfile);
-
-        if(cerrarArchivo!=0)
-        {
-            printf("NO SE PUDO CERRAR EL ARCHIVO EN MuestraMarcadores()\n");
-        }
-    }
-    else
-    {
-        printf("NO SE PUDO ABRIR EL ARCHIVO EN MuestraMarcadores()\n");
-    }
-
-}
-void MuestraUnMarcador(stMarcador aux)
-{
-    /**no veo aun como relacionar el idPersonaje con esta funcion**/
-    printf("Puntaje maximo: %l\n",aux.Puntaje);
-    printf("Nivel maximo superado: %i\n",aux.nivelMaximo);
+    return aux;
 }
 
 int Nivel1(stPersonaje *player)
@@ -1864,7 +1822,7 @@ void PausaLimpia()
     system("cls");
 }
 
-void Introduccion(char playername[],int clase)
+void Introduccion()
 {
     fadeIN("\n\n\tDicese una vez de una aldea llamada Arcadia. La aldea Arcadia era un lugar pacifico\
  con mucha vegetacion y un paisaje arbolado,\n con un imponente volcan a lo lejos, el cual\
@@ -1919,7 +1877,8 @@ void MostrarMenuTienda(char p[][30],int a[])
 /** \brief secuencia de acertijo esfige
  * \return devuelve pasaSinPelear 1 o 0
  */
-int acertijoEsfigie (){
+int acertijoEsfigie ()
+{
     int opRand=1;
     int opcion;
     int pasaSinPelear=0;
@@ -1929,62 +1888,63 @@ int acertijoEsfigie (){
     fadeInOut("\nSi eres digno y eliges correctamente de las opciones que te ofrecere, te dejare pasar",0,5);
     fadeInOut("\nDecide con cuidado...\n",0,6);
 
-    switch(opRand){
-        case 1:
-            _sleep(500);
-            printf("\nCual es la criatura que en la maniana camina en cuatro patas, al medio dia en dos y en la noche en tres? ");
-            _sleep(1000);
-            printf("\n 1. m-r-b-e-h-o hombre    2. g-t-t-r-o-u-a tortuga     3. o-m-o-n mono\n");
-            scanf("%d",&opcion);
-            pasaSinPelear=validacionYresultado(opcion,1);
-            break;
-        case 2:
-            _sleep(500);
-            printf("\nDe noche llegan y no las llamaron. De dia no estan, pero no las robaron ");
-            _sleep(1000);
-            printf("\n 1. c-h-a-z-e-l-u Lechuzas     2. e-l-l-t-s-a-e-r-s Estrellas    3. n-u-l-a Luna\n");
-            scanf("%d",&opcion);
-            pasaSinPelear=validacionYresultado(opcion,2);
-            break;
-        case 3:
-            _sleep(500);
-            printf("\nPequenio como un pulgar, en el aire soy ligero. Si no me has visto ya, descuida, porque me escucharas primero.");
-            _sleep(1000);
-            printf("\n 1. j-o-s-a-h hojas     2. b-j-a-e-a abeja    3. l-i-o-c-r-i-b Colibri\n");
-            scanf("%d",&opcion);
-            pasaSinPelear=validacionYresultado(opcion,3);
-            break;
-        case 4:
-            _sleep(500);
-            printf("\nIncansable y sin fatiga, va de colina en colina. Y aunque ni anda ni corre con piernas, solo hay frio tras su huida.");
-            _sleep(1000);
-            printf("\n 1. e-l-l-t-s-a-e-r Estrella     2. l-o-s Sol    3. b-r-a-c-a Cabra\n");
-            scanf("%d",&opcion);
-            pasaSinPelear=validacionYresultado(opcion,2);
-            break;
-        case 5:
-            _sleep(500);
-            printf("\nQue nace, pero nunca llora, que discurre sin andar, desemboca sin hablar, que tiene lecho mas nunca reposa?");
-            _sleep(1000);
-            printf("\n 1. b-r-o-l-a Arbol     2. o-g-l-a Lago    3. o-r-i Rio\n");
-            scanf("%d",&opcion);
-            pasaSinPelear=validacionYresultado(opcion,3);
-            break;
-        case 6:
-            _sleep(500);
-            printf("\nQué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?");
-            _sleep(1000);
-            printf("\n 1. n-u-l-a Luna     2. p-e-z-a-e-r-n-s-a Esperanza    3. o-c-p-a Copa\n");
-            scanf("%d",&opcion);
-            pasaSinPelear=validacionYresultado(opcion,1);
-            break;
-        default:
-            _sleep(500);
-            printf("\nCual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ");
-            _sleep(200);
-            printf("\n 1. m-r-b-e-h-o hombre    2. g-t-t-r-o-u-a tortuga     3. o-m-o-n mono\n");
-            scanf("%d",&opcion);
-            pasaSinPelear=validacionYresultado(opcion,1);
+    switch(opRand)
+    {
+    case 1:
+        _sleep(500);
+        printf("\nCual es la criatura que en la maniana camina en cuatro patas, al medio dia en dos y en la noche en tres? ");
+        _sleep(1000);
+        printf("\n 1. m-r-b-e-h-o hombre    2. g-t-t-r-o-u-a tortuga     3. o-m-o-n mono\n");
+        scanf("%d",&opcion);
+        pasaSinPelear=validacionYresultado(opcion,1);
+        break;
+    case 2:
+        _sleep(500);
+        printf("\nDe noche llegan y no las llamaron. De dia no estan, pero no las robaron ");
+        _sleep(1000);
+        printf("\n 1. c-h-a-z-e-l-u Lechuzas     2. e-l-l-t-s-a-e-r-s Estrellas    3. n-u-l-a Luna\n");
+        scanf("%d",&opcion);
+        pasaSinPelear=validacionYresultado(opcion,2);
+        break;
+    case 3:
+        _sleep(500);
+        printf("\nPequenio como un pulgar, en el aire soy ligero. Si no me has visto ya, descuida, porque me escucharas primero.");
+        _sleep(1000);
+        printf("\n 1. j-o-s-a-h hojas     2. b-j-a-e-a abeja    3. l-i-o-c-r-i-b Colibri\n");
+        scanf("%d",&opcion);
+        pasaSinPelear=validacionYresultado(opcion,3);
+        break;
+    case 4:
+        _sleep(500);
+        printf("\nIncansable y sin fatiga, va de colina en colina. Y aunque ni anda ni corre con piernas, solo hay frio tras su huida.");
+        _sleep(1000);
+        printf("\n 1. e-l-l-t-s-a-e-r Estrella     2. l-o-s Sol    3. b-r-a-c-a Cabra\n");
+        scanf("%d",&opcion);
+        pasaSinPelear=validacionYresultado(opcion,2);
+        break;
+    case 5:
+        _sleep(500);
+        printf("\nQue nace, pero nunca llora, que discurre sin andar, desemboca sin hablar, que tiene lecho mas nunca reposa?");
+        _sleep(1000);
+        printf("\n 1. b-r-o-l-a Arbol     2. o-g-l-a Lago    3. o-r-i Rio\n");
+        scanf("%d",&opcion);
+        pasaSinPelear=validacionYresultado(opcion,3);
+        break;
+    case 6:
+        _sleep(500);
+        printf("\nQué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?");
+        _sleep(1000);
+        printf("\n 1. n-u-l-a Luna     2. p-e-z-a-e-r-n-s-a Esperanza    3. o-c-p-a Copa\n");
+        scanf("%d",&opcion);
+        pasaSinPelear=validacionYresultado(opcion,1);
+        break;
+    default:
+        _sleep(500);
+        printf("\nCual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ");
+        _sleep(200);
+        printf("\n 1. m-r-b-e-h-o hombre    2. g-t-t-r-o-u-a tortuga     3. o-m-o-n mono\n");
+        scanf("%d",&opcion);
+        pasaSinPelear=validacionYresultado(opcion,1);
     }
 
     return pasaSinPelear;
@@ -1996,21 +1956,26 @@ int acertijoEsfigie (){
  * \param   opcion correcta
  * \return resultado 1 o 0
  */
-int validacionYresultado (int opcion,int correcta){
+int validacionYresultado (int opcion,int correcta)
+{
     int resultado=0;
 
-    while(opcion>3 || opcion<1){
+    while(opcion>3 || opcion<1)
+    {
         printf("\No te he dado esa opcion, te dare otra oportunidad\n");
         printf("\n Opcion 1.    Opcion 2.     Opcion 3.\n");
         scanf("%d",&opcion);
-        }
-    if (opcion==correcta){
+    }
+    if (opcion==correcta)
+    {
         limpiaLinea(0,linea1);
         cascadaTexto("Has acertado! y por eso te has ganado mi favor...>",0,linea1);
         cascadaTexto("te dejare pasar>",0,linea2);
         cascadaTexto("Pero no creas que tu camino seguira siendo tan amable.>",0,linea3);
         resultado=1;
-    } else{
+    }
+    else
+    {
         limpiaLinea(0,linea1);
         cascadaTexto("Dicen que la ignorancia es una bendicion...>",0,linea1);
         cascadaTexto("aunque a un alto costo...>",0,linea2);
@@ -2021,22 +1986,26 @@ int validacionYresultado (int opcion,int correcta){
 }
 
 /** \brief Espera un input para continuar */
-void continuar(){
+void continuar()
+{
     int i=0;
     int x=continuarX;
     int y=linea1;
-    int col[]={8,7,15,7,8,0};
-    do{
+    int col[]= {8,7,15,7,8,0};
+    do
+    {
         hidecursor(0);
         gotoxy(x,y);
         color(col[i]);
         printf("Continuar");
         _sleep(100);
         i++;
-        if(i>5){
+        if(i>5)
+        {
             i=0;
         }
-    }while(!kbhit());
+    }
+    while(!kbhit());
     getch();
     gotoxy(x,y);
     printf("          ");
@@ -2046,7 +2015,8 @@ void continuar(){
  * \param x: deberia ir '0' por defecto
  * \param y: 'linea1' por defecto.
  */
-void limpiaLinea (int x, int y){
+void limpiaLinea (int x, int y)
+{
     gotoxy(x,y);
     printf("                                                                                            ");
     gotoxy(x,y+1);
@@ -2060,12 +2030,14 @@ void limpiaLinea (int x, int y){
  * \param x int        Eje X
  * \param y int        Eje Y
  */
-void fadeIN(char frase[],int x,int y){
+void fadeIN(char frase[],int x,int y)
+{
     int i=0;
-    int col[]={0,8,7,15,7};
+    int col[]= {0,8,7,15,7};
 
     hidecursor(0);
-    while(i<5){
+    while(i<5)
+    {
         color(col[i]);
         gotoxy(x,y);
         printf("%s",frase);
@@ -2074,12 +2046,14 @@ void fadeIN(char frase[],int x,int y){
     }
     hidecursor(1);
 }
-void fadeINTimed(char frase[],int x,int y, int time){
+void fadeINTimed(char frase[],int x,int y, int time)
+{
     int i=0;
-    int col[]={0,8,7,15,7};
+    int col[]= {0,8,7,15,7};
 
     hidecursor(0);
-    while(i<5){
+    while(i<5)
+    {
         color(col[i]);
         gotoxy(x,y);
         printf("%s",frase);
@@ -2093,12 +2067,14 @@ void fadeINTimed(char frase[],int x,int y, int time){
  * \param x int        Eje X MISMO que en fadeIN
  * \param y int        Eje Y MISMO que en fadeIN
  */
-void fadeOUT(char frase[],int x,int y){
+void fadeOUT(char frase[],int x,int y)
+{
     int i=0;
-    int col[]={15,7,8,0};
+    int col[]= {15,7,8,0};
 
     hidecursor(0);
-    while(i<4){
+    while(i<4)
+    {
         color(col[i]);
         gotoxy(x,y);
         printf("%s",frase);
@@ -2112,7 +2088,8 @@ void fadeOUT(char frase[],int x,int y){
  * \param  eje X: deberia ser '0' por defecto
  * \param  eje y: Numero de linea donde imprimir
  */
-void fadeInOut (char frase[],int x,int y){
+void fadeInOut (char frase[],int x,int y)
+{
     fadeIN(frase,x,y);
     if(getch())
         fadeOUT(frase,x,y);
@@ -2124,12 +2101,14 @@ void fadeInOut (char frase[],int x,int y){
  * \param x int:        eje X siempre ira '0' salvo que se quiera alinear al centro
  * \param y int:        ira linea1,linea2,linea3 o cualquier linea del eje Y para imprimir
  */
-void cascadaTexto(char texto[], int x,int y){
+void cascadaTexto(char texto[], int x,int y)
+{
     int i=0;
     int flag=0;
 
     gotoxy(x,y);
-    while((texto[i]!= '\0' &&flag==0)){
+    while((texto[i]!= '\0' &&flag==0))
+    {
         color(15);
         printf("%c",texto[i]);
         _sleep(70);
@@ -2137,7 +2116,8 @@ void cascadaTexto(char texto[], int x,int y){
         color(7);
         printf("%c",texto[i]);
         i++;
-        if(kbhit()){
+        if(kbhit())
+        {
             getch();
             gotoxy(x,y);
             printf("%s",texto);
@@ -2148,10 +2128,12 @@ void cascadaTexto(char texto[], int x,int y){
 }
 
 /** \brief Presenta pantalla de inicio hacia el menu */
-void pantallaInicio (){
+void pantallaInicio ()
+{
     int i=0;
     hidecursor(0);
-    while(i<1){
+    while(i<1)
+    {
         system("COLOR 07");
         _sleep(50);
         system("COLOR 87");
@@ -2178,29 +2160,32 @@ void pantallaInicio (){
     system("cls");
 }
 
-void fadeINPantalla(char frase[],int x, int y){
+void fadeINPantalla(char frase[],int x, int y)
+{
     int i=0;
     hidecursor(0);
-        system("COLOR 00");
-        gotoxy(x,y);
-        printf("%s",frase);
-        _sleep(150);
-        system("COLOR 08");
-        gotoxy(x,y);
-        printf("%s",frase);
-        _sleep(150);
-        system("COLOR 07");
-        gotoxy(x,y);
-        printf("%s",frase);
-        _sleep(150);
+    system("COLOR 00");
+    gotoxy(x,y);
+    printf("%s",frase);
+    _sleep(150);
+    system("COLOR 08");
+    gotoxy(x,y);
+    printf("%s",frase);
+    _sleep(150);
+    system("COLOR 07");
+    gotoxy(x,y);
+    printf("%s",frase);
+    _sleep(150);
 
     hidecursor(1);
 }
 
 /** \brief visual golpe con tono a 90hz*/
-void golpe(){
+void golpe()
+{
     int i=0;
-    while(i<2){
+    while(i<2)
+    {
         system("COLOR F4");
         _sleep(50);
         system("COLOR 07");
@@ -2342,39 +2327,52 @@ int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
     return pasaNivel;
 }
 
-void guardarEnArchivoMarcadores(stPersonaje aux)
+void guardarEnArchivoMarcadores(stPersonaje *aux)
 {
-    FILE * archivo=fopen(MARCADORES,"ab");
+    FILE * archi = fopen(MARCADORES,"wb");
+    int cerrarArchivo = 0;
+    int escribirArchivo = 0;
+    stMarcador Aguardar;
 
-    stMarcador A;
-
-    if(archivo!=NULL)
+    if( archi!= NULL)
     {
-        strcpy(A.clase,aux.tipoClase);
+        strcpy(Aguardar.clase,aux->tipoClase);
 
-        strcpy(A.nombre,aux.nombre);
+        strcpy(Aguardar.nombre,aux->nombre);
 
-        A.nivelMaximo=aux.nivelDeJuego;
+        Aguardar.nivelMaximo = aux->nivelDeJuego;
 
-        A.invMarcador=aux.inv;
+        Aguardar.invMarcador = aux->inv;
 
+        escribirArchivo = fwrite(&Aguardar,DIMMAR,1,archi);
 
-        fwrite(&A,DIMMAR,1,archivo);
+        if(escribirArchivo < 1)
+            printf("NO SE PUDO ESCRIBIR EN EL ARCHIVO EN GuardarMarcadores\n");
 
+        cerrarArchivo = fclose(archi);
 
-        fclose(archivo);
-
+        if(cerrarArchivo!= 0)
+            printf("NO SE PUDO CERRAR EL ARCHIVO EN GuardarMarcadores\n");
+    }
+    else
+    {
+        printf("NO SE PUDO ABRIR EL ARCHIVO MARCADORES EN GuardarEnMarcadores\n");
     }
 
 }
 
-void mostrarMarcadores ();{
+void mostrarMarcadores()
+{
 
-    FILE * archi=fopen(MARCADORES,"rb");
-    int opc=0;
-    printf("Mostar todo 1 buscar por nombre 2\n");
-    char nombre [];
+    FILE * archi = fopen(MARCADORES,"rb");
+    int opc = 0;
+    char nombreBuscar[30];
+    int cerrarArchivo = 0;
     stMarcador aux;
+    char opcion = 0;
+
+    printf("1:\tMostrar todos los marcadores\n2:\tBuscar por nombre\n");
+    scanf("%i",&opc);
 
     if(archi!=NULL)
     {
@@ -2382,40 +2380,58 @@ void mostrarMarcadores ();{
         switch (opc)
         {
         case 1:
+
             while(fread(&aux,DIMMAR,1,archi)>0)
             {
-                mostrarMarcador(aux);
+                mostrarUnMarcador(aux);
             }
             break;
 
         case 2:
-            printf("ingrese el nombre que desea buscar\n");
-            fflush(stdin);
-            gets(nombre);
-             while(fread(&aux,DIMMAR,1,archi)>0)
+            do
             {
-                if(strcmp(aux,nombre)=0)
+                printf("Ingrese el nombre que desea buscar\n");
+                fflush(stdin);
+                gets(nombreBuscar);
+
+                while(fread(&aux,DIMMAR,1,archi)>0)
                 {
-                    mostrarMarcador(aux);
+                    if(strcmp(aux.nombre,nombreBuscar) == 0)
+                    {
+                        mostrarUnMarcador(aux);
+                        opcion = 'n';
+                    }
+                    else
+                    {
+                        printf("No se encontro un personaje con ese nombre!\nBuscar otro? s/n\n");
+                        scanf("\n%c",&opcion);
+                    }
                 }
             }
+            while(opcion == 's');
+
             break;
         }
-        fclose(archi);
-    }
 
+        cerrarArchivo = fclose(archi);
+
+        if(cerrarArchivo != 0)
+            printf("NO SE PUDO CERRAR EL ARCHIVO MARCADORES EN MostrarMarcadores\n");
+    }
+    else
+    {
+        printf("NO SE PUDO ABRIR EL ARCHIVO MARCADORES EN MostrarMarcadores\n");
+    }
 }
 
-
-
-void mostrarMarcador(stMarcador aux)
+void mostrarUnMarcador(stMarcador aux)
 {
-    printf("%s",aux.nombre);
-    printf("%s",aux.clase);
-    printf("%s",aux.invMarcador.arma);
-    printf("%d",aux.invMarcador.dinero);
-    printf("%s",aux.invMarcador.escudo);
-    printf("%d",aux.invMarcador.pocioneshp);
-    printf("%d",aux.invMarcador.pocionesmp);
-    printf("%d",aux.nivelMaximo);
+    printf("Nombre: %s\n",aux.nombre);
+    printf("Clase: %s\n",aux.clase);
+    printf("Arma: %s\n",aux.invMarcador.arma);
+    printf("Dinero: %d\n",aux.invMarcador.dinero);
+    printf("Escudo: %s\n",aux.invMarcador.escudo);
+    printf("Pociones hp: %d\n",aux.invMarcador.pocioneshp);
+    printf("Pociones mp: %d\n",aux.invMarcador.pocionesmp);
+    printf("Nivel maximo superado: %d\n",aux.nivelMaximo);
 }
