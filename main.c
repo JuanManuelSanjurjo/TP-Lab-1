@@ -1182,13 +1182,15 @@ int Jugar(stPersonaje *player)
     se vuelve 0**/
     int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
     char controlNivel = 0; /**cuando pierde, le pregunta si quiere volver a intentar*/
+    char seguir ='s';
 
     fadeIN("Empiezas desde el nivel : ",0,7);
     gotoxy(whereX(),whereY());
     printf("%i",player->nivelDeJuego);
     continuar();
 
-    while(flagGame == 1)
+
+    while(flagGame == 1 && seguir=='s')
     {
         inicioReloj = clock();
 
@@ -1197,8 +1199,8 @@ int Jugar(stPersonaje *player)
 
         case 1:
 
-            do
-            {
+//            do
+//            {
                 pasaNivel = Nivel1(player); /**nivel1 devuelve un flag*/
 
                 if(pasaNivel == 1)
@@ -1210,16 +1212,16 @@ int Jugar(stPersonaje *player)
 
                 }
 
-                if(pasaNivel==0)
-                {
-                    limpiaLinea(0,linea1);
-                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
-                    scanf("\n%c",&controlNivel);
-                }
-            }
-            while(pasaNivel== 0 && controlNivel=='s');
+//                if(pasaNivel==0)
+//                {
+//                    limpiaLinea(0,linea1);
+//                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
+//                    scanf("\n%c",&controlNivel);
+//                }
+////            }
+//            while(pasaNivel== 0 && controlNivel=='s');
 
-            if(controlNivel == 'n' && pasaNivel == 0)
+            if( pasaNivel == 0)
             {
                 flagGame = 0; /**quiere salir del juego.*/
             }
@@ -1349,7 +1351,6 @@ int Jugar(stPersonaje *player)
 
             do
             {
-
                 pasaNivel = peleaEsfigie(player);
 
                 if(pasaNivel==0)
@@ -1372,9 +1373,19 @@ int Jugar(stPersonaje *player)
             break;
 
 
+
         }
 
-        flagGame = 0;
+        printf("Desea continuar? s/n");
+        fflush(stdin);
+        scanf("%c",&seguir);
+
+        if(seguir!='s'){
+           flagGame = 0;
+        }
+
+
+        //flagGame = 0;
         finReloj = clock();
 
     }
@@ -1543,7 +1554,7 @@ void CargaJuego(stPersonaje*player)
     printf("Selecciona la partida para cargar.\n");
     scanf("%i",&opcionpartida);
     *player = CargaDePersonaje(opcionpartida);
-
+    system("cls");
     MostrarPersonaje(player);
 
     PausaLimpia();
