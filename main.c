@@ -43,12 +43,12 @@ typedef struct
 typedef struct
 {
 
-    char nombre[15]; /**Nombre que elegiÃ³ el jugador*/
+    char nombre[15]; /**Nombre que elegió el jugador*/
     char genero[15];  /**Elegido por el jugador*/
     char tipoClase[15]; /**guerrero, hechicero, nigromante o asesino*/
     int clase;
-    int nivelDeJuego; /**nivel en que se quedÃ³ el jugador*/
-    stAtributos atribPersonaje; /**estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia segÃºn la clase elegida**/
+    int nivelDeJuego; /**nivel en que se quedó el jugador*/
+    stAtributos atribPersonaje; /**estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia según la clase elegida**/
     stInventario inv;
     int hp;
     int mp;
@@ -63,7 +63,7 @@ typedef struct
     stInventario invMarcador;
 } stMarcador;
 
-/**Constantes tamaÃ±o de estructuras**/
+/**Constantes tamaño de estructuras**/
 const int DIM = sizeof(stPersonaje); /** para las funciones de archivo**/
 const int DIMMAR = sizeof(stMarcador); /**para las funciones de archivo**/
 
@@ -73,19 +73,20 @@ const int linea1=46;
 const int linea2=47;
 const int linea3=48;
 
-/// VISULAES
-//void fadeIN(char frase[],int x,int y);
-//void fadeINTimed(char frase[],int x,int y, int time);
-//void continuar();
-//int acertijoEsfigie();
-//int validacionYresultado (int opcion,int correcta);
-//void fadeOUT(char frase[],int x,int y);
-//void fadeInOut (char frase[],int x,int y);
-//void cascadaTexto(char texto[], int x,int y);
-//void limpiaLinea (int x, int y);
-//void pantallaInicio();
-//void fadeINPantalla(char frase[],int x, int y);
-//void golpe();
+// VISULAES
+void fadeIN(char frase[],int x,int y);
+void fadeINTimed(char frase[],int x,int y, int time);
+void continuar();
+int acertijoEsfigie();
+int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon);
+int validacionYresultado (int opcion,int correcta);
+void fadeOUT(char frase[],int x,int y);
+void fadeInOut (char frase[],int x,int y);
+void cascadaTexto(char texto[], int x,int y);
+void limpiaLinea (int x, int y);
+void pantallaInicio();
+void fadeINPantalla(char frase[],int x, int y);
+void golpe();
 
 
 /**tienda*/
@@ -155,7 +156,7 @@ int main()
 {
     SetConsoleTitle("THE LEYEND OF C");
     srand(time(NULL));
-    system("mode 130, 50");
+    system("mode 150, 50");
     //pantallaInicio();
 
     stPersonaje partida; /**estructura de la partida: se modifica segun la save o se crea
@@ -189,7 +190,7 @@ int main()
         break;
     }
 
-    cascadaTexto("Gracias por jugar The Leyend Of C!!",60,22);
+    cascadaTexto("Gracias por jugar The Leyend Of C!!",55,22);
 
     getchar();
 
@@ -294,7 +295,7 @@ int obtenerClase(char clase[])
     fadeIN("3. Asesino: No defiendes a la aldea ni a las criaturas del mal. Haces tu propio camino y te preocupas por tus intereses\n.Expertos verdugos escurridizos que se tienen que exponer normalmente bastante, pero con una brutal con habilidad\n de deshacerse de los enemigos en un abrir y cerrar de ojos. Provocando muertes por doquier. Su arma afin es \nla daga yo el cuchillo.\n\n",0,whereY());
     fadeIN("4. Hechicero: Aprendiste las artes de la hechiceria para defender a tu aldea. Siempre causaran estragos elementales entre\n las filas enemigas. Sus hechizos elementales van desde ataques devastadores a protectores e incluso curadores,\nsiempre dispuestos a entrar en pleno fragor de la batalla. El hechicero utiliza el poder de su inteligencia\n en carencia de su fuerza. Sus armas afines son el baculo y el baston.\n\n",0,whereY());
 
-    cascadaTexto("Dentro de estas clases, %ccual crees que sera la mas adecuada para ti?\n",0,whereY()+1);
+    cascadaTexto("Dentro de estas clases, cual crees que sera la mas adecuada para ti?\n",0,whereY()+1);
     scanf("%d",&opc);
 
     while ((opc>4)&&(opc<1))
@@ -715,7 +716,7 @@ int CompraBaston(stPersonaje *player, int bastoncant)
         compra = PRECIOBASTON;
         if( player->inv.dinero >= compra)
         {
-            /**el bastÃ³n sube 5 de magia*/
+            /**el bastón sube 5 de magia*/
             player->atribPersonaje.magia = player->atribPersonaje.magia + 5;
             /** y ademas sube 3 de inteligencia*/
             player->atribPersonaje.inteligencia = player->atribPersonaje.inteligencia + 3;
@@ -901,41 +902,81 @@ int CicloPelea(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
     int golpePj = 0;
     int golpeMon = 0;
 
-    printf("*BATALLA*\n");
-    printf("Te encuentras con %s\n",nombreMon);
-    printf("Su hp es de: %i\n",hpMon);
-    printf("Su ataque es de: %i\n\n",danoMon);
+    system("cls");
+    fadeIN("*BATALLA*",65,3);
+    cascadaTexto("Te encuentras con ",0,whereY()+2); // %s\n",nombreMon);
+    gotoxy(whereX(),whereY());
+    printf("%s",nombreMon);
+    cascadaTexto("Su hp es de: ",0,whereY()+1);
+    gotoxy(whereX()+1,whereY());
+    printf("%d",hpMon);
+    cascadaTexto("Su ataque es de: ",0,whereY()+1);
+    gotoxy(whereX()+1,whereY());
+    printf("%d",danoMon);
 
     do
     {
-        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
-        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+//        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
+//        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+//
+        fadeIN("*BATALLA*",65,3);
+        gotoxy(65,13);
+        //printf("HP PJ: %i\nMP PJ: %i\n\nHP MON: %i\n\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
+        printf("HP PJ: %i",aux->hp);
+        gotoxy(65,14);
+        printf("MP PJ: %i",aux->mp);
+        gotoxy(65,15);
+        printf("HP MON: %i",hpMon);
+        gotoxy(65,16);
+        printf("PocionesHP:%i",aux->inv.pocioneshp);
+        gotoxy(65,17);
+        printf("PocionesMP: %i",aux->inv.pocionesmp);
+
+        gotoxy(58,21);    //printf("1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+        printf("1:\tAtaque normal");
+        gotoxy(58,22);
+        printf("2:\tAtaque Especial");
+        gotoxy(58,23);
+        printf("3:\tTomar pocion hp");
+        gotoxy(58,24);
+        printf("4:\tTomar pocion mp");
+        gotoxy(58,25);
+
+        fadeIN("Que accion desea realizar",0,linea1);
         scanf("%d",&opc);
+        limpiaLinea(0,linea1);
+
         switch(opc)
         {
         case 1:
             ///ataque normal
+            gotoxy(0,27);
             printf("%s le hace un ataque normal a %s ",aux->nombre,nombreMon);
             golpePj = AtaqueBasico(aux);
+            golpe();
             printf("y le infringe un golpe de %i\n",golpePj);
             hpMon = hpMon - golpePj;
             break;
         case 2:
             ///ataque especial
+            gotoxy(0,27);
             printf("Ataque cargado...\n");
             golpePj = AtaqueCargado(aux);
+            golpe();
             printf("tu golpe es de %i\n",golpePj);
             hpMon = hpMon - golpePj;
             aux->mp = aux-> mp-10;
             break;
         case 3:
             ///pocion de vida
+            gotoxy(0,27);
             printf("Tomas una pocion HP...\n");
             aux->hp = aux->hp + 25;
             aux->inv.pocioneshp = aux->inv.pocioneshp - 1;
             break;
         case 4:
             ///pocion de mana
+            gotoxy(0,27);
             printf("Tomas una pocion MP...\n");
             aux->mp= aux->mp+ 25;
             aux->inv.pocionesmp = aux->inv.pocionesmp - 1;
@@ -946,44 +987,56 @@ int CicloPelea(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
         switch(aux->clase)
         {
         case 1: /**caso guerrero*/
+            gotoxy(0,29);
             printf("%s ataca a %s ",nombreMon,aux->nombre);
             golpeMon = AtaqueBicho1(aux,danoMon);
+            golpe();
             aux->hp = aux->hp - golpeMon;
             printf("y le infringe un golpe de %i\n",golpeMon);
             break;
         case 2: /**caso nigromante*/
+            gotoxy(0,29);
             printf("El bicho ataca nigromante:\n");
             golpeMon = AtaqueBicho2(aux,danoMon);
+            golpe();
             aux->hp = aux->hp - golpeMon;
             printf("El bicho te infringe %i\n",golpeMon);
             break;
         case 3: /**caso asesino**/
+            gotoxy(0,29);
             printf("El bicho ataca asesino:\n");
             golpeMon = AtaqueBicho3(aux,danoMon);
+            golpe();
             aux->hp = aux->hp - golpeMon;
             printf("El bicho te infringe %i\n",golpeMon);
             break;
         case 4: /**caso hechicero**/
+            gotoxy(0,29);
             printf("El bicho ataca hechicero:n");
             golpeMon = AtaqueBicho4(aux,danoMon);
+            golpe();
             aux->hp = aux->hp - golpeMon;
             printf("El bicho te infringe %i\n",golpeMon);
             break;
         }
-
-        PausaLimpia();
+        continuar();
+        limpiaLinea(0,27);
+        limpiaLinea(0,28);
+        //PausaLimpia();
 
     }
     while ( (aux->hp > 0) && ( hpMon > 0 ));
 
     if(hpMon <= 0)
     {
-        printf("Has derrotado a %s\n",nombreMon);
+        cascadaTexto("Has derrotado a ",0,linea1);
+        gotoxy(whereX(),whereY());
+        printf("%s",nombreMon);
         pasaNivel = 1;
     }
     else
     {
-        printf("Has perdido!\n");
+        cascadaTexto("Has perdido!",0,linea1);
         pasaNivel = 0;
     }
     continuar();
@@ -1073,8 +1126,10 @@ void NuevoJuego(stPersonaje *player)
     while(correjuego == 1)
     {
         cascadaTexto("*EMPIEZA EL JUEGO*\n",0,6);
+        continuar();
         correjuego = Jugar(player);
     }
+
 
     PausaLimpia();
 
@@ -1124,9 +1179,10 @@ int Jugar(stPersonaje *player)
     int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
     char controlNivel = 0; /**cuando pierde, le pregunta si quiere volver a intentar*/
 
-    fadeIN("Empiezas desde el nivel : ",0,whereY()+1);
+    fadeIN("Empiezas desde el nivel : ",0,7);
     gotoxy(whereX(),whereY());
-    printf("%i\n",player->nivelDeJuego);
+    printf("%i",player->nivelDeJuego);
+    continuar();
 
     while(flagGame == 1)
     {
@@ -1142,14 +1198,17 @@ int Jugar(stPersonaje *player)
 
                 if(pasaNivel == 1)
                 {
-                    printf("Has superado el nivel 1 !!!\n");
+                    limpiaLinea(0,linea1);
+                    cascadaTexto("Has superado el nivel 1 !!!\n",0,linea1);
                     player->nivelDeJuego = 2;
 
                 }
 
                 if(pasaNivel==0)
                 {
-                    printf("Desea volver a intentarlo ? s/n\n");
+                    limpiaLinea(0,linea1);
+                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
+                    RecompensaPelea(player,2,150);
                     scanf("\n%c",&controlNivel);
                 }
             }
@@ -1170,7 +1229,8 @@ int Jugar(stPersonaje *player)
 
                 if(pasaNivel==0)
                 {
-                    printf("Desea volver a intentarlo ? s/n\n");
+                    limpiaLinea(0,linea1);
+                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
                     scanf("\n%c",&controlNivel);
                 }
             }
@@ -1178,7 +1238,8 @@ int Jugar(stPersonaje *player)
 
             if(pasaNivel==1)
             {
-                printf("Has superado el nivel 2!!!\n");
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 2 !!!\n",0,linea1);
                 player->nivelDeJuego = 3;
                 pasaNivel = 0;
             }
@@ -1192,7 +1253,8 @@ int Jugar(stPersonaje *player)
 
                 if(pasaNivel==0)
                 {
-                    printf("Desea volver a intentarlo ? s/n\n");
+                    limpiaLinea(0,linea1);
+                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
                     scanf("\n%c",&controlNivel);
                 }
             }
@@ -1200,7 +1262,8 @@ int Jugar(stPersonaje *player)
 
             if(pasaNivel==1)
             {
-                printf("Has superado el nivel 3!!!\n");
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 3 !!!",0,linea1);
                 player->nivelDeJuego = 4;
                 pasaNivel = 0;
             }
@@ -1214,7 +1277,8 @@ int Jugar(stPersonaje *player)
 
                 if(pasaNivel==0)
                 {
-                    printf("Desea volver a intentarlo ? s/n\n");
+                    limpiaLinea(0,linea1);
+                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
                     scanf("\n%c",&controlNivel);
                 }
             }
@@ -1222,7 +1286,8 @@ int Jugar(stPersonaje *player)
 
             if(pasaNivel==1)
             {
-                printf("Has superado el nivel 4!!\n");
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 4 !!!",0,linea1);
                 player->nivelDeJuego = 5;
                 pasaNivel = 0;
             }
@@ -1236,7 +1301,8 @@ int Jugar(stPersonaje *player)
 
                 if(pasaNivel==0)
                 {
-                    printf("Desea volver a intentarlo ? s/n\n");
+                    limpiaLinea(0,linea1);
+                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
                     scanf("\n%c",&controlNivel);
                 }
             }
@@ -1244,11 +1310,37 @@ int Jugar(stPersonaje *player)
 
             if(pasaNivel==1)
             {
-                printf("Has superado el nivel 5!!!\n");
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 5 !!!",0,linea1);
                 player->nivelDeJuego = 6;
                 pasaNivel = 0;
             }
             break;
+        case 6:
+
+            do
+            {
+                pasaNivel = nergalYereshkigal(player,100,20);
+
+                if(pasaNivel==0)
+                {
+                    limpiaLinea(0,linea1);
+                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
+                    scanf("\n%c",&controlNivel);
+                }
+            }
+            while(pasaNivel== 0 && controlNivel=='s');
+
+            if(pasaNivel==1)
+            {
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 6 !!!\n",0,linea1);
+                RecompensaPelea(player,2,150);
+                player->nivelDeJuego = 6;
+                pasaNivel = 0;
+            }
+            break;
+
 
         }
 
@@ -1641,7 +1733,7 @@ stPersonaje CargaDePersonaje(int registroPartida)
     {
         /**leer desde el principio del archivo**/
         rewind(pfile);
-        /**bajar hasta la partida que indicÃ³ el jugador por parametro**/
+        /**bajar hasta la partida que indicó el jugador por parametro**/
         limitesArchivo = fseek(pfile,DIM*(registroPartida - 1),SEEK_SET);
         leerArchivo = fread(&aux,DIM,1,pfile);
 
@@ -1687,11 +1779,11 @@ int Nivel1(stPersonaje *player)
 
         accedetienda = 0;
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 int Nivel2(stPersonaje *player)
@@ -1717,11 +1809,11 @@ int Nivel2(stPersonaje *player)
 
         accedetienda = 0;
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1747,11 +1839,11 @@ int Nivel3(stPersonaje *player)
 
         accedetienda = 0;
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1777,11 +1869,11 @@ int Nivel4(stPersonaje *player)
 
         accedetienda = 0;
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1807,11 +1899,11 @@ int Nivel5(stPersonaje *player)
 
         accedetienda = 0;
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1932,7 +2024,7 @@ int acertijoEsfigie ()
         break;
     case 6:
         _sleep(500);
-        printf("\nQuÃ© puede ser lleno mas nunca se vacia? Â¿QuÃ© cosa tira pero empujar, nunca?");
+        printf("\nQué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?");
         _sleep(1000);
         printf("\n 1. n-u-l-a Luna     2. p-e-z-a-e-r-n-s-a Esperanza    3. o-c-p-a Copa\n");
         scanf("%d",&opcion);
@@ -1940,7 +2032,7 @@ int acertijoEsfigie ()
         break;
     default:
         _sleep(500);
-        printf("\nCual es la criatura que en la maÃ±ana camina en cuatro patas, al medio dÃ­a en dos y en la nocheen tres? ");
+        printf("\nCual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ");
         _sleep(200);
         printf("\n 1. m-r-b-e-h-o hombre    2. g-t-t-r-o-u-a tortuga     3. o-m-o-n mono\n");
         scanf("%d",&opcion);
@@ -1983,6 +2075,175 @@ int validacionYresultado (int opcion,int correcta)
 
     }
     return resultado;
+}
+/** \brief Secuencia de pelea boss NyE
+ *  retorna flag pasa nivel 0 o 1
+ * \param aux stPersonaje*
+ * \param hpMon int
+ * \param danoMon int
+ * \return int
+ *
+ */
+int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
+{
+    int i=0;
+    int opc=0;
+    int pasaNivel=0;
+    int golpePj = 0;
+    int golpeMon = 0;
+
+
+    system("cls");
+    fadeIN("*BATALLA*",65,3);
+    cascadaTexto("Te encuentras con Nergal y Ereshkigal",0,whereY()+2); // Nergal y Ereshkigal   // se vence uno a la vez sin pausa
+    cascadaTexto("Ereshkigall, es la regente del inframundo sumerio, junto con su consorte Nergal",0,whereY()+1);
+    cascadaTexto("Tendras que pelear con ambos al mismo tiempo, por loq ue te conviene concentrar los golpes en uno a la vez",0,whereY()+1);
+    cascadaTexto("El hp combinado de los dos es: ",0,whereY()+1);
+    gotoxy(whereX()+1,whereY());
+    printf("%d",hpMon);
+    cascadaTexto("Sus ataques son de: ",0,whereY()+1);
+    gotoxy(whereX()+1,whereY());
+    printf("%d",danoMon);
+
+    do
+    {
+        fadeIN("*BATALLA*",65,3);
+        gotoxy(65,13);
+        //printf("HP PJ: %i\nMP PJ: %i\n\nHP MON: %i\n\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
+        printf("HP PJ: %i",aux->hp);
+        gotoxy(65,14);
+        printf("MP PJ: %i",aux->mp);
+        gotoxy(65,15);
+        printf("HP MON: %i",hpMon);
+        gotoxy(65,16);
+        printf("PocionesHP:%i",aux->inv.pocioneshp);
+        gotoxy(65,17);
+        printf("PocionesMP: %i",aux->inv.pocionesmp);
+
+        gotoxy(58,21);    //printf("1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+        printf("1:\tAtaque normal");
+        gotoxy(58,22);
+        printf("2:\tAtaque Especial");
+        gotoxy(58,23);
+        printf("3:\tTomar pocion hp");
+        gotoxy(58,24);
+        printf("4:\tTomar pocion mp");
+        gotoxy(58,25);
+
+        fadeIN("Que accion desea realizar",0,linea1);
+        scanf("%d",&opc);
+        limpiaLinea(0,linea1);
+
+        switch(opc)
+        {
+        case 1:
+            ///ataque normal
+            gotoxy(0,27);
+            printf("%s le hace un ataque normal a %s ",aux->nombre,"Nergal y Ereshkigal");
+            golpePj = AtaqueBasico(aux);
+            golpe();
+            printf("y le infringe un golpe de %i\n",golpePj);
+            hpMon = hpMon - golpePj;
+            break;
+        case 2:
+            ///ataque especial
+            gotoxy(0,27);
+            printf("Ataque cargado...\n");
+            golpePj = AtaqueCargado(aux);
+            golpe();
+            printf("tu golpe es de %i\n",golpePj);
+            hpMon = hpMon - golpePj;
+            aux->mp = aux-> mp-10;
+            break;
+        case 3:
+            ///pocion de vida
+            gotoxy(0,27);
+            printf("Tomas una pocion HP...\n");
+            aux->hp = aux->hp + 25;
+            aux->inv.pocioneshp = aux->inv.pocioneshp - 1;
+            break;
+        case 4:
+            ///pocion de mana
+            gotoxy(0,27);
+            printf("Tomas una pocion MP...\n");
+            aux->mp= aux->mp+ 25;
+            aux->inv.pocionesmp = aux->inv.pocionesmp - 1;
+            break;
+        }
+
+
+        if(i==0 && hpMon<50){
+            limpiaLinea(0,linea1);
+            cascadaTexto("nooooooo!...Nergal!",0,linea1);
+            cascadaTexto("...como un simple humano pudo...en nuestro propio reino",0,linea2);
+            cascadaTexto("Moriras aunque sea la ultima cosa que haga!..",0,linea3);
+            i=1;
+            continuar();
+            limpiaLinea(0,linea1);
+        }
+        //getch();
+
+        ///turno del monstruo
+        switch(aux->clase)
+        {
+        case 1: /**caso guerrero*/
+            gotoxy(0,29);
+            printf("El bicho ataca al guerero \n");
+            golpeMon = AtaqueBicho1(aux,danoMon);
+            golpe();
+            aux->hp = aux->hp - golpeMon;
+            printf("El bicho te infringe %i\n",golpeMon);
+            break;
+        case 2: /**caso nigromante*/
+            gotoxy(0,29);
+            printf("El bicho ataca nigromante:\n");
+            golpeMon = AtaqueBicho2(aux,danoMon);
+            golpe();
+            aux->hp = aux->hp - golpeMon;
+            printf("El bicho te infringe %i\n",golpeMon);
+            break;
+        case 3: /**caso asesino**/
+            gotoxy(0,29);
+            printf("El bicho ataca asesino:\n");
+            golpeMon = AtaqueBicho3(aux,danoMon);
+            golpe();
+            aux->hp = aux->hp - golpeMon;
+            printf("El bicho te infringe %i\n",golpeMon);
+            break;
+        case 4: /**caso hechicero**/
+            gotoxy(0,29);
+            printf("El bicho ataca hechicero\n");
+            golpeMon = AtaqueBicho4(aux,danoMon);
+            golpe();
+            aux->hp = aux->hp - golpeMon;
+            printf("El bicho te infringe %i\n",golpeMon);
+            break;
+        }
+        continuar();
+        limpiaLinea(0,27);
+        limpiaLinea(0,28);
+        //PausaLimpia();
+    }
+    while ( (aux->hp > 0) && ( hpMon > 0 ));
+
+    if(hpMon <= 0)
+    {
+        cascadaTexto("AHHHHH!...",0,linea1);
+        cascadaTexto("Has derrotado a Nergal y Ereshkigal",0,linea2);
+        pasaNivel = 1;
+    }
+    else
+    {
+        cascadaTexto("Has perdido!\n",0,linea1);
+        cascadaTexto("Que un humano se atreviera a enfrentarnos merecia este castigo",0,linea2);
+        cascadaTexto("...te tendremos un lugar reservado en el inframundo",0,linea3);
+        pasaNivel = 0;
+    }
+
+    continuar();
+    limpiaLinea(0,linea1);
+
+    return pasaNivel;
 }
 
 /** \brief Espera un input para continuar */
