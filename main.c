@@ -1340,6 +1340,31 @@ int Jugar(stPersonaje *player)
                 pasaNivel = 0;
             }
             break;
+        case 7:
+
+            do
+            {
+
+                pasaNivel = peleaEsfigie(player);
+
+                if(pasaNivel==0)
+                {
+                    limpiaLinea(0,linea1);
+                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
+                    scanf("\n%c",&controlNivel);
+                }
+            }
+            while(pasaNivel== 0 && controlNivel=='s');
+
+            if(pasaNivel==1)
+            {
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 6 !!!\n",0,linea1);
+                //RecompensaPelea(player,2,150);
+                player->nivelDeJuego = 6;
+                pasaNivel = 0;
+            }
+            break;
 
 
         }
@@ -1484,6 +1509,8 @@ void RecompensaPelea(stPersonaje * aux,int mejoraAtrib,int dinero)
             aux->atribPersonaje.defensa = aux->atribPersonaje.defensa + decisionpuntos;
             decisionpuntos = 0;
             break;
+
+
 
         }
     }
@@ -1976,65 +2003,66 @@ int acertijoEsfigie ()
     int pasaSinPelear=0;
 
     opRand=rand()%6;
-    fadeInOut("\nTe he de presentar un acertijo para probar tu valia!",0,4);
-    fadeInOut("\nSi eres digno y eliges correctamente de las opciones que te ofrecere, te dejare pasar",0,5);
-    fadeInOut("\nDecide con cuidado...\n",0,6);
+    system("cls");
+    cascadaTexto("Te encuentras con La Esfinge, una critatura mitica de destruccion y de mala suerte...",0,3);
+    cascadaTexto("No parece que quiera atacarte, al menos por ahora...",0,4);
+    continuar();
+    limpiaLinea(0,linea1);
+    fadeInOut("Te he de presentar un acertijo para probar tu valia!",0,linea1);
+    fadeInOut("Si eres digno y eliges correctamente de las opciones que te ofrecere, te dejare pasar",0,linea2);
+    fadeInOut("Decide con cuidado...\n",0,linea3);
+
+    continuar();
+    limpiaLinea(0,linea1);
 
     switch(opRand)
     {
     case 1:
+        cascadaTexto("Cual es la criatura que en la maniana camina en cuatro patas, al medio dia en dos y en la noche en tres?",0,9);
         _sleep(500);
-        printf("\nCual es la criatura que en la maniana camina en cuatro patas, al medio dia en dos y en la noche en tres? ");
-        _sleep(1000);
-        printf("\n 1. m-r-b-e-h-o hombre    2. g-t-t-r-o-u-a tortuga     3. o-m-o-n mono\n");
+        fadeIN("1. m-r-b-e-h-o     2. g-t-t-r-o-u-a      3. o-m-o-n ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,1);
         break;
     case 2:
+        cascadaTexto("De noche llegan y no las llamaron. De dia no estan, pero no las robaron ",0,9);
         _sleep(500);
-        printf("\nDe noche llegan y no las llamaron. De dia no estan, pero no las robaron ");
-        _sleep(1000);
-        printf("\n 1. c-h-a-z-e-l-u Lechuzas     2. e-l-l-t-s-a-e-r-s Estrellas    3. n-u-l-a Luna\n");
+        fadeIN("1. c-h-a-z-e-l-u      2. e-l-l-t-s-a-e-r-s     3. n-u-l-a ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,2);
         break;
     case 3:
+        cascadaTexto("Pequenio como un pulgar, en el aire soy ligero. Si no me has visto ya, descuida, porque me escucharas primero.",0,9);
         _sleep(500);
-        printf("\nPequenio como un pulgar, en el aire soy ligero. Si no me has visto ya, descuida, porque me escucharas primero.");
-        _sleep(1000);
-        printf("\n 1. j-o-s-a-h hojas     2. b-j-a-e-a abeja    3. l-i-o-c-r-i-b Colibri\n");
+        fadeIN("1. j-o-s-a-h      2. b-j-a-e-a     3. l-i-o-c-r-i-b ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,3);
         break;
     case 4:
+        cascadaTexto("Incansable y sin fatiga, va de colina en colina. Y aunque ni anda ni corre con piernas, solo hay frio tras su huida.",0,9);
         _sleep(500);
-        printf("\nIncansable y sin fatiga, va de colina en colina. Y aunque ni anda ni corre con piernas, solo hay frio tras su huida.");
-        _sleep(1000);
-        printf("\n 1. e-l-l-t-s-a-e-r Estrella     2. l-o-s Sol    3. b-r-a-c-a Cabra\n");
+        fadeIN("1. e-l-l-t-s-a-e-r      2. l-o-s     3. b-r-a-c-a ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,2);
         break;
     case 5:
+        cascadaTexto("Que nace, pero nunca llora, que discurre sin andar, desemboca sin hablar, que tiene lecho mas nunca reposa?",0,9);
         _sleep(500);
-        printf("\nQue nace, pero nunca llora, que discurre sin andar, desemboca sin hablar, que tiene lecho mas nunca reposa?");
-        _sleep(1000);
-        printf("\n 1. b-r-o-l-a Arbol     2. o-g-l-a Lago    3. o-r-i Rio\n");
+        fadeIN("1. b-r-o-l-a      2. o-g-l-a     3. o-r-i ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,3);
         break;
     case 6:
+        cascadaTexto("Qué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?",0,9);
         _sleep(500);
-        printf("\nQué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?");
-        _sleep(1000);
-        printf("\n 1. n-u-l-a Luna     2. p-e-z-a-e-r-n-s-a Esperanza    3. o-c-p-a Copa\n");
+        fadeIN("1. n-u-l-a      2. p-e-z-a-e-r-n-s-a     3. o-c-p-a ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,1);
         break;
     default:
+        cascadaTexto("Cual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ",0,9);
         _sleep(500);
-        printf("\nCual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ");
-        _sleep(200);
-        printf("\n 1. m-r-b-e-h-o hombre    2. g-t-t-r-o-u-a tortuga     3. o-m-o-n mono\n");
+        fadeIN("1. m-r-b-e-h-o     2. g-t-t-r-o-u-a      3. o-m-o-n   ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,1);
     }
@@ -2054,8 +2082,9 @@ int validacionYresultado (int opcion,int correcta)
 
     while(opcion>3 || opcion<1)
     {
-        printf("\No te he dado esa opcion, te dare otra oportunidad\n");
-        printf("\n Opcion 1.    Opcion 2.     Opcion 3.\n");
+        gotoxy(0,linea1);
+        printf("No te he dado esa opcion, te dare otra oportunidad\n");
+        printf(" Opcion 1.    Opcion 2.     Opcion 3. ");
         scanf("%d",&opcion);
     }
     if (opcion==correcta)
@@ -2074,8 +2103,49 @@ int validacionYresultado (int opcion,int correcta)
         cascadaTexto("y por eso lo pagaras con tu vida!>",0,linea3);
 
     }
+    continuar();
+    limpiaLinea(0,linea1);
+
     return resultado;
 }
+int peleaEsfigie (stPersonaje * player){
+    int pasaNivelSinPelear;
+    int pasaNivel = 0;
+    char accedetienda = 0;
+
+    pasaNivelSinPelear=acertijoEsfigie();
+
+    if(pasaNivelSinPelear==1){
+        pasaNivel=1;
+        limpiaLinea(0,linea1);
+        cascadaTexto("Puedes continuar con tu viaje...",0,linea1);
+    }else{
+        pasaNivel=CicloPelea(player,50,20,"La Efigie");
+    }
+
+    if(pasaNivel == 1)
+    {
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(player,2,100);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(player);
+        }
+
+        accedetienda = 0;
+
+        return 1; /**superó este nivel*/
+    }
+    else
+    {
+        return 0; /**no superó este nivel*/
+    }
+}
+
 /** \brief Secuencia de pelea boss NyE
  *  retorna flag pasa nivel 0 o 1
  * \param aux stPersonaje*
