@@ -42,18 +42,18 @@ typedef struct
 
 typedef struct
 {
-
-    char nombre[15]; /**Nombre que elegió el jugador*/
-    char genero[15];  /**Elegido por el jugador*/
-    char tipoClase[15]; /**guerrero, hechicero, nigromante o asesino*/
+    char nombre[15]; /*Nombre que elegiÃ³ el jugador*/
+    char genero[15];  /*Elegido por el jugador*/
+    char tipoClase[15]; /*guerrero, hechicero, nigromante o asesino*/
     int clase;
-    int nivelDeJuego; /**nivel en que se quedó el jugador*/
-    stAtributos atribPersonaje; /**estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia según la clase elegida**/
+    int nivelDeJuego; /*nivel en que se quedÃ³ el jugador*/
+    stAtributos atribPersonaje; /*estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia segÃºn la clase elegida*/
     stInventario inv;
     int hp;
     int mp;
-    int validez; /**variable flag por si se desea eliminar un registro, no se va a mostrar*/
+    int tiempo;
 } stPersonaje;
+
 
 typedef struct
 {
@@ -61,9 +61,10 @@ typedef struct
     char clase[15];
     int nivelMaximo;
     stInventario invMarcador;
+    int tiempoJuego;
 } stMarcador;
 
-/**Constantes tamaño de estructuras**/
+/**Constantes tamaÃ±o de estructuras**/
 const int DIM = sizeof(stPersonaje); /** para las funciones de archivo**/
 const int DIMMAR = sizeof(stMarcador); /**para las funciones de archivo**/
 
@@ -131,6 +132,8 @@ int cicloPeleaBossN(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[]);
 void RecompensaPelea(stPersonaje *aux, int mejoraAtrib, int dinero); /**sube atrib y el dinero*/
 /**niveles del juego**/
 int Nivel1(stPersonaje *player);
+int nivelBossN (stPersonaje * player);
+void CalcularTiempoJuego(int tiempo);
 int Nivel2(stPersonaje *player);
 int Nivel3(stPersonaje *player);
 int Nivel4(stPersonaje *player);
@@ -221,8 +224,8 @@ void InicioDePersonaje(stPersonaje *player)
         continuar();
 
         player->clase = obtenerClase(player->tipoClase);
-
         player->nivelDeJuego = 1;
+        player->tiempo = 0;
 
         switch (player->clase)
         {
@@ -717,7 +720,7 @@ int CompraBaston(stPersonaje *player, int bastoncant)
         compra = PRECIOBASTON;
         if( player->inv.dinero >= compra)
         {
-            /**el bastón sube 5 de magia*/
+            /**el bastÃ³n sube 5 de magia*/
             player->atribPersonaje.magia = player->atribPersonaje.magia + 5;
             /** y ademas sube 3 de inteligencia*/
             player->atribPersonaje.inteligencia = player->atribPersonaje.inteligencia + 3;
@@ -902,6 +905,7 @@ int CicloPelea(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
     int pasaNivel=0;
     int golpePj = 0;
     int golpeMon = 0;
+    //int hpp = aux->hp;
 
     system("cls");
     fadeIN("*BATALLA*",65,3);
@@ -917,23 +921,19 @@ int CicloPelea(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
 
     do
     {
-//        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
-//        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
-//
         fadeIN("*BATALLA*",65,3);
         gotoxy(65,13);
-        //printf("HP PJ: %i\nMP PJ: %i\n\nHP MON: %i\n\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
-        printf("HP PJ: %i",aux->hp);
+        printf("HP PJ: %03d",aux->hp);
         gotoxy(65,14);
-        printf("MP PJ: %i",aux->mp);
+        printf("MP PJ: %03d",aux->mp);
         gotoxy(65,15);
-        printf("HP MON: %i",hpMon);
+        printf("HP MON: %03d",hpMon);
         gotoxy(65,16);
-        printf("PocionesHP:%i",aux->inv.pocioneshp);
+        printf("PocionesHP:%03d",aux->inv.pocioneshp);
         gotoxy(65,17);
-        printf("PocionesMP: %i",aux->inv.pocionesmp);
+        printf("PocionesMP: %03d",aux->inv.pocionesmp);
 
-        gotoxy(58,21);    //printf("1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+        gotoxy(58,21);
         printf("1:\tAtaque normal");
         gotoxy(58,22);
         printf("2:\tAtaque Especial");
@@ -1175,6 +1175,9 @@ void GuardarProgreso(stPersonaje *player)
 
 int Jugar(stPersonaje *player)
 {
+    int inicioReloj = 0;
+    int finReloj = 0;
+    int tiempoJuego = 0;
     int flagGame = 1; /**mientras esto sea 1, el juego sigue, cuando muere o quiere salir
     se vuelve 0**/
     int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
@@ -1187,6 +1190,7 @@ int Jugar(stPersonaje *player)
 
     while(flagGame == 1)
     {
+        inicioReloj = clock();
 
         switch(player->nivelDeJuego)
         {
@@ -1201,6 +1205,7 @@ int Jugar(stPersonaje *player)
                 {
                     limpiaLinea(0,linea1);
                     cascadaTexto("Has superado el nivel 1 !!!\n",0,linea1);
+                    //RecompensaPelea(player,2,150);
                     player->nivelDeJuego = 2;
 
                 }
@@ -1209,7 +1214,6 @@ int Jugar(stPersonaje *player)
                 {
                     limpiaLinea(0,linea1);
                     cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
-                    RecompensaPelea(player,2,150);
                     scanf("\n%c",&controlNivel);
                 }
             }
@@ -1371,8 +1375,12 @@ int Jugar(stPersonaje *player)
         }
 
         flagGame = 0;
+        finReloj = clock();
 
     }
+    tiempoJuego = (int)(finReloj - inicioReloj)/CLOCKS_PER_SEC;
+
+    player->tiempo = tiempoJuego;
 
     return flagGame;
 }
@@ -1383,6 +1391,7 @@ int AtaqueBicho1(stPersonaje *aux,int danoMon)
     int ataque = 0;
     int resistenciapj = (int) aux->atribPersonaje.defensa/2;
 
+
     ataque = (rand()%10 + danoMon) - resistenciapj;
 
     return ataque;
@@ -1390,7 +1399,7 @@ int AtaqueBicho1(stPersonaje *aux,int danoMon)
 int AtaqueBicho2(stPersonaje *aux,int danoMon)
 {
     int ataque = 0;
-    int resistenciapj = (int)aux->atribPersonaje.defensa/2;
+    int resistenciapj = (int) (aux->atribPersonaje.defensa)/2;
 
     ataque = (rand()%7 + danoMon) - resistenciapj;
 
@@ -1399,7 +1408,7 @@ int AtaqueBicho2(stPersonaje *aux,int danoMon)
 int AtaqueBicho3(stPersonaje * aux, int danoMon)
 {
     int ataque = 0;
-    int resistenciapj = (int)aux->atribPersonaje.destreza;
+    int resistenciapj = (int) aux->atribPersonaje.destreza;
 
     ataque = (rand()%7 + danoMon) - resistenciapj;
 
@@ -1762,7 +1771,7 @@ stPersonaje CargaDePersonaje(int registroPartida)
     {
         /**leer desde el principio del archivo**/
         rewind(pfile);
-        /**bajar hasta la partida que indicó el jugador por parametro**/
+        /**bajar hasta la partida que indicÃ³ el jugador por parametro**/
         limitesArchivo = fseek(pfile,DIM*(registroPartida - 1),SEEK_SET);
         leerArchivo = fread(&aux,DIM,1,pfile);
 
@@ -1808,11 +1817,11 @@ int Nivel1(stPersonaje *player)
 
         accedetienda = 0;
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 int Nivel2(stPersonaje *player)
@@ -1838,11 +1847,11 @@ int Nivel2(stPersonaje *player)
 
         accedetienda = 0;
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -1868,11 +1877,11 @@ int Nivel3(stPersonaje *player)
 
         accedetienda = 0;
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -1898,11 +1907,11 @@ int Nivel4(stPersonaje *player)
 
         accedetienda = 0;
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -1928,11 +1937,11 @@ int Nivel5(stPersonaje *player)
 
         accedetienda = 0;
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2055,14 +2064,14 @@ int acertijoEsfigie ()
         pasaSinPelear=validacionYresultado(opcion,3);
         break;
     case 6:
-        cascadaTexto("Qué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?",0,9);
+        cascadaTexto("QuÃ© puede ser lleno mas nunca se vacia? Â¿QuÃ© cosa tira pero empujar, nunca?",0,9);
         _sleep(500);
         fadeIN("1. n-u-l-a      2. p-e-z-a-e-r-n-s-a     3. o-c-p-a ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,1);
         break;
     default:
-        cascadaTexto("Cual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ",0,9);
+        cascadaTexto("Cual es la criatura que en la maÃ±ana camina en cuatro patas, al medio dÃ­a en dos y en la nocheen tres? ",0,9);
         _sleep(500);
         fadeIN("1. m-r-b-e-h-o     2. g-t-t-r-o-u-a      3. o-m-o-n   ",0,11);
         scanf("%d",&opcion);
@@ -2140,11 +2149,11 @@ int peleaEsfigie (stPersonaje * player){
 
         accedetienda = 0;
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2659,6 +2668,35 @@ int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
 
     return pasaNivel;
 }
+int nivelBossN (stPersonaje * player)
+{
+    int pasaNivel = 0; //valor desde ciclo de pelea, si recibe 1 pasa de nivel/
+    char accedetienda = 0;
+
+    pasaNivel = cicloPeleaBossN(player,300,200,"Kitsune");
+
+    if(pasaNivel == 1)
+    {
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(player,6,300);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(player);
+        }
+
+        accedetienda = 0;
+
+        return 1; //superÃ³ este nivel*/
+    }
+    else
+    {
+        return 0; //no superÃ³ este nivel*/
+    }
+}
 
 void guardarEnArchivoMarcadores(stPersonaje *aux)
 {
@@ -2676,6 +2714,8 @@ void guardarEnArchivoMarcadores(stPersonaje *aux)
         Aguardar.nivelMaximo = aux->nivelDeJuego;
 
         Aguardar.invMarcador = aux->inv;
+
+        Aguardar.tiempoJuego = aux->tiempo;
 
         escribirArchivo = fwrite(&Aguardar,DIMMAR,1,archi);
 
@@ -2767,4 +2807,27 @@ void mostrarUnMarcador(stMarcador aux)
     printf("Pociones hp: %d\n",aux.invMarcador.pocioneshp);
     printf("Pociones mp: %d\n",aux.invMarcador.pocionesmp);
     printf("Nivel maximo superado: %d\n",aux.nivelMaximo);
+}
+void CalcularTiempoJuego(int tiempo)
+{
+    int horas = 0;
+    int minutos = 0;
+
+    if(tiempo > 3600)
+    {
+        horas = tiempo/3600;
+
+        minutos = (tiempo - 3600*horas)/60;
+
+        printf("Has jugado %i horas y %i minutos.\n",horas,minutos);
+    }
+    else if(tiempo > 60)
+    {
+        minutos = tiempo/60;
+        printf("Has jugado %i minutos.\n",minutos);
+    }
+    else
+    {
+        printf("Has jugado %i segundos.\n",tiempo);
+    }
 }
