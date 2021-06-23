@@ -383,7 +383,8 @@ void Tienda(stPersonaje *player)
 
     do
     {
-        printf("\nBienvenido/a a la tienda! Que desea??\n");
+        system("cls");
+        fadeIN("\nBienvenido/a a la tienda! Que desea??\n",0,6);
 
         printf("\nDINERO: %i\n",player->inv.dinero);
         printf("\nPOCIONES HP en inventario: %i\n",player->inv.pocioneshp);
@@ -870,7 +871,7 @@ int CompraDaga(stPersonaje *player, int dagacant)
 
 void MostrarPersonaje(stPersonaje *player)
 {
-
+    gotoxy(0,6);
     printf("\nNombre:..............:\t\t%s",player->nombre);
     printf("\nGenero:..............:\t\t%s",player->genero);
     printf("\nClase:...............:\t\t%s",player->tipoClase);
@@ -1422,14 +1423,15 @@ void RecompensaPelea(stPersonaje * aux,int mejoraAtrib,int dinero)
     MostrarPersonaje(aux);
     int elijeatrib = 0;
     int decisionpuntos = 0;
-    printf("**Recibes %i de dinero.\n",dinero);
+    printf("\n\n**Recibes %i de dinero.\n",dinero);
     aux->inv.dinero = aux->inv.dinero + dinero;
-    printf("**Puedes mejorar atributos!!\n");
+    fadeIN("**Puedes mejorar atributos!!\n",0,whereY()+1);
     printf("1:\tMejorar fuerza\n2:\tMejorar inteligencia\n3:\tMejorar destreza\n4:\tMejorar magia\n5:\tMejorar defensa\n");
 
     do
     {
         printf("**Tienes %i puntos para gastar:\n",mejoraAtrib);
+        fadeIN("En que deseas gastarlos? 1.Fuerza 2.Inteligencia 3.Destreza 4.Magia 5.Defensa",0,whereY()+1);
         scanf("%i",&elijeatrib);
 
         switch(elijeatrib)
