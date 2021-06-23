@@ -43,36 +43,28 @@ typedef struct
 
 typedef struct
 {
-    int idMarcador;
-    int idPersonaje; /**id para relacionar con stMarcadores*/
+
     char nombre[15]; /**Nombre que elegió el jugador*/
     char genero[15];  /**Elegido por el jugador*/
-    char tipoClase[15]; /**guerrero, hechicero, nigromante o asesino**/
+    char tipoClase[15]; /**guerrero, hechicero, nigromante o asesino*/
     int clase;
     int nivelDeJuego; /**nivel en que se quedó el jugador*/
-    stAtributos atribPersonaje; /**estructura anidada,dentro tiene otra estructura,
-    que tiene atributos como fuerza,destreza. Varia según la clase elegida*/
+    stAtributos atribPersonaje; /**estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia según la clase elegida**/
     stInventario inv;
     int hp;
     int mp;
-} stPersonaje;
+    int validez; /**variable flag por si se desea eliminar un registro, no se va a mostrar*/
 
-typedef struct /** IN PROGREZ*/
-{
-    int idMarcador;
-    int idPersonaje;
-    long Puntaje; /**entero largo para almacenar cifras como 1123241**/
-    int nivelMaximo;
-} stMarcador;
+} stPersonaje;
 
 typedef struct
 {
-    stPersonaje pj; /**guarda el pj de la partida, no se va a mostrar**/
     char nombre[15];
     char clase[15];
-    int nivelJuego;
-    int validez; /**variable flag por si se desea eliminar un registro, no se va a mostrar**/
-} stGuardado;
+    int nivelMaximo;
+    stInventario invMarcador;
+
+} stMarcador;
 
 /**Constantes tamaño de estructuras**/
 const int DIM = sizeof(stPersonaje); /** para las funciones de archivo**/
@@ -2348,4 +2340,82 @@ int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
 
 
     return pasaNivel;
+}
+
+void guardarEnArchivoMarcadores(stPersonaje aux)
+{
+    FILE * archivo=fopen(MARCADORES,"ab");
+
+    stMarcador A;
+
+    if(archivo!=NULL)
+    {
+        strcpy(A.clase,aux.tipoClase);
+
+        strcpy(A.nombre,aux.nombre);
+
+        A.nivelMaximo=aux.nivelDeJuego;
+
+        A.invMarcador=aux.inv;
+
+
+        fwrite(&A,DIMMAR,1,archivo);
+
+
+        fclose(archivo);
+
+    }
+
+}
+
+void mostrarMarcadores ();{
+
+    FILE * archi=fopen(MARCADORES,"rb");
+    int opc=0;
+    printf("Mostar todo 1 buscar por nombre 2\n");
+    char nombre [];
+    stMarcador aux;
+
+    if(archi!=NULL)
+    {
+
+        switch (opc)
+        {
+        case 1:
+            while(fread(&aux,DIMMAR,1,archi)>0)
+            {
+                mostrarMarcador(aux);
+            }
+            break;
+
+        case 2:
+            printf("ingrese el nombre que desea buscar\n");
+            fflush(stdin);
+            gets(nombre);
+             while(fread(&aux,DIMMAR,1,archi)>0)
+            {
+                if(strcmp(aux,nombre)=0)
+                {
+                    mostrarMarcador(aux);
+                }
+            }
+            break;
+        }
+        fclose(archi);
+    }
+
+}
+
+
+
+void mostrarMarcador(stMarcador aux)
+{
+    printf("%s",aux.nombre);
+    printf("%s",aux.clase);
+    printf("%s",aux.invMarcador.arma);
+    printf("%d",aux.invMarcador.dinero);
+    printf("%s",aux.invMarcador.escudo);
+    printf("%d",aux.invMarcador.pocioneshp);
+    printf("%d",aux.invMarcador.pocionesmp);
+    printf("%d",aux.nivelMaximo);
 }
