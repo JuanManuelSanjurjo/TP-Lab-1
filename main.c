@@ -2809,3 +2809,5 @@ void CalcularTiempoJuego(int tiempo)
         printf("Has jugado %i segundos.\n",tiempo);
     }
 }
+
+///juan se la come
