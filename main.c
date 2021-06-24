@@ -105,7 +105,7 @@ int CompraBaston(stPersonaje *player,int bastoncant);
 int CompraDaga(stPersonaje *player,int dagacant);
 /**menu  principal*/
 /**nuevo juego**/
-void NuevoJuego(); /**incluye crear personaje**/
+void NuevoJuego(stPersonaje *player); /**incluye crear personaje**/
 /**creacion personaje*/
 void InicioDePersonaje(stPersonaje *player);
 int obtenerClase(char clase[]);
@@ -168,9 +168,7 @@ int main()
 
     do
     {
-
-
-
+        system("cls");
 
         hidecursor(1);
         fadeINTimed("1:NUEVO JUEGO",65,20,80);
@@ -195,7 +193,9 @@ int main()
             CargaJuego(&partida);
             break;
         case 3:
+            color(7);
             mostrarMarcadores();
+            continuar();
             break;
         case 4:
             cascadaTexto("Gracias por jugar The Leyend Of C!!",55,22);
@@ -257,6 +257,8 @@ void InicioDePersonaje(stPersonaje *player)
         case 3:
             atributosAsesino(&player->atribPersonaje);
             strcpy(player->inv.arma,"Daga basica");
+            strcpy(player->inv.escudo," ");
+
             break;
         case 4:
             atributosHechicero(&player->atribPersonaje);
@@ -2683,7 +2685,7 @@ int nivelBossN (stPersonaje * player)
 
 void guardarEnArchivoMarcadores(stPersonaje *aux)
 {
-    FILE * archi = fopen(MARCADORES,"wb");
+    FILE * archi = fopen(MARCADORES,"ab");
     int cerrarArchivo = 0;
     int escribirArchivo = 0;
     stMarcador Aguardar;
