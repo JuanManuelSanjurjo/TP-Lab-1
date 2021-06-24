@@ -21,7 +21,7 @@ typedef struct
     int destreza;
     int magia;
     int defensa;
-} stAtributos ;
+} stAtributos ; ///Estructura N1 la cual se usa en stPersonaje, define los atributos del personaje el cual iran cambiando
 
 typedef struct
 {
@@ -30,21 +30,21 @@ typedef struct
     int pocionesmp;
     char arma[20];
     char escudo[20];
-} stInventario;
+} stInventario; ///Estructura N2, Es el inventario del personaje, la cual tambien ira modificandose en el correr del juego
 
 typedef struct
 {
-    char nombre[15]; /*Nombre que elegiÃ³ el jugador*/
-    char genero[15];  /*Elegido por el jugador*/
-    char tipoClase[15]; /*guerrero, hechicero, nigromante o asesino*/
-    int clase;
-    int nivelDeJuego; /*nivel en que se quedÃ³ el jugador*/
-    stAtributos atribPersonaje; /*estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia segÃºn la clase elegida*/
-    stInventario inv;
-    int hp;
-    int mp;
-    int tiempo;
-} stPersonaje;
+    char nombre[15];                                            /**Nombre que elegió el jugador*/
+    char genero[15];                                            /**Elegido por el jugador*/
+    char tipoClase[15];                                         /**guerrero, hechicero, nigromante o asesino*/
+    int clase;                                                  /**Entero el cual se asigna el numero de clase para el manejo de ataque y defensa*/
+    int nivelDeJuego;                                           /**nivel en que se quedó el jugador*/
+    stAtributos atribPersonaje;                                 /**estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia según la clase elegida*/
+    stInventario inv;                                           /**Estructura inventario*/
+    int hp;                                                     /**Vida del personaje*/
+    int mp;                                                     /**Mana del personaje*/
+    int tiempo;                                                 /**Tiempo jugado*/
+} stPersonaje;                                                  /**Estructura de personaje con la cual se juega*/
 
 
 typedef struct
@@ -54,9 +54,9 @@ typedef struct
     int nivelMaximo;
     stInventario invMarcador;
     int tiempoJuego;
-} stMarcador;
+} stMarcador;                                                   /**Estructura de marcadores se guarda cuando termina de jugar*/
 
-/**Constantes tamaÃ±o de estructuras**/
+/**Constantes tamaño de estructuras**/
 const int DIM = sizeof(stPersonaje); /** para las funciones de archivo**/
 const int DIMMAR = sizeof(stMarcador); /**para las funciones de archivo**/
 
@@ -70,9 +70,6 @@ const int linea3=48;
 void fadeIN(char frase[],int x,int y);
 void fadeINTimed(char frase[],int x,int y, int time);
 void continuar();
-int acertijoEsfigie();
-int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon);
-int validacionYresultado (int opcion,int correcta);
 void fadeOUT(char frase[],int x,int y);
 void fadeInOut (char frase[],int x,int y);
 void cascadaTexto(char texto[], int x,int y);
@@ -95,9 +92,11 @@ int CompraEscudo(stPersonaje *player,int escudocant);
 int CompraCalavera(stPersonaje *player,int calaveracant);
 int CompraBaston(stPersonaje *player,int bastoncant);
 int CompraDaga(stPersonaje *player,int dagacant);
+
 /**menu  principal*/
 /**nuevo juego**/
-void NuevoJuego(stPersonaje *player); /**incluye crear personaje**/
+void NuevoJuego(stPersonaje *player);                   /**incluye crear personaje**/
+
 /**creacion personaje*/
 void InicioDePersonaje(stPersonaje *player);
 int obtenerClase(char clase[]);
@@ -105,23 +104,27 @@ void AtributosGuerrero(stAtributos *aux);
 void AtributosHechicero(stAtributos *aux);
 void AtributosNigromante(stAtributos *aux);
 void AtributosAsesino(stAtributos *aux);
+void MostrarPersonaje(stPersonaje *player)
+
 /**cargar juego**/
-void CargaJuego(); /**incluye cargar personaje ya creado desde el archivo**/
-void MuestraArchivoSave(); /**Muestra todo el archivo save para ver los registros (partidas)*/
-void MuestraUnaPartida(stPersonaje player); /**Muestra las partidas, una parte de stPersonaje*/
-stPersonaje CargaDePersonaje(int registroPartida); /**carga un registro para copiar a stPersonaje*/
-void MuestraArchivoMarcadores(); /**abre el archivo y muestra una tabla de posiciones**/
-void MuestraUnMarcador(stMarcador aux);
+void CargaJuego(stPersonaje*player);                    /**incluye cargar personaje ya creado desde el archivo**/
+void MuestraArchivoSave();                              /**Muestra todo el archivo save para ver los registros (partidas)*/
+void MuestraUnaPartida(stPersonaje player);             /**Muestra las partidas, una parte de stPersonaje*/
+stPersonaje CargaDePersonaje(int registroPartida);      /**carga un registro para copiar a stPersonaje*/
+void MuestraArchivoMarcadores();                        /**abre el archivo y muestra una tabla de posiciones**/
+void MuestraUnMarcador(stMarcador aux);                 /**Muestra los marcadores*/
+
 /**juego**/
-void GuardarProgreso(stPersonaje *player); /**guarda progreso en el archivo*/
-int CuentaRegistros(); /**para guardar la partida**/
-void CrearNuevoSlot(stPersonaje * player); /**para guardar la partida*/
-void GuardarSiguienteSlot(stPersonaje *player); /**para guardar la partida*/
-int Jugar(stPersonaje *player); /**va a ser llamada ya por NuevoJuego o CargarJuego, contiene todos los
-niveles, la tienda y todo el gameplay. Devuelve flag para saber si sigue jugando o murio*/
+void GuardarProgreso(stPersonaje *player);              /**guarda progreso en el archivo*/
+int CuentaRegistros();                                  /**para guardar la partida**/
+void CrearNuevoSlot(stPersonaje * player);              /**para guardar la partida*/
+void GuardarSiguienteSlot(stPersonaje *player);         /**para guardar la partida*/
+int Jugar(stPersonaje *player);                         /**va a ser llamada ya por NuevoJuego o CargarJuego, contiene todos los
+                                                        niveles, la tienda y todo el gameplay. Devuelve flag para saber si sigue jugando o murio*/
 int CicloPelea(stPersonaje *aux, int hpMon, int danoMon, char nombreMon[]);
 int cicloPeleaBossN(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[]);
-void RecompensaPelea(stPersonaje *aux, int mejoraAtrib, int dinero); /**sube atrib y el dinero*/
+void RecompensaPelea(stPersonaje *aux, int mejoraAtrib, int dinero);        /**sube atrib y el dinero*/
+
 /**niveles del juego**/
 int Nivel1(stPersonaje *player);
 int nivelBossN (stPersonaje * player);
@@ -129,19 +132,38 @@ void CalcularTiempoJuego(int tiempo);
 int Nivel2(stPersonaje *player);
 int Nivel3(stPersonaje *player);
 int Nivel4(stPersonaje *player);
-int Nivel5(stPersonaje *player); /**primer boss*/
+int Nivel5(stPersonaje *player);
+int Nivel7(stPersonaje *player);
+int Nivel8 (stPersonaje * player);
+int Nivel9 (stPersonaje * player);
+int Nivel11 (stPersonaje * player);
+int Nivel12 (stPersonaje * player);
+int Nivel13 (stPersonaje * player);
+int Nivel14 (stPersonaje * player);
+int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon);  /**primer boss*/
+int acertijoEsfigie ()                                          /**Segundo boss*/
+int validacionYresultado (int opcion,int correcta);
+int peleaEsfigie (stPersonaje * player);
+int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[]);
+int nivelBossN (stPersonaje * player);
+int acertijoEsfigie();
+
 /**ataque pj**/
 int AtaqueBasico(stPersonaje *aux);
 int AtaqueCargado(stPersonaje *aux);
+
 /**ataque bicho**/
 int AtaqueBicho1(stPersonaje *aux,int danoMon);
 int AtaqueBicho2(stPersonaje * aux,int danoMon);
 int AtaqueBicho3(stPersonaje *aux,int danoMon);
 int AtaqueBicho4(stPersonaje *aux,int danoMon);
+
 /**utilidades**/
 void PausaLimpia();
+
 /**Historia del juego**/
 void Introduccion();
+
 /**marcadores*/
 void mostrarMarcadores();
 void mostrarUnMarcador(stMarcador aux);
@@ -149,10 +171,10 @@ void guardarEnArchivoMarcadores(stPersonaje *aux);
 
 int main()
 {
-    SetConsoleTitle("THE LEYEND OF C");
+    SetConsoleTitle("THE LEGEND OF C");
     srand(time(NULL));
     system("mode 150, 50");
-    //pantallaInicio();
+    pantallaInicio();
     int controlmenu=0;
 
     stPersonaje partida; /**estructura de la partida: se modifica segun la save o se crea
@@ -190,7 +212,7 @@ int main()
             continuar();
             break;
         case 4:
-            cascadaTexto("Gracias por jugar The Leyend Of C!!",55,22);
+            cascadaTexto("Gracias por jugar The Legend Of C!!",55,22);
             _sleep(500);
             gotoxy(0,linea1);
             exit(0);
@@ -200,14 +222,10 @@ int main()
     }
     while(controlmenu!=4);
 
-    //cascadaTexto("Gracias por jugar The Leyend Of C!!",55,22);
-
-    //getchar();
-
     return 0;
 }
 
-void InicioDePersonaje(stPersonaje *player)
+void InicioDePersonaje(stPersonaje *player) ///Crea un personaje nuevo, se invoca de Nuevo Juego menu
 {
     /**crea una nueva save**/
 
@@ -231,8 +249,8 @@ void InicioDePersonaje(stPersonaje *player)
         continuar();
 
         player->clase = obtenerClase(player->tipoClase);
-        player->nivelDeJuego = 1;
-        player->tiempo = 0;
+        player->nivelDeJuego = 1;                           ///NIvel del juego 1 ya que arranca por nivel 1 dentro del switch de juego
+        player->tiempo = 0;                                 ///Se setea en 0 el tiempo de juego
 
         switch (player->clase)
         {
@@ -259,7 +277,7 @@ void InicioDePersonaje(stPersonaje *player)
             break;
         }
 
-        if(player->clase == 1 || player->clase == 3)
+        if(player->clase == 1 || player->clase == 3)        ///cambia los atributos dependiendo la clase
         {
             player->hp = 100;
             player->mp = 80;
@@ -296,7 +314,7 @@ void InicioDePersonaje(stPersonaje *player)
 }
 
 
-int obtenerClase(char clase[])
+int obtenerClase(char clase[])  ///Obtiene una clase la cual le da atributos al personaje
 {
     int opc = 0;
     int tipo =0;
@@ -319,7 +337,7 @@ int obtenerClase(char clase[])
     cascadaTexto("Ya lo veremos...\n",65,whereY()+2);
     continuar();
 
-    switch (opc)
+    switch (opc)                    ///Se le asigna la clase al string clase []
     {
     case 1:
         strcpy(clase,"Guerrero");
@@ -338,7 +356,7 @@ int obtenerClase(char clase[])
     return opc;
 }
 
-void atributosGuerrero (stAtributos * aux)
+void atributosGuerrero (stAtributos * aux)  ///De acuerdo a la clase se la asignan atributos con las siguientes funciones para cada clase
 {
     aux->destreza=rand()%5+11;
     aux->fuerza=rand()%10+11;
@@ -375,8 +393,8 @@ void atributosHechicero (stAtributos * aux)
 }
 void Tienda(stPersonaje *player)
 {
-    int seleccion = 0; /**control case*/
-    char control = 0; /**control menu**/
+    int seleccion = 0;                                              /**control case*/
+    char control = 0;                                               /**control menu**/
     char nombres[FIL][COL];
     int articulos[ART];
 
@@ -430,7 +448,7 @@ void Tienda(stPersonaje *player)
                 printf("NO HAY MAS POCIONES DE MP.\n");
             }
             break;
-        case 3:
+        case 3:                             ///comprar espada para guerrero
             if(player->clase == 1)
             {
                 if(articulos[2] == 1)
@@ -447,7 +465,7 @@ void Tienda(stPersonaje *player)
                 printf("SOLO LOS GUERREROS PUEDEN COMPRAR LA ESPADA!\n");
             }
             break;
-        case 4:
+        case 4:                              ///comprar baston para mago
             if(player->clase == 4)
             {
                 if(articulos[3] == 1)
@@ -464,7 +482,7 @@ void Tienda(stPersonaje *player)
                 printf("SOLO LOS HECHICEROS PUEDEN COMPRAR EL BASTON.\n");
             }
             break;
-        case 5:
+        case 5:                                 ///Comprar calavera para nigromante
             if(player->clase == 2)
             {
                 if(articulos[4] == 1)
@@ -481,7 +499,7 @@ void Tienda(stPersonaje *player)
                 printf("SOLO LOS NIGROMANTES PUEDEN COMPRAR LA CALAVERA.\n");
             }
             break;
-        case 6:
+        case 6:                                 ///Comprar escudo para guerrero
             if(player->clase == 1 || player->clase == 4)
             {
                 if(articulos[5] == 1)
@@ -498,7 +516,7 @@ void Tienda(stPersonaje *player)
                 printf("SOLO LOS GUERREROS O LOS MAGOS PUEDEN COMPRAR ESCUDO.\n");
             }
             break;
-        case 7:
+        case 7:                                         ///Comprar hacha para guerrero
             if(player->clase == 1)
             {
                 if(articulos[6] == 1)
@@ -515,7 +533,7 @@ void Tienda(stPersonaje *player)
                 printf("SOLO LOS GUERREROS PUEDEN COMPRAR EL HACHA.\n");
             }
             break;
-        case 8:
+        case 8:                                            ///Comprar dagas para asesino
             if(player->clase == 3)
             {
                 if(articulos[7] > 0 )
@@ -551,7 +569,7 @@ void Tienda(stPersonaje *player)
     while( control =='s');
 }
 
-int CompraPocionesHp(stInventario *inv,int pocioneshpcant)
+int CompraPocionesHp(stInventario *inv,int pocioneshpcant)      ///Funcion que asigna pociones al personaje
 {
     int preciohp = 20;
     int seleccion = 0;
@@ -617,7 +635,7 @@ int CompraPocionesHp(stInventario *inv,int pocioneshpcant)
     return pocioneshpcant;
 }
 
-int CompraPocionesMP(stInventario *inv,int pocionesmpcant)
+int CompraPocionesMP(stInventario *inv,int pocionesmpcant)              ///Funciones que asigna pociones de mana
 {
     int preciomp = 20;
     int seleccion = 0;
@@ -683,7 +701,7 @@ int CompraPocionesMP(stInventario *inv,int pocionesmpcant)
     return pocionesmpcant;
 }
 
-int CompraEspada(stPersonaje *player, int espadacant)
+int CompraEspada(stPersonaje *player, int espadacant)                   ///Funcion para comprar espada
 {
     int precioespada = 50;
     int seleccion = 0;
@@ -717,7 +735,7 @@ int CompraEspada(stPersonaje *player, int espadacant)
     return espadacant;
 }
 
-int CompraBaston(stPersonaje *player, int bastoncant)
+int CompraBaston(stPersonaje *player, int bastoncant)                   ///Funcion para comprar baston
 {
     const int preciobaston = 50;
     int seleccion = 0;
@@ -732,7 +750,7 @@ int CompraBaston(stPersonaje *player, int bastoncant)
         compra = preciobaston;
         if( player->inv.dinero >= compra)
         {
-            /**el bastÃ³n sube 5 de magia*/
+            /**el bastón sube 5 de magia*/
             player->atribPersonaje.magia = player->atribPersonaje.magia + 5;
             /** y ademas sube 3 de inteligencia*/
             player->atribPersonaje.inteligencia = player->atribPersonaje.inteligencia + 3;
@@ -751,7 +769,7 @@ int CompraBaston(stPersonaje *player, int bastoncant)
     return bastoncant;
 }
 
-int CompraCalavera(stPersonaje *player, int calaveracant)
+int CompraCalavera(stPersonaje *player, int calaveracant)           ///Funcion para comprar calavera
 {
     int preciocalavera = 50;
     int seleccion = 0;
@@ -785,7 +803,7 @@ int CompraCalavera(stPersonaje *player, int calaveracant)
     return calaveracant;
 }
 
-int CompraEscudo(stPersonaje *player, int escudocant)
+int CompraEscudo(stPersonaje *player, int escudocant)                       ///Funcion para comprar escudo
 {
     int precioescudo = 50;
     int seleccion = 0;
@@ -819,7 +837,7 @@ int CompraEscudo(stPersonaje *player, int escudocant)
     return escudocant;
 }
 
-int CompraHacha(stPersonaje *player, int hachacant)
+int CompraHacha(stPersonaje *player, int hachacant)                     ///Funcion para comprar hacha
 {
     int preciohacha = 50;
     int seleccion = 0;
@@ -853,7 +871,7 @@ int CompraHacha(stPersonaje *player, int hachacant)
     return hachacant;
 }
 
-int CompraDaga(stPersonaje *player, int dagacant)
+int CompraDaga(stPersonaje *player, int dagacant)                       ///Funcion para comprar daga
 {
     int preciodaga = 50;
     int seleccion = 0;
@@ -887,7 +905,7 @@ int CompraDaga(stPersonaje *player, int dagacant)
     return dagacant;
 }
 
-void MostrarPersonaje(stPersonaje *player)
+void MostrarPersonaje(stPersonaje *player)                                      ///Muestra el personaje en su totalidad con un puntero
 {
     gotoxy(0,6);
     printf("\nNombre:..............:\t\t%s",player->nombre);
@@ -914,17 +932,16 @@ void MostrarPersonaje(stPersonaje *player)
 
 }
 
-int CicloPelea(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
+int CicloPelea(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])                 ///Funcion basica de pelea la cual es llamada por todos los niveles
 {
     int opc=0;
     int pasaNivel=0;
     int golpePj = 0;
     int golpeMon = 0;
-    //int hpp = aux->hp;
 
     system("cls");
     fadeIN("*BATALLA*",65,3);
-    cascadaTexto("Te encuentras con ",0,whereY()+2); // %s\n",nombreMon);
+    cascadaTexto("Te encuentras con ",0,whereY()+2);
     gotoxy(whereX(),whereY());
     printf("%s",nombreMon);
     cascadaTexto("Su hp es de: ",0,whereY()+1);
@@ -1038,7 +1055,6 @@ int CicloPelea(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
         continuar();
         limpiaLinea(0,27);
         limpiaLinea(0,28);
-        //PausaLimpia();
 
     }
     while ( (aux->hp > 0) && ( hpMon > 0 ));
@@ -1060,7 +1076,7 @@ int CicloPelea(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
     return pasaNivel;
 }
 
-int AtaqueBasico(stPersonaje *aux)
+int AtaqueBasico(stPersonaje *aux)                          ///Calcula el ataque basico del personaje
 {
     int ataque1 = 0;
 
@@ -1087,7 +1103,7 @@ int AtaqueBasico(stPersonaje *aux)
     return ataque1;
 }
 
-int AtaqueCargado(stPersonaje *aux)
+int AtaqueCargado(stPersonaje *aux)                 ///Calcula el ataque cargado del personaje
 {
     int ataque2 = 0;
 
@@ -1117,7 +1133,7 @@ int AtaqueCargado(stPersonaje *aux)
     return ataque2;
 }
 
-void NuevoJuego(stPersonaje *player)
+void NuevoJuego(stPersonaje *player)                                        ///Funcion que organiza las batallas y demas funciones
 {
     int correjuego = 1;
     char decisionguarda = 0;
@@ -1131,8 +1147,6 @@ void NuevoJuego(stPersonaje *player)
     MostrarPersonaje(player);
     continuar();
     system("cls");
-
-    //PausaLimpia();
 
     Introduccion(); /**te muestra la introduccion de la historia**/
     continuar();
@@ -1169,7 +1183,7 @@ void NuevoJuego(stPersonaje *player)
 
 }
 
-void GuardarProgreso(stPersonaje *player)
+void GuardarProgreso(stPersonaje *player)                                             ///Guarda el progreso realizado en la partida
 {
     /**el maximo de slots para guardar la partida son 3*/
     int haypartidas = 0;
@@ -1188,7 +1202,7 @@ void GuardarProgreso(stPersonaje *player)
     }
 }
 
-int Jugar(stPersonaje *player)
+int Jugar(stPersonaje *player)                                                      ///Organiza los niveles de juego, y llama a los distintos niveles
 {
     int inicioReloj = 0;
     int finReloj = 0;
@@ -1220,7 +1234,6 @@ int Jugar(stPersonaje *player)
             {
                 limpiaLinea(0,linea1);
                 cascadaTexto("Has superado el nivel 1 !!!\n",0,linea1);
-                //RecompensaPelea(player,2,150);
                 player->nivelDeJuego = 2;
 
             }
@@ -1295,14 +1308,14 @@ int Jugar(stPersonaje *player)
             }
             break;
         case 6:
-            pasaNivel = nergalYereshkigal(player,100,20);
+            pasaNivel = nergalYereshkigal(player,150,60);
 
             if(pasaNivel==1)
             {
                 limpiaLinea(0,linea1);
                 cascadaTexto("Has superado el nivel 6 !!!\n",0,linea1);
                 RecompensaPelea(player,2,150);
-                player->nivelDeJuego = 6;
+                player->nivelDeJuego = 7;
             }
             else
             {
@@ -1310,14 +1323,13 @@ int Jugar(stPersonaje *player)
             }
             break;
         case 7:
-
-            pasaNivel = peleaEsfigie(player);
+            pasaNivel = Nivel7(player);
 
             if(pasaNivel==1)
             {
                 limpiaLinea(0,linea1);
-                cascadaTexto("Has superado el nivel 6 !!!\n",0,linea1);
-                player->nivelDeJuego = 6;
+                cascadaTexto("Has superado el nivel 7 !!!",0,linea1);
+                player->nivelDeJuego = 8;
             }
             else
             {
@@ -1325,8 +1337,130 @@ int Jugar(stPersonaje *player)
             }
             break;
 
+        case 8:
+            pasaNivel = Nivel8(player);
 
+            if(pasaNivel==1)
+            {
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 8 !!!",0,linea1);
+                player->nivelDeJuego = 9;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
+            }
+            break;
+        case 9:
 
+            pasaNivel = Nivel9(player);
+
+            if(pasaNivel==1)
+            {
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 9 !!!",0,linea1);
+                player->nivelDeJuego = 10;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
+            }
+            break;
+
+        case 10:
+
+            pasaNivel = peleaEsfigie(player);
+
+            if(pasaNivel==1)
+            {
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 10 !!!\n",0,linea1);
+                player->nivelDeJuego = 11;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
+            }
+            break;
+
+        case 11:
+             pasaNivel = Nivel11(player);
+
+            if(pasaNivel==1)
+            {
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 11 !!!",0,linea1);
+                player->nivelDeJuego = 12;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
+            }
+            break;
+
+        case 12:
+            pasaNivel = Nivel12(player);
+
+            if(pasaNivel==1)
+            {
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 12 !!!",0,linea1);
+                player->nivelDeJuego = 13;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
+            }
+            break;
+
+        case 13:
+            pasaNivel = Nivel13 (player);
+
+            if(pasaNivel==1)
+            {
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 13 !!!",0,linea1);
+                player->nivelDeJuego = 14;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
+            }
+            break;
+
+        case 14:
+            pasaNivel = Nivel14(player);
+
+            if(pasaNivel==1)
+            {
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 14, se viene un jefe!!!",0,linea1);
+                player->nivelDeJuego = 15;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
+            }
+            break;
+
+        case 15:
+            pasaNivel = nivelBossN(player);
+
+            if(pasaNivel==1)
+            {
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 15!!!",0,linea1);
+                continuar();
+                system("cls");
+                cascadaTexto("Has terminado el juego felicitaciones!!!",65,23);
+                _sleep(500);
+                player->nivelDeJuego = 16;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
+            }
+            break;
         }
 
         printf("Desea continuar? s/n");
@@ -1350,7 +1484,7 @@ int Jugar(stPersonaje *player)
     return flagGame;
 }
 
-int AtaqueBicho1(stPersonaje *aux,int danoMon)
+int AtaqueBicho1(stPersonaje *aux,int danoMon)                                                  ///Calcula los ataques de los monstruos
 {
     /**caso guerrero**/
     int ataque = 0;
@@ -1390,7 +1524,7 @@ int AtaqueBicho4(stPersonaje *aux, int danoMon)
     return ataque;
 }
 
-void RecompensaPelea(stPersonaje * aux,int mejoraAtrib,int dinero)
+void RecompensaPelea(stPersonaje * aux,int mejoraAtrib,int dinero)                                ///Le asigna las recompensas al personaje despues de terminado un nivel
 {
     system("cls");
     fadeIN("ANTES DE LA RECOMPENSA\n",0,5);
@@ -1497,7 +1631,7 @@ void RecompensaPelea(stPersonaje * aux,int mejoraAtrib,int dinero)
     MostrarPersonaje(aux);
 }
 
-void CargaJuego(stPersonaje*player)
+void CargaJuego(stPersonaje*player)                     ///Funcion que carga una partida, es invocada desde el main
 {
     int correjuego = 0;
     char decisionguarda = 0;
@@ -1541,7 +1675,7 @@ void CargaJuego(stPersonaje*player)
     }
 }
 
-void MuestraArchivoSave()
+void MuestraArchivoSave()                                                           ///Muestra el contenido del archivo de partidas guardadas
 {
     FILE* pfile = NULL;
     stPersonaje aux;
@@ -1614,7 +1748,7 @@ void MuestraArchivoSave()
     }
 }
 
-void MuestraUnaPartida(stPersonaje player)
+void MuestraUnaPartida(stPersonaje player)                                      ///Version simplificada del jugador, se muestra a la hora de cargar una partida
 {
     stPersonaje aux = player;
     printf("*********************************************************\n");
@@ -1624,46 +1758,48 @@ void MuestraUnaPartida(stPersonaje player)
     printf("*********************************************************\n");
 }
 
-int CuentaRegistros()
-{
-    FILE* pfile = NULL;
-    int cerrarArchivo = 0;
-    long bytesArchivo = 0; /**nos va a decir los bytes del archivo*/
-    int numRegistros = 0; /**cantidad de registros**/
-    int punteroSeek = 0;
+ /**Fuera de servicio, vuelva prontos*/
 
-    pfile = fopen(SAVE,"rb");
+//int CuentaRegistros()
+//{
+//    FILE* pfile = NULL;
+//    int cerrarArchivo = 0;
+//    long bytesArchivo = 0;                                  /**nos va a decir los bytes del archivo*/
+//    int numRegistros = 0;                                   /**cantidad de registros**/
+//    int punteroSeek = 0;
+//
+//    pfile = fopen(SAVE,"rb");
+//
+//    if(pfile!=NULL)
+//    {
+//        punteroSeek = fseek(pfile,0,SEEK_SET);
+//
+//        if(punteroSeek!=0)
+//            printf("SE HA SOBREPASADO LOS LIMITES DEL ARCHIVO.\n");
+//
+//        bytesArchivo = ftell(pfile);
+//
+//        if(bytesArchivo > 0)
+//        {
+//            numRegistros = (int) bytesArchivo/DIM;
+//        }
+//
+//        cerrarArchivo = fclose(pfile);
+//
+//        if(cerrarArchivo!=0)
+//        {
+//            printf("NO SE PUDO CERRAR EL ARCHIVO EN CuentaRegistros()\n");
+//        }
+//    }
+//    else
+//    {
+//        printf("NO SE PUDO ABRIR EL ARCHIVO EN CuentaRegistros()\n");
+//    }
+//
+//    return numRegistros;
+//}
 
-    if(pfile!=NULL)
-    {
-        punteroSeek = fseek(pfile,0,SEEK_SET);
-
-        if(punteroSeek!=0)
-            printf("SE HA SOBREPASADO LOS LIMITES DEL ARCHIVO.\n");
-
-        bytesArchivo = ftell(pfile);
-
-        if(bytesArchivo > 0)
-        {
-            numRegistros = (int) bytesArchivo/DIM;
-        }
-
-        cerrarArchivo = fclose(pfile);
-
-        if(cerrarArchivo!=0)
-        {
-            printf("NO SE PUDO CERRAR EL ARCHIVO EN CuentaRegistros()\n");
-        }
-    }
-    else
-    {
-        printf("NO SE PUDO ABRIR EL ARCHIVO EN CuentaRegistros()\n");
-    }
-
-    return numRegistros;
-}
-
-void CrearNuevoSlot(stPersonaje *player)
+void CrearNuevoSlot(stPersonaje *player)                                        ///Crea un nuevo slot para guardar una partida
 {
     FILE* pfile = NULL;
     pfile = fopen(SAVE,"wb");
@@ -1736,7 +1872,7 @@ stPersonaje CargaDePersonaje(int registroPartida)
     {
         /**leer desde el principio del archivo**/
         rewind(pfile);
-        /**bajar hasta la partida que indicÃ³ el jugador por parametro**/
+        /**bajar hasta la partida que indicó el jugador por parametro**/
         limitesArchivo = fseek(pfile,DIM*(registroPartida - 1),SEEK_SET);
         leerArchivo = fread(&aux,DIM,1,pfile);
 
@@ -1780,11 +1916,11 @@ int Nivel1(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 int Nivel2(stPersonaje *player)
@@ -1808,11 +1944,11 @@ int Nivel2(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1836,11 +1972,11 @@ int Nivel3(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1864,11 +2000,11 @@ int Nivel4(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1877,7 +2013,7 @@ int Nivel5(stPersonaje *player)
     int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
     char accedetienda = 0;
 
-    pasaNivel = CicloPelea(player,100,100,"Dark Fact");
+    pasaNivel = CicloPelea(player,100,40,"Dark Fact");
 
     if(pasaNivel == 1)
     {
@@ -1892,72 +2028,217 @@ int Nivel5(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
-void PausaLimpia()
+int Nivel7(stPersonaje * player)
 {
-    fflush(stdin);
-    getchar();
-    system("cls");
-}
 
-void Introduccion()
-{
-    fadeIN("\n\n\tDicese una vez de una aldea llamada Arcadia. La aldea Arcadia era un lugar pacifico\
- con mucha vegetacion y un paisaje arbolado,\n con un imponente volcan a lo lejos, el cual\
- por tradicion habia sido llamado Darius.Los habitantes de Arcadia amaban mucho \nsu tierra,\
- y su principal economia era el cultivo de maiz, el cual exportaban con las lejanas\
- aldeas, intercambiando bienes \ny monedas de plata. Todos vivian felices y pacificamente...",0,10);
-    continuar();
-    cascadaTexto("\t\t...sin embargo,un dia surgiria una amenaza para los habitantes de Arcadia.\n",0,18);
-    hidecursor(0);
+    int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
+    char accedetienda = 0;
 
-}
+    pasaNivel = CicloPelea(player,100,50,"Moria Casan");
 
-void AsignarNombres(char p[][30])
-{
-    strcpy(p[0],"1:\tPociones HP------");
-    strcpy(p[1],"2:\tPociones MP------");
-    strcpy(p[2],"3:\tEspada-----------");
-    strcpy(p[3],"4:\tBaston-----------");
-    strcpy(p[4],"5:\tCalavera---------");
-    strcpy(p[5],"6:\tEscudo-----------");
-    strcpy(p[6],"7:\tHacha------------");
-    strcpy(p[7],"8:\tDaga-------------");
-    strcpy(p[8],"9:\tSalir");
-}
-
-void AsignarArticulos(int a[])
-{
-    a[0] = 10; //hp
-    a[1] = 10; //mp
-    a[2] = 1; //espada
-    a[3] = 1; //baston
-    a[4] = 1; //calavera
-    a[5] = 1; //escudo
-    a[6] = 1; //hacha
-    a[7] = 2; //daga
-}
-
-void MostrarMenuTienda(char p[][30],int a[])
-{
-    int i = 0;
-
-    while(i < 8)
+    if(pasaNivel == 1)
     {
-        printf(" %s%i\n",p[i],a[i]);
-        i++;
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(player,2,100);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(player);
+        }
+
+        return 1; /**superó este nivel*/
     }
-    printf(" %s\n",p[i]);
+    else
+    {
+        return 0; /**no superó este nivel*/
+    }
 }
 
-/// FUNCIONES VISULAES
+int Nivel8 (stPersonaje * player)
+{
+
+    int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
+    char accedetienda = 0;
+
+    pasaNivel = CicloPelea(player,150,40,"Azukiarai");
+
+    if(pasaNivel == 1)
+    {
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(player,2,100);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(player);
+        }
+
+        return 1; /**superó este nivel*/
+    }
+    else
+    {
+        return 0; /**no superó este nivel*/
+    }
+}
+
+int Nivel9 (stPersonaje * player)
+{
+
+    int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
+    char accedetienda = 0;
+
+    pasaNivel = CicloPelea(player,100,55,"Serpiente Emplumada");
+
+    if(pasaNivel == 1)
+    {
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(player,2,100);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(player);
+        }
+
+        return 1; /**superó este nivel*/
+    }
+    else
+    {
+        return 0; /**no superó este nivel*/
+    }
+}
+
+int Nivel11 (stPersonaje * player)
+{
+
+    int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
+    char accedetienda = 0;
+
+    pasaNivel = CicloPelea(player,150,50,"Krasue");
+
+    if(pasaNivel == 1)
+    {
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(player,2,100);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(player);
+        }
+
+        return 1; /**superó este nivel*/
+    }
+    else
+    {
+        return 0; /**no superó este nivel*/
+    }
+}
+
+
+int Nivel12 (stPersonaje * player)
+{
+
+    int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
+    char accedetienda = 0;
+
+    pasaNivel = CicloPelea(player,100,65,"Fafner");
+
+    if(pasaNivel == 1)
+    {
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(player,2,100);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(player);
+        }
+
+        return 1; /**superó este nivel*/
+    }
+    else
+    {
+        return 0; /**no superó este nivel*/
+    }
+}
+
+int Nivel13 (stPersonaje * player)
+{
+
+    int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
+    char accedetienda = 0;
+
+    pasaNivel = CicloPelea(player,150,60,"Tupilaq");
+
+    if(pasaNivel == 1)
+    {
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(player,2,100);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(player);
+        }
+
+        return 1; /**superó este nivel*/
+    }
+    else
+    {
+        return 0; /**no superó este nivel*/
+    }
+}
+
+int Nivel14 (stPersonaje * player)
+{
+
+    int pasaNivel = 0; /**valor desde ciclo de pelea, si recibe 1 pasa de nivel*/
+    char accedetienda = 0;
+
+    pasaNivel = CicloPelea(player,100,65,"Jormundgander");
+
+    if(pasaNivel == 1)
+    {
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(player,2,100);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(player);
+        }
+
+        return 1; /**superó este nivel*/
+    }
+    else
+    {
+        return 0; /**no superó este nivel*/
+    }
+}
 
 /** \brief secuencia de acertijo esfige
  * \return devuelve pasaSinPelear 1 o 0
@@ -2019,14 +2300,14 @@ int acertijoEsfigie ()
         pasaSinPelear=validacionYresultado(opcion,3);
         break;
     case 6:
-        cascadaTexto("QuÃ© puede ser lleno mas nunca se vacia? Â¿QuÃ© cosa tira pero empujar, nunca?",0,9);
+        cascadaTexto("Qué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?",0,9);
         _sleep(500);
         fadeIN("1. n-u-l-a      2. p-e-z-a-e-r-n-s-a     3. o-c-p-a ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,1);
         break;
     default:
-        cascadaTexto("Cual es la criatura que en la maÃ±ana camina en cuatro patas, al medio dÃ­a en dos y en la nocheen tres? ",0,9);
+        cascadaTexto("Cual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ",0,9);
         _sleep(500);
         fadeIN("1. m-r-b-e-h-o     2. g-t-t-r-o-u-a      3. o-m-o-n   ",0,11);
         scanf("%d",&opcion);
@@ -2035,6 +2316,7 @@ int acertijoEsfigie ()
 
     return pasaSinPelear;
 }
+
 
 /** \brief  valida entrada de 1 a 3
  *          devueve a secuencia o muestra resultado
@@ -2108,11 +2390,11 @@ int peleaEsfigie (stPersonaje * player)
 
         accedetienda = 0;
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -2299,11 +2581,11 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
         }
 
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 
     continuar();
@@ -2311,6 +2593,201 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
 
     return pasaNivel;
 }
+
+
+int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
+{
+    int opc=0;
+    int pasaNivel=0;
+    int golpePj = 0;
+    int golpeMon = 0;
+
+    printf("*BATALLA*\n");
+    printf("Te encuentras con %s\n",nombreMon);
+    printf("El cual es un zorro muy conocido de la mitologia japonesa\n");
+    printf("No te la hara nada sencillo de ganarle, tienes la posibilidad de golperlo dos veces en cada turno, pero no por eso sera mas facil\n");
+    printf("El da%co que te hara sera brutal pero podras resistirlo si estas preparado para el desafio\n",164);
+    printf("Ten en cuenta las pociones de vida y la cantidad de vida y mana en todo momento\n",164);
+    printf("Su hp es de: %i\n",hpMon);
+    printf("Su ataque es de: %i\n\n",danoMon);
+
+    do
+    {
+        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
+        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+        scanf("%d",&opc);
+        switch(opc)
+        {
+        case 1:
+            ///ataque normal
+            printf("%s le hace un ataque normal a %s ",aux->nombre,nombreMon);
+            golpePj = AtaqueBasico(aux);
+            printf("y le infringe un golpe de %i\n",golpePj);
+            hpMon = hpMon - golpePj;
+            break;
+        case 2:
+            ///ataque especial
+            printf("Ataque cargado...\n");
+            golpePj = AtaqueCargado(aux);
+            printf("tu golpe es de %i\n",golpePj);
+            hpMon = hpMon - golpePj;
+            aux->mp = aux-> mp-10;
+            break;
+        case 3:
+            ///pocion de vida
+            printf("Tomas una pocion HP...\n");
+            aux->hp = aux->hp + 25;
+            aux->inv.pocioneshp = aux->inv.pocioneshp - 1;
+            break;
+        case 4:
+            ///pocion de mana
+            printf("Tomas una pocion MP...\n");
+            aux->mp= aux->mp+ 25;
+            aux->inv.pocionesmp = aux->inv.pocionesmp - 1;
+            break;
+        }
+
+        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
+        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+        scanf("%d",&opc);
+        switch(opc)
+        {
+        case 1:
+            ///ataque normal
+            printf("%s le hace un ataque normal a %s ",aux->nombre,nombreMon);
+            golpePj = AtaqueBasico(aux);
+            printf("y le infringe un golpe de %i\n",golpePj);
+            hpMon = hpMon - golpePj;
+            break;
+        case 2:
+            ///ataque especial
+            printf("Ataque cargado...\n");
+            golpePj = AtaqueCargado(aux);
+            printf("tu golpe es de %i\n",golpePj);
+            hpMon = hpMon - golpePj;
+            aux->mp = aux-> mp-10;
+            break;
+        case 3:
+            ///pocion de vida
+            printf("Tomas una pocion HP...\n");
+            aux->hp = aux->hp + 25;
+            aux->inv.pocioneshp = aux->inv.pocioneshp - 1;
+            break;
+        case 4:
+            ///pocion de mana
+            printf("Tomas una pocion MP...\n");
+            aux->mp= aux->mp+ 25;
+            aux->inv.pocionesmp = aux->inv.pocionesmp - 1;
+            break;
+        }
+
+        ///turno del monstruo
+
+        printf("%s ataca a %s ",nombreMon,aux->nombre);
+        golpeMon = (rand()%7 + danoMon)-aux->atribPersonaje.defensa;
+        aux->hp = aux->hp - golpeMon;
+        printf("y le infringe un golpe de %i\n",golpeMon);
+
+        PausaLimpia();
+
+    }
+    while ( (aux->hp > 0) && ( hpMon > 0 ));
+
+    if(hpMon <= 0)
+    {
+        printf("Has derrotado a %s\n",nombreMon);
+        pasaNivel = 1;
+    }
+    else
+    {
+        printf("Has perdido!\n");
+        pasaNivel = 0;
+    }
+
+
+    return pasaNivel;
+}
+int nivelBossN (stPersonaje * player)
+{
+    int pasaNivel = 0; //valor desde ciclo de pelea, si recibe 1 pasa de nivel/
+    char accedetienda = 0;
+
+    pasaNivel = cicloPeleaBossN(player,300,200,"Kitsune");
+
+    if(pasaNivel == 1)
+    {
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(player,6,300);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(player);
+        }
+
+        return pasaNivel; //superó este nivel*/
+    }
+    else
+    {
+        return pasaNivel; //no superó este nivel*/
+    }
+}
+
+
+
+void Introduccion()
+{
+    fadeIN("\n\n\tDicese una vez de una aldea llamada Arcadia. La aldea Arcadia era un lugar pacifico\
+ con mucha vegetacion y un paisaje arbolado,\n con un imponente volcan a lo lejos, el cual\
+ por tradicion habia sido llamado Darius.Los habitantes de Arcadia amaban mucho \nsu tierra,\
+ y su principal economia era el cultivo de maiz, el cual exportaban con las lejanas\
+ aldeas, intercambiando bienes \ny monedas de plata. Todos vivian felices y pacificamente...",0,10);
+    continuar();
+    cascadaTexto("\t\t...sin embargo,un dia surgiria una amenaza para los habitantes de Arcadia.\n",0,18);
+    hidecursor(0);
+
+}
+
+void AsignarNombres(char p[][30])
+{
+    strcpy(p[0],"1:\tPociones HP------");
+    strcpy(p[1],"2:\tPociones MP------");
+    strcpy(p[2],"3:\tEspada-----------");
+    strcpy(p[3],"4:\tBaston-----------");
+    strcpy(p[4],"5:\tCalavera---------");
+    strcpy(p[5],"6:\tEscudo-----------");
+    strcpy(p[6],"7:\tHacha------------");
+    strcpy(p[7],"8:\tDaga-------------");
+    strcpy(p[8],"9:\tSalir");
+}
+
+void AsignarArticulos(int a[])
+{
+    a[0] = 10; //hp
+    a[1] = 10; //mp
+    a[2] = 1; //espada
+    a[3] = 1; //baston
+    a[4] = 1; //calavera
+    a[5] = 1; //escudo
+    a[6] = 1; //hacha
+    a[7] = 2; //daga
+}
+
+void MostrarMenuTienda(char p[][30],int a[])
+{
+    int i = 0;
+
+    while(i < 8)
+    {
+        printf(" %s%i\n",p[i],a[i]);
+        i++;
+    }
+    printf(" %s\n",p[i]);
+}
+
+/// FUNCIONES VISULAES
 
 /** \brief Espera un input para continuar */
 void continuar()
@@ -2477,13 +2954,13 @@ void pantallaInicio ()
         i++;
     }
     Sleep(1000);
-    cascadaTexto("LA LEYENDA DE C >",65,23);
+    cascadaTexto("LA LEYENDA DE C",65,23);
     Sleep(1000);
     continuar();
-    fadeOUT("LA LEYENDA DE C >",65,23);
+    fadeOUT("LA LEYENDA DE C",65,23);
     system("cls");
     Sleep(500);
-    fadeInOut("\nBlanco Santiago\nFernandez Mariano\nOcampo Lautaro\nSanjurjo Juan Manuel",5,35);
+    fadeInOut("\nBlanco Santiago\nFernandez Mariano\nSanjurjo Juan Manuel",5,35);
     system("cls");
 }
 
@@ -2522,6 +2999,15 @@ void golpe()
     Beep(90,500);
     system("COLOR 07");
 }
+
+void PausaLimpia()
+{
+    fflush(stdin);
+    getchar();
+    system("cls");
+}
+
+
 /*
 0 = Black
 1 = Blue
@@ -2541,146 +3027,7 @@ E = Light Yellow
 F = Bright White
 */
 
-int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
-{
-    int opc=0;
-    int pasaNivel=0;
-    int golpePj = 0;
-    int golpeMon = 0;
-
-    printf("*BATALLA*\n");
-    printf("Te encuentras con %s\n",nombreMon);
-    printf("El cual es un zorro muy conocido de la mitologia japonesa\n");
-    printf("No te la hara nada sencillo de ganarle, tienes la posibilidad de golperlo dos veces en cada turno, pero no por eso sera mas facil\n");
-    printf("El da%co que te hara sera brutal pero podras resistirlo si estas preparado para el desafio\n",164);
-    printf("Ten en cuenta las pociones de vida y la cantidad de vida y mana en todo momento\n",164);
-    printf("Su hp es de: %i\n",hpMon);
-    printf("Su ataque es de: %i\n\n",danoMon);
-
-    do
-    {
-        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
-        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
-        scanf("%d",&opc);
-        switch(opc)
-        {
-        case 1:
-            ///ataque normal
-            printf("%s le hace un ataque normal a %s ",aux->nombre,nombreMon);
-            golpePj = AtaqueBasico(aux);
-            printf("y le infringe un golpe de %i\n",golpePj);
-            hpMon = hpMon - golpePj;
-            break;
-        case 2:
-            ///ataque especial
-            printf("Ataque cargado...\n");
-            golpePj = AtaqueCargado(aux);
-            printf("tu golpe es de %i\n",golpePj);
-            hpMon = hpMon - golpePj;
-            aux->mp = aux-> mp-10;
-            break;
-        case 3:
-            ///pocion de vida
-            printf("Tomas una pocion HP...\n");
-            aux->hp = aux->hp + 25;
-            aux->inv.pocioneshp = aux->inv.pocioneshp - 1;
-            break;
-        case 4:
-            ///pocion de mana
-            printf("Tomas una pocion MP...\n");
-            aux->mp= aux->mp+ 25;
-            aux->inv.pocionesmp = aux->inv.pocionesmp - 1;
-            break;
-        }
-
-        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
-        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
-        scanf("%d",&opc);
-        switch(opc)
-        {
-        case 1:
-            ///ataque normal
-            printf("%s le hace un ataque normal a %s ",aux->nombre,nombreMon);
-            golpePj = AtaqueBasico(aux);
-            printf("y le infringe un golpe de %i\n",golpePj);
-            hpMon = hpMon - golpePj;
-            break;
-        case 2:
-            ///ataque especial
-            printf("Ataque cargado...\n");
-            golpePj = AtaqueCargado(aux);
-            printf("tu golpe es de %i\n",golpePj);
-            hpMon = hpMon - golpePj;
-            aux->mp = aux-> mp-10;
-            break;
-        case 3:
-            ///pocion de vida
-            printf("Tomas una pocion HP...\n");
-            aux->hp = aux->hp + 25;
-            aux->inv.pocioneshp = aux->inv.pocioneshp - 1;
-            break;
-        case 4:
-            ///pocion de mana
-            printf("Tomas una pocion MP...\n");
-            aux->mp= aux->mp+ 25;
-            aux->inv.pocionesmp = aux->inv.pocionesmp - 1;
-            break;
-        }
-
-        ///turno del monstruo
-
-        printf("%s ataca a %s ",nombreMon,aux->nombre);
-        golpeMon = (rand()%7 + danoMon)-aux->atribPersonaje.defensa;
-        aux->hp = aux->hp - golpeMon;
-        printf("y le infringe un golpe de %i\n",golpeMon);
-
-        PausaLimpia();
-
-    }
-    while ( (aux->hp > 0) && ( hpMon > 0 ));
-
-    if(hpMon <= 0)
-    {
-        printf("Has derrotado a %s\n",nombreMon);
-        pasaNivel = 1;
-    }
-    else
-    {
-        printf("Has perdido!\n");
-        pasaNivel = 0;
-    }
-
-
-    return pasaNivel;
-}
-int nivelBossN (stPersonaje * player)
-{
-    int pasaNivel = 0; //valor desde ciclo de pelea, si recibe 1 pasa de nivel/
-    char accedetienda = 0;
-
-    pasaNivel = cicloPeleaBossN(player,300,200,"Kitsune");
-
-    if(pasaNivel == 1)
-    {
-        printf("\n\nTu recompensa por la batalla:\n");
-        RecompensaPelea(player,6,300);
-
-        printf("\n\nDeseas acceder a la tienda? s/n\n");
-        scanf("\n%c",&accedetienda);
-
-        if(accedetienda=='s')
-        {
-            Tienda(player);
-        }
-
-        return pasaNivel; //superÃ³ este nivel*/
-    }
-    else
-    {
-        return pasaNivel; //no superÃ³ este nivel*/
-    }
-}
-
+///Funciones de archivo Marcadores
 void guardarEnArchivoMarcadores(stPersonaje *aux)
 {
     FILE * archi = fopen(MARCADORES,"ab");
@@ -2791,6 +3138,7 @@ void mostrarUnMarcador(stMarcador aux)
     printf("Pociones mp: %d\n",aux.invMarcador.pocionesmp);
     printf("Nivel maximo superado: %d\n",aux.nivelMaximo);
 }
+
 void CalcularTiempoJuego(int tiempo)
 {
     int horas = 0;
