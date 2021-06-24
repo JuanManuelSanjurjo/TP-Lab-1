@@ -6,14 +6,6 @@
 #include <string.h>
 #include "gotoxy.h"
 /**para tienda*/
-#define PRECIOHP 20
-#define PRECIOMP 20
-#define PRECIOESPADA 50
-#define PRECIOBASTON 50
-#define PRECIOESCUDO 50
-#define PRECIOCALAVERA 50
-#define PRECIOHACHA 50
-#define PRECIODAGA 50
 #define FIL 10
 #define COL 30
 #define ART 8
@@ -42,12 +34,12 @@ typedef struct
 
 typedef struct
 {
-    char nombre[15]; /*Nombre que elegió el jugador*/
+    char nombre[15]; /*Nombre que elegiÃ³ el jugador*/
     char genero[15];  /*Elegido por el jugador*/
     char tipoClase[15]; /*guerrero, hechicero, nigromante o asesino*/
     int clase;
-    int nivelDeJuego; /*nivel en que se quedó el jugador*/
-    stAtributos atribPersonaje; /*estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia según la clase elegida*/
+    int nivelDeJuego; /*nivel en que se quedÃ³ el jugador*/
+    stAtributos atribPersonaje; /*estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia segÃºn la clase elegida*/
     stInventario inv;
     int hp;
     int mp;
@@ -64,7 +56,7 @@ typedef struct
     int tiempoJuego;
 } stMarcador;
 
-/**Constantes tamaño de estructuras**/
+/**Constantes tamaÃ±o de estructuras**/
 const int DIM = sizeof(stPersonaje); /** para las funciones de archivo**/
 const int DIMMAR = sizeof(stMarcador); /**para las funciones de archivo**/
 
@@ -561,6 +553,7 @@ void Tienda(stPersonaje *player)
 
 int CompraPocionesHp(stInventario *inv,int pocioneshpcant)
 {
+    int preciohp = 20;
     int seleccion = 0;
     char control = 0;
     int cantidad = 0;
@@ -583,7 +576,7 @@ int CompraPocionesHp(stInventario *inv,int pocioneshpcant)
                 }
             }
             while( cantidad < 1 || cantidad > 10);
-            compra = cantidad * PRECIOHP;
+            compra = cantidad * preciohp;
             printf("El total es: %i\n",compra);
             printf("Esta seguro? s/n");
             scanf("\n%c",&decision);
@@ -626,7 +619,7 @@ int CompraPocionesHp(stInventario *inv,int pocioneshpcant)
 
 int CompraPocionesMP(stInventario *inv,int pocionesmpcant)
 {
-
+    int preciomp = 20;
     int seleccion = 0;
     char control = 0;
     int cantidad = 0;
@@ -649,7 +642,7 @@ int CompraPocionesMP(stInventario *inv,int pocionesmpcant)
                 }
             }
             while( cantidad < 1 || cantidad > 10);
-            compra = cantidad * PRECIOMP;
+            compra = cantidad * preciomp;
             printf("El total es: %i\n",compra);
             printf("Esta seguro? s/n");
             scanf("\n%c",&decision);
@@ -692,16 +685,17 @@ int CompraPocionesMP(stInventario *inv,int pocionesmpcant)
 
 int CompraEspada(stPersonaje *player, int espadacant)
 {
+    int precioespada = 50;
     int seleccion = 0;
     char control = 0;
     int compra = 0;
 
-    printf("El precio de la espada es: %i\n",PRECIOESPADA);
+    printf("El precio de la espada es: %i\n",precioespada);
     printf("Desea comprar la espada?\n");
     scanf("\n%c",&control);
     if(control == 's')
     {
-        compra = PRECIOESPADA;
+        compra = precioespada;
         if( player->inv.dinero >= compra)
         {
             /**la espada sube 5 de fuerza*/
@@ -725,19 +719,20 @@ int CompraEspada(stPersonaje *player, int espadacant)
 
 int CompraBaston(stPersonaje *player, int bastoncant)
 {
+    const int preciobaston = 50;
     int seleccion = 0;
     char control = 0;
     int compra = 0;
 
-    printf("El precio del bast%cn es: %i\n",162,PRECIOBASTON);
+    printf("El precio del bast%cn es: %i\n",162,preciobaston);
     printf("Desea comprar el bast%cn?\n",162);
     scanf("\n%c",&control);
     if(control == 's')
     {
-        compra = PRECIOBASTON;
+        compra = preciobaston;
         if( player->inv.dinero >= compra)
         {
-            /**el bastón sube 5 de magia*/
+            /**el bastÃ³n sube 5 de magia*/
             player->atribPersonaje.magia = player->atribPersonaje.magia + 5;
             /** y ademas sube 3 de inteligencia*/
             player->atribPersonaje.inteligencia = player->atribPersonaje.inteligencia + 3;
@@ -758,16 +753,17 @@ int CompraBaston(stPersonaje *player, int bastoncant)
 
 int CompraCalavera(stPersonaje *player, int calaveracant)
 {
+    int preciocalavera = 50;
     int seleccion = 0;
     char control = 0;
     int compra = 0;
 
-    printf("El precio de la calavera es: %i\n",PRECIOCALAVERA);
+    printf("El precio de la calavera es: %i\n",preciocalavera);
     printf("Desea comprar la calavera?\n");
     scanf("\n%c",&control);
     if(control == 's')
     {
-        compra = PRECIOCALAVERA;
+        compra = preciocalavera;
         if( player->inv.dinero >= compra)
         {
             /**la calavera sube 5 de defensa*/
@@ -791,16 +787,17 @@ int CompraCalavera(stPersonaje *player, int calaveracant)
 
 int CompraEscudo(stPersonaje *player, int escudocant)
 {
+    int precioescudo = 50;
     int seleccion = 0;
     char control = 0;
     int compra = 0;
 
-    printf("El precio del escudo es: %i\n",PRECIOESCUDO);
+    printf("El precio del escudo es: %i\n",precioescudo);
     printf("Desea comprar el escudo?\n");
     scanf("\n%c",&control);
     if(control == 's')
     {
-        compra = PRECIOESCUDO;
+        compra = precioescudo;
         if( player->inv.dinero >= compra)
         {
             /**la calavera sube 5 de defensa*/
@@ -824,16 +821,17 @@ int CompraEscudo(stPersonaje *player, int escudocant)
 
 int CompraHacha(stPersonaje *player, int hachacant)
 {
+    int preciohacha = 50;
     int seleccion = 0;
     char control = 0;
     int compra = 0;
 
-    printf("El precio del hacha es: %i\n",PRECIOHACHA);
+    printf("El precio del hacha es: %i\n",preciohacha);
     printf("Desea comprar el hacha?\n");
     scanf("\n%c",&control);
     if(control == 's')
     {
-        compra = PRECIOHACHA;
+        compra = preciohacha;
         if( player->inv.dinero >= compra)
         {
             /**el sube 5 de fuerza*/
@@ -857,17 +855,17 @@ int CompraHacha(stPersonaje *player, int hachacant)
 
 int CompraDaga(stPersonaje *player, int dagacant)
 {
-
+    int preciodaga = 50;
     int seleccion = 0;
     char control = 0;
     int compra = 0;
 
-    printf("El precio de la daga es: %i\n",PRECIODAGA);
+    printf("El precio de la daga es: %i\n",preciodaga);
     printf("Desea comprar la daga?\n");
     scanf("\n%c",&control);
     if(control == 's')
     {
-        compra = PRECIODAGA;
+        compra = preciodaga;
         if( player->inv.dinero >= compra)
         {
             /**la daga sube 3 de fuerza*/
@@ -1738,7 +1736,7 @@ stPersonaje CargaDePersonaje(int registroPartida)
     {
         /**leer desde el principio del archivo**/
         rewind(pfile);
-        /**bajar hasta la partida que indicó el jugador por parametro**/
+        /**bajar hasta la partida que indicÃ³ el jugador por parametro**/
         limitesArchivo = fseek(pfile,DIM*(registroPartida - 1),SEEK_SET);
         leerArchivo = fread(&aux,DIM,1,pfile);
 
@@ -1782,11 +1780,11 @@ int Nivel1(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 int Nivel2(stPersonaje *player)
@@ -1810,11 +1808,11 @@ int Nivel2(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -1838,11 +1836,11 @@ int Nivel3(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -1866,11 +1864,11 @@ int Nivel4(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -1894,11 +1892,11 @@ int Nivel5(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2021,14 +2019,14 @@ int acertijoEsfigie ()
         pasaSinPelear=validacionYresultado(opcion,3);
         break;
     case 6:
-        cascadaTexto("Qué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?",0,9);
+        cascadaTexto("QuÃ© puede ser lleno mas nunca se vacia? Â¿QuÃ© cosa tira pero empujar, nunca?",0,9);
         _sleep(500);
         fadeIN("1. n-u-l-a      2. p-e-z-a-e-r-n-s-a     3. o-c-p-a ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,1);
         break;
     default:
-        cascadaTexto("Cual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ",0,9);
+        cascadaTexto("Cual es la criatura que en la maÃ±ana camina en cuatro patas, al medio dÃ­a en dos y en la nocheen tres? ",0,9);
         _sleep(500);
         fadeIN("1. m-r-b-e-h-o     2. g-t-t-r-o-u-a      3. o-m-o-n   ",0,11);
         scanf("%d",&opcion);
@@ -2110,11 +2108,11 @@ int peleaEsfigie (stPersonaje * player)
 
         accedetienda = 0;
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2301,11 +2299,11 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
         }
 
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 
     continuar();
@@ -2675,11 +2673,11 @@ int nivelBossN (stPersonaje * player)
             Tienda(player);
         }
 
-        return pasaNivel; //superó este nivel*/
+        return pasaNivel; //superÃ³ este nivel*/
     }
     else
     {
-        return pasaNivel; //no superó este nivel*/
+        return pasaNivel; //no superÃ³ este nivel*/
     }
 }
 
@@ -2816,5 +2814,3 @@ void CalcularTiempoJuego(int tiempo)
         printf("Has jugado %i segundos.\n",tiempo);
     }
 }
-
-///juan se la come
