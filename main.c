@@ -932,16 +932,16 @@ int CicloPelea(stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
     do
     {
         fadeIN("*BATALLA*",65,3);
-        gotoxy(65,13);
-        printf("HP PJ: %03d",aux->hp);
-        gotoxy(65,14);
-        printf("MP PJ: %03d",aux->mp);
-        gotoxy(65,15);
-        printf("HP MON: %03d",hpMon);
-        gotoxy(65,16);
-        printf("PocionesHP:%03d",aux->inv.pocioneshp);
-        gotoxy(65,17);
-        printf("PocionesMP: %03d",aux->inv.pocionesmp);
+        gotoxy(64,13);
+        printf("HP PJ:     %4d",aux->hp);
+        gotoxy(64,14);
+        printf("MP PJ:     %4d",aux->mp);
+        gotoxy(64,15);
+        printf("HP MON:    %4d",hpMon);
+        gotoxy(64,16);
+        printf("PocionesHP:%4d",aux->inv.pocioneshp);
+        gotoxy(64,17);
+        printf("PocionesMP:%4d",aux->inv.pocionesmp);
 
         gotoxy(58,21);
         printf("1:\tAtaque normal");
