@@ -42,12 +42,12 @@ typedef struct
 
 typedef struct
 {
-    char nombre[15]; /*Nombre que elegiÃ³ el jugador*/
+    char nombre[15]; /*Nombre que elegió el jugador*/
     char genero[15];  /*Elegido por el jugador*/
     char tipoClase[15]; /*guerrero, hechicero, nigromante o asesino*/
     int clase;
-    int nivelDeJuego; /*nivel en que se quedÃ³ el jugador*/
-    stAtributos atribPersonaje; /*estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia segÃºn la clase elegida*/
+    int nivelDeJuego; /*nivel en que se quedó el jugador*/
+    stAtributos atribPersonaje; /*estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia según la clase elegida*/
     stInventario inv;
     int hp;
     int mp;
@@ -64,7 +64,7 @@ typedef struct
     int tiempoJuego;
 } stMarcador;
 
-/**Constantes tamaÃ±o de estructuras**/
+/**Constantes tamaño de estructuras**/
 const int DIM = sizeof(stPersonaje); /** para las funciones de archivo**/
 const int DIMMAR = sizeof(stMarcador); /**para las funciones de archivo**/
 
@@ -161,37 +161,47 @@ int main()
     srand(time(NULL));
     system("mode 150, 50");
     //pantallaInicio();
+    int controlmenu=0;
 
     stPersonaje partida; /**estructura de la partida: se modifica segun la save o se crea
     una nueva si no hay save anterior*/
 
-    int controlmenu = 0;
-    hidecursor(1);
-    fadeINTimed("1:NUEVO JUEGO",65,20,80);
-    fadeINTimed("2:CARGAR JUEGO",65,22,80);
-    fadeINTimed("3:MARCADORES",65,24,80);
-    fadeINTimed("4:SALIR   ",65,26,80);
-
-
-    scanf("%i",&controlmenu);
-    system("cls");
-
-    switch(controlmenu)
+    do
     {
-    case 1:
-        cascadaTexto("**ELEJISTE EMPEZAR UNA PARTIDA NUEVA.\n", 0,3);
-        NuevoJuego(&partida);
-        break;
-    case 2:
-        cascadaTexto("**ELEJISTE CARGAR UNA PARTIDA ANTERIOR.\n",0,3);
-        CargaJuego(&partida);
-        break;
-    case 3:
-        mostrarMarcadores();
-        break;
-    case 4:
-        break;
+
+
+
+
+        hidecursor(1);
+        fadeINTimed("1:NUEVO JUEGO",65,20,80);
+        fadeINTimed("2:CARGAR JUEGO",65,22,80);
+        fadeINTimed("3:MARCADORES",65,24,80);
+        fadeINTimed("4:SALIR   ",65,26,80);
+
+
+        scanf("%i",&controlmenu);
+        system("cls");
+
+        switch(controlmenu)
+        {
+        case 1:
+            cascadaTexto("**ELEJISTE EMPEZAR UNA PARTIDA NUEVA.\n", 0,3);
+            NuevoJuego(&partida);
+            break;
+        case 2:
+            cascadaTexto("**ELEJISTE CARGAR UNA PARTIDA ANTERIOR.\n",0,3);
+            CargaJuego(&partida);
+            break;
+        case 3:
+            mostrarMarcadores();
+            break;
+        case 4:
+            exit(0);
+            break;
+        }
+
     }
+    while(controlmenu!=4);
 
     cascadaTexto("Gracias por jugar The Leyend Of C!!",55,22);
 
@@ -720,7 +730,7 @@ int CompraBaston(stPersonaje *player, int bastoncant)
         compra = PRECIOBASTON;
         if( player->inv.dinero >= compra)
         {
-            /**el bastÃ³n sube 5 de magia*/
+            /**el bastón sube 5 de magia*/
             player->atribPersonaje.magia = player->atribPersonaje.magia + 5;
             /** y ademas sube 3 de inteligencia*/
             player->atribPersonaje.inteligencia = player->atribPersonaje.inteligencia + 3;
@@ -1199,144 +1209,88 @@ int Jugar(stPersonaje *player)
 
         case 1:
 
-//            do
-//            {
-                pasaNivel = Nivel1(player); /**nivel1 devuelve un flag*/
+            pasaNivel = Nivel1(player); /**nivel1 devuelve un flag*/
 
-                if(pasaNivel == 1)
-                {
-                    limpiaLinea(0,linea1);
-                    cascadaTexto("Has superado el nivel 1 !!!\n",0,linea1);
-                    //RecompensaPelea(player,2,150);
-                    player->nivelDeJuego = 2;
-
-                }
-
-//                if(pasaNivel==0)
-//                {
-//                    limpiaLinea(0,linea1);
-//                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
-//                    scanf("\n%c",&controlNivel);
-//                }
-////            }
-//            while(pasaNivel== 0 && controlNivel=='s');
-
-            if( pasaNivel == 0)
+            if(pasaNivel == 1)
             {
-                flagGame = 0; /**quiere salir del juego.*/
+                limpiaLinea(0,linea1);
+                cascadaTexto("Has superado el nivel 1 !!!\n",0,linea1);
+                //RecompensaPelea(player,2,150);
+                player->nivelDeJuego = 2;
+
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
             }
 
             break;
 
         case 2:
 
-            do
-            {
-                pasaNivel = Nivel2(player);
-
-                if(pasaNivel==0)
-                {
-                    limpiaLinea(0,linea1);
-                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
-                    scanf("\n%c",&controlNivel);
-                }
-            }
-            while(pasaNivel== 0 && controlNivel=='s');
+            pasaNivel = Nivel2(player);
 
             if(pasaNivel==1)
             {
                 limpiaLinea(0,linea1);
                 cascadaTexto("Has superado el nivel 2 !!!\n",0,linea1);
                 player->nivelDeJuego = 3;
-                pasaNivel = 0;
             }
+            else
+            {
+                flagGame = 0; ///pierde la partida
+            }
+
             break;
 
         case 3:
 
-            do
-            {
-                pasaNivel = Nivel3(player);
-
-                if(pasaNivel==0)
-                {
-                    limpiaLinea(0,linea1);
-                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
-                    scanf("\n%c",&controlNivel);
-                }
-            }
-            while(pasaNivel== 0 && controlNivel=='s');
+            pasaNivel = Nivel3(player);
 
             if(pasaNivel==1)
             {
                 limpiaLinea(0,linea1);
                 cascadaTexto("Has superado el nivel 3 !!!",0,linea1);
                 player->nivelDeJuego = 4;
-                pasaNivel = 0;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
             }
             break;
 
         case 4:
-
-            do
-            {
-                pasaNivel = Nivel4(player);
-
-                if(pasaNivel==0)
-                {
-                    limpiaLinea(0,linea1);
-                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
-                    scanf("\n%c",&controlNivel);
-                }
-            }
-            while(pasaNivel== 0 && controlNivel=='s');
+            pasaNivel = Nivel4(player);
 
             if(pasaNivel==1)
             {
                 limpiaLinea(0,linea1);
                 cascadaTexto("Has superado el nivel 4 !!!",0,linea1);
                 player->nivelDeJuego = 5;
-                pasaNivel = 0;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
             }
             break;
 
         case 5:
 
-            do
-            {
-                pasaNivel = Nivel5(player);
-
-                if(pasaNivel==0)
-                {
-                    limpiaLinea(0,linea1);
-                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
-                    scanf("\n%c",&controlNivel);
-                }
-            }
-            while(pasaNivel== 0 && controlNivel=='s');
+            pasaNivel = Nivel5(player);
 
             if(pasaNivel==1)
             {
                 limpiaLinea(0,linea1);
                 cascadaTexto("Has superado el nivel 5 !!!",0,linea1);
                 player->nivelDeJuego = 6;
-                pasaNivel = 0;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
             }
             break;
         case 6:
-
-            do
-            {
-                pasaNivel = nergalYereshkigal(player,100,20);
-
-                if(pasaNivel==0)
-                {
-                    limpiaLinea(0,linea1);
-                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
-                    scanf("\n%c",&controlNivel);
-                }
-            }
-            while(pasaNivel== 0 && controlNivel=='s');
+            pasaNivel = nergalYereshkigal(player,100,20);
 
             if(pasaNivel==1)
             {
@@ -1344,31 +1298,25 @@ int Jugar(stPersonaje *player)
                 cascadaTexto("Has superado el nivel 6 !!!\n",0,linea1);
                 RecompensaPelea(player,2,150);
                 player->nivelDeJuego = 6;
-                pasaNivel = 0;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
             }
             break;
         case 7:
 
-            do
-            {
-                pasaNivel = peleaEsfigie(player);
-
-                if(pasaNivel==0)
-                {
-                    limpiaLinea(0,linea1);
-                    cascadaTexto("Desea volver a intentarlo ? s/n",0,linea1);
-                    scanf("\n%c",&controlNivel);
-                }
-            }
-            while(pasaNivel== 0 && controlNivel=='s');
+            pasaNivel = peleaEsfigie(player);
 
             if(pasaNivel==1)
             {
                 limpiaLinea(0,linea1);
                 cascadaTexto("Has superado el nivel 6 !!!\n",0,linea1);
-                //RecompensaPelea(player,2,150);
                 player->nivelDeJuego = 6;
-                pasaNivel = 0;
+            }
+            else
+            {
+                flagGame = 0; ///pierde la partida
             }
             break;
 
@@ -1380,8 +1328,9 @@ int Jugar(stPersonaje *player)
         fflush(stdin);
         scanf("%c",&seguir);
 
-        if(seguir!='s'){
-           flagGame = 0;
+        if(seguir!='s')
+        {
+            flagGame = 0;
         }
 
 
@@ -1782,7 +1731,7 @@ stPersonaje CargaDePersonaje(int registroPartida)
     {
         /**leer desde el principio del archivo**/
         rewind(pfile);
-        /**bajar hasta la partida que indicÃ³ el jugador por parametro**/
+        /**bajar hasta la partida que indicó el jugador por parametro**/
         limitesArchivo = fseek(pfile,DIM*(registroPartida - 1),SEEK_SET);
         leerArchivo = fread(&aux,DIM,1,pfile);
 
@@ -1826,13 +1775,11 @@ int Nivel1(stPersonaje *player)
             Tienda(player);
         }
 
-        accedetienda = 0;
-
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 int Nivel2(stPersonaje *player)
@@ -1856,13 +1803,11 @@ int Nivel2(stPersonaje *player)
             Tienda(player);
         }
 
-        accedetienda = 0;
-
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1886,13 +1831,11 @@ int Nivel3(stPersonaje *player)
             Tienda(player);
         }
 
-        accedetienda = 0;
-
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1916,13 +1859,11 @@ int Nivel4(stPersonaje *player)
             Tienda(player);
         }
 
-        accedetienda = 0;
-
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1946,13 +1887,11 @@ int Nivel5(stPersonaje *player)
             Tienda(player);
         }
 
-        accedetienda = 0;
-
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -2075,14 +2014,14 @@ int acertijoEsfigie ()
         pasaSinPelear=validacionYresultado(opcion,3);
         break;
     case 6:
-        cascadaTexto("QuÃ© puede ser lleno mas nunca se vacia? Â¿QuÃ© cosa tira pero empujar, nunca?",0,9);
+        cascadaTexto("Qué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?",0,9);
         _sleep(500);
         fadeIN("1. n-u-l-a      2. p-e-z-a-e-r-n-s-a     3. o-c-p-a ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,1);
         break;
     default:
-        cascadaTexto("Cual es la criatura que en la maÃ±ana camina en cuatro patas, al medio dÃ­a en dos y en la nocheen tres? ",0,9);
+        cascadaTexto("Cual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ",0,9);
         _sleep(500);
         fadeIN("1. m-r-b-e-h-o     2. g-t-t-r-o-u-a      3. o-m-o-n   ",0,11);
         scanf("%d",&opcion);
@@ -2130,18 +2069,22 @@ int validacionYresultado (int opcion,int correcta)
 
     return resultado;
 }
-int peleaEsfigie (stPersonaje * player){
+int peleaEsfigie (stPersonaje * player)
+{
     int pasaNivelSinPelear;
     int pasaNivel = 0;
     char accedetienda = 0;
 
     pasaNivelSinPelear=acertijoEsfigie();
 
-    if(pasaNivelSinPelear==1){
+    if(pasaNivelSinPelear==1)
+    {
         pasaNivel=1;
         limpiaLinea(0,linea1);
         cascadaTexto("Puedes continuar con tu viaje...",0,linea1);
-    }else{
+    }
+    else
+    {
         pasaNivel=CicloPelea(player,50,20,"La Efigie");
     }
 
@@ -2160,11 +2103,11 @@ int peleaEsfigie (stPersonaje * player){
 
         accedetienda = 0;
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -2178,6 +2121,7 @@ int peleaEsfigie (stPersonaje * player){
  */
 int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
 {
+    char accedetienda;
     int i=0;
     int opc=0;
     int pasaNivel=0;
@@ -2264,7 +2208,8 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
         }
 
 
-        if(i==0 && hpMon<50){
+        if(i==0 && hpMon<50)
+        {
             limpiaLinea(0,linea1);
             cascadaTexto("nooooooo!...Nergal!",0,linea1);
             cascadaTexto("...como un simple humano pudo...en nuestro propio reino",0,linea2);
@@ -2330,6 +2275,30 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
         cascadaTexto("Que un humano se atreviera a enfrentarnos merecia este castigo",0,linea2);
         cascadaTexto("...te tendremos un lugar reservado en el inframundo",0,linea3);
         pasaNivel = 0;
+    }
+
+    continuar();
+    limpiaLinea(0,linea1);
+
+    if(pasaNivel == 1)
+    {
+        printf("\n\nTu recompensa por la batalla:\n");
+        RecompensaPelea(aux,2,100);
+
+        printf("\n\nDeseas acceder a la tienda? s/n\n");
+        scanf("\n%c",&accedetienda);
+
+        if(accedetienda=='s')
+        {
+            Tienda(aux);
+        }
+
+
+        return 1; /**superó este nivel*/
+    }
+    else
+    {
+        return 0; /**no superó este nivel*/
     }
 
     continuar();
@@ -2699,13 +2668,11 @@ int nivelBossN (stPersonaje * player)
             Tienda(player);
         }
 
-        accedetienda = 0;
-
-        return 1; //superÃ³ este nivel*/
+        return pasaNivel; //superó este nivel*/
     }
     else
     {
-        return 0; //no superÃ³ este nivel*/
+        return pasaNivel; //no superó este nivel*/
     }
 }
 
