@@ -178,9 +178,11 @@ int main()
         fadeINTimed("3:MARCADORES",65,24,80);
         fadeINTimed("4:SALIR   ",65,26,80);
 
-
+        color(0);
+        hidecursor(0);
         scanf("%i",&controlmenu);
         system("cls");
+        hidecursor(1);
 
         switch(controlmenu)
         {
@@ -196,6 +198,9 @@ int main()
             mostrarMarcadores();
             break;
         case 4:
+            cascadaTexto("Gracias por jugar The Leyend Of C!!",55,22);
+            _sleep(500);
+            gotoxy(0,linea1);
             exit(0);
             break;
         }
@@ -203,9 +208,9 @@ int main()
     }
     while(controlmenu!=4);
 
-    cascadaTexto("Gracias por jugar The Leyend Of C!!",55,22);
+    //cascadaTexto("Gracias por jugar The Leyend Of C!!",55,22);
 
-    getchar();
+    //getchar();
 
     return 0;
 }
