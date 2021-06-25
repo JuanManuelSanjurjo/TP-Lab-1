@@ -104,7 +104,7 @@ void AtributosGuerrero(stAtributos *aux);
 void AtributosHechicero(stAtributos *aux);
 void AtributosNigromante(stAtributos *aux);
 void AtributosAsesino(stAtributos *aux);
-void MostrarPersonaje(stPersonaje *player)
+void MostrarPersonaje(stPersonaje *player);
 
 /**cargar juego**/
 void CargaJuego(stPersonaje*player);                    /**incluye cargar personaje ya creado desde el archivo**/
@@ -141,7 +141,7 @@ int Nivel12 (stPersonaje * player);
 int Nivel13 (stPersonaje * player);
 int Nivel14 (stPersonaje * player);
 int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon);  /**primer boss*/
-int acertijoEsfigie ()                                          /**Segundo boss*/
+int acertijoEsfigie ()  ;                                       /**Segundo boss*/
 int validacionYresultado (int opcion,int correcta);
 int peleaEsfigie (stPersonaje * player);
 int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[]);
@@ -1758,46 +1758,46 @@ void MuestraUnaPartida(stPersonaje player)                                      
     printf("*********************************************************\n");
 }
 
- /**Fuera de servicio, vuelva prontos*/
 
-//int CuentaRegistros()
-//{
-//    FILE* pfile = NULL;
-//    int cerrarArchivo = 0;
-//    long bytesArchivo = 0;                                  /**nos va a decir los bytes del archivo*/
-//    int numRegistros = 0;                                   /**cantidad de registros**/
-//    int punteroSeek = 0;
-//
-//    pfile = fopen(SAVE,"rb");
-//
-//    if(pfile!=NULL)
-//    {
-//        punteroSeek = fseek(pfile,0,SEEK_SET);
-//
-//        if(punteroSeek!=0)
-//            printf("SE HA SOBREPASADO LOS LIMITES DEL ARCHIVO.\n");
-//
-//        bytesArchivo = ftell(pfile);
-//
-//        if(bytesArchivo > 0)
-//        {
-//            numRegistros = (int) bytesArchivo/DIM;
-//        }
-//
-//        cerrarArchivo = fclose(pfile);
-//
-//        if(cerrarArchivo!=0)
-//        {
-//            printf("NO SE PUDO CERRAR EL ARCHIVO EN CuentaRegistros()\n");
-//        }
-//    }
-//    else
-//    {
-//        printf("NO SE PUDO ABRIR EL ARCHIVO EN CuentaRegistros()\n");
-//    }
-//
-//    return numRegistros;
-//}
+
+int CuentaRegistros()
+{
+    FILE* pfile = NULL;
+    int cerrarArchivo = 0;
+    long bytesArchivo = 0;                                  /**nos va a decir los bytes del archivo*/
+    int numRegistros = 0;                                   /**cantidad de registros**/
+    int punteroSeek = 0;
+
+    pfile = fopen(SAVE,"rb");
+
+    if(pfile!=NULL)
+    {
+        punteroSeek = fseek(pfile,0,SEEK_SET);
+
+        if(punteroSeek!=0)
+            printf("SE HA SOBREPASADO LOS LIMITES DEL ARCHIVO.\n");
+
+        bytesArchivo = ftell(pfile);
+
+        if(bytesArchivo > 0)
+        {
+            numRegistros = (int) bytesArchivo/DIM;
+        }
+
+        cerrarArchivo = fclose(pfile);
+
+        if(cerrarArchivo!=0)
+        {
+            printf("NO SE PUDO CERRAR EL ARCHIVO EN CuentaRegistros()\n");
+        }
+    }
+    else
+    {
+        printf("NO SE PUDO ABRIR EL ARCHIVO EN CuentaRegistros()\n");
+    }
+
+    return numRegistros;
+}
 
 void CrearNuevoSlot(stPersonaje *player)                                        ///Crea un nuevo slot para guardar una partida
 {
