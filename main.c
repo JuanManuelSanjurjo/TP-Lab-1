@@ -1406,6 +1406,7 @@ int Jugar(stPersonaje *player)                                                  
 
         case 10:
 
+
             pasaNivel = peleaEsfigie(player);
 
             if(pasaNivel==1)
@@ -1574,7 +1575,8 @@ void RecompensaPelea(stPersonaje * aux,int mejoraAtrib,int dinero)              
     do
     {
         printf("**Tienes %i puntos para gastar:\n",mejoraAtrib);
-        fadeIN("En que deseas gastarlos? 1.Fuerza 2.Inteligencia 3.Destreza 4.Magia 5.Defensa",0,whereY()+1);
+        fadeIN("En que deseas gastarlos?",0,whereY()+1);
+        fadeIN("\t1.Fuerza     2.Inteligencia     3.Destreza     4.Magia     5.Defensa",0,whereY()+1);
         scanf("%i",&elijeatrib);
 
         switch(elijeatrib)
@@ -2499,9 +2501,32 @@ int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
 
     do
     {
-        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
-        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+        fadeIN("*BATALLA*",65,3);
+        gotoxy(65,13);
+        printf("HP PJ: %i",aux->hp);
+        gotoxy(65,14);
+        printf("MP PJ: %i",aux->mp);
+        gotoxy(65,15);
+        printf("HP MON: %i",hpMon);
+        gotoxy(65,16);
+        printf("PocionesHP:%i",aux->inv.pocioneshp);
+        gotoxy(65,17);
+        printf("PocionesMP: %i",aux->inv.pocionesmp);
+
+        gotoxy(58,21);
+        printf("1:\tAtaque normal");
+        gotoxy(58,22);
+        printf("2:\tAtaque Especial");
+        gotoxy(58,23);
+        printf("3:\tTomar pocion hp");
+        gotoxy(58,24);
+        printf("4:\tTomar pocion mp");
+        gotoxy(58,25);
+
+        fadeIN("Que accion desea realizar",0,linea1);
         scanf("%d",&opc);
+        limpiaLinea(0,linea1);
+
         switch(opc)
         {
         case 1:
@@ -2533,9 +2558,6 @@ int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[])
             break;
         }
 
-        printf("\nHP PJ: %i\nMP PJ: %i\nHP MON: %i\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
-        printf("\n1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
-        scanf("%d",&opc);
         switch(opc)
         {
         case 1:
