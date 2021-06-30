@@ -12,6 +12,7 @@
 /**archivos*/
 #define SAVE "save.dat"
 #define MARCADORES "marcadores.dat"
+#define UTILIDADES "utilidades.txt"
 
 
 typedef struct
@@ -34,12 +35,12 @@ typedef struct
 
 typedef struct
 {
-    char nombre[15];                                            /**Nombre que elegió el jugador*/
+    char nombre[15];                                            /**Nombre que elegiÃ³ el jugador*/
     char genero[15];                                            /**Elegido por el jugador*/
     char tipoClase[15];                                         /**guerrero, hechicero, nigromante o asesino*/
     int clase;                                                  /**Entero el cual se asigna el numero de clase para el manejo de ataque y defensa*/
-    int nivelDeJuego;                                           /**nivel en que se quedó el jugador*/
-    stAtributos atribPersonaje;                                 /**estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia según la clase elegida*/
+    int nivelDeJuego;                                           /**nivel en que se quedÃ³ el jugador*/
+    stAtributos atribPersonaje;                                 /**estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia segÃºn la clase elegida*/
     stInventario inv;                                           /**Estructura inventario*/
     int hp;                                                     /**Vida del personaje*/
     int mp;                                                     /**Mana del personaje*/
@@ -56,7 +57,7 @@ typedef struct
     int tiempoJuego;
 } stMarcador;                                                   /**Estructura de marcadores se guarda cuando termina de jugar*/
 
-/**Constantes tamaño de estructuras**/
+/**Constantes tamaÃ±o de estructuras**/
 const int DIM = sizeof(stPersonaje); /** para las funciones de archivo**/
 const int DIMMAR = sizeof(stMarcador); /**para las funciones de archivo**/
 
@@ -108,17 +109,13 @@ void MostrarPersonaje(stPersonaje *player);
 
 /**cargar juego**/
 void CargaJuego(stPersonaje*player);                    /**incluye cargar personaje ya creado desde el archivo**/
-void MuestraArchivoSave();                              /**Muestra todo el archivo save para ver los registros (partidas)*/
-void MuestraUnaPartida(stPersonaje player);             /**Muestra las partidas, una parte de stPersonaje*/
-stPersonaje CargaDePersonaje(int registroPartida);      /**carga un registro para copiar a stPersonaje*/
+int CargaDePersonaje(char nombreBuscar[],stPersonaje *player);  /**carga un registro para copiar a stPersonaje*/
 void MuestraArchivoMarcadores();                        /**abre el archivo y muestra una tabla de posiciones**/
 void MuestraUnMarcador(stMarcador aux);                 /**Muestra los marcadores*/
-
 /**juego**/
+int cuentaRegistros();
+void mostrarSaves();
 void GuardarProgreso(stPersonaje *player);              /**guarda progreso en el archivo*/
-int CuentaRegistros();                                  /**para guardar la partida**/
-void CrearNuevoSlot(stPersonaje * player);              /**para guardar la partida*/
-void GuardarSiguienteSlot(stPersonaje *player);         /**para guardar la partida*/
 int Jugar(stPersonaje *player);                         /**va a ser llamada ya por NuevoJuego o CargarJuego, contiene todos los
                                                         niveles, la tienda y todo el gameplay. Devuelve flag para saber si sigue jugando o murio*/
 int CicloPelea(stPersonaje *aux, int hpMon, int danoMon, char nombreMon[]);
@@ -141,7 +138,7 @@ int Nivel12 (stPersonaje * player);
 int Nivel13 (stPersonaje * player);
 int Nivel14 (stPersonaje * player);
 int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon);  /**primer boss*/
-int acertijoEsfigie ()  ;                                       /**Segundo boss*/
+int acertijoEsfigie () ;                                       /**Segundo boss*/
 int validacionYresultado (int opcion,int correcta);
 int peleaEsfigie (stPersonaje * player);
 int cicloPeleaBossN (stPersonaje *aux,int hpMon,int danoMon,char nombreMon[]);
@@ -171,9 +168,14 @@ void guardarEnArchivoMarcadores(stPersonaje *aux);
 
 int main()
 {
+
+
     SetConsoleTitle("THE LEGEND OF C");
     srand(time(NULL));
     system("mode 150, 50");
+
+
+
     pantallaInicio();
     int controlmenu=0;
 
@@ -217,8 +219,12 @@ int main()
             gotoxy(0,linea1);
             exit(0);
             break;
+        default:
+            cascadaTexto("Gracias por jugar The Legend Of C!!",55,22);
+            _sleep(500);
+            gotoxy(0,linea1);
+            exit(0);
         }
-
     }
     while(controlmenu!=4);
 
@@ -233,10 +239,11 @@ void InicioDePersonaje(stPersonaje *player) ///Crea un personaje nuevo, se invoc
     int cerroarchivo = 0;
     int escribioarchivo = 0;
 
-    archi = fopen(SAVE,"wb");
+    archi = fopen(SAVE,"ab");
 
     if (archi!=NULL)
     {
+
         cascadaTexto("Ingrese su nombre: ",0,whereY()+1);
         fflush(stdin);
         gets(player->nombre);
@@ -292,7 +299,7 @@ void InicioDePersonaje(stPersonaje *player) ///Crea un personaje nuevo, se invoc
         player->inv.pocioneshp=1;
         player->inv.pocionesmp=1;
 
-        escribioarchivo = fwrite(&player,DIM,1,archi);
+        escribioarchivo = fwrite(player,DIM,1,archi);
 
         if(escribioarchivo <= 0)
         {
@@ -750,7 +757,7 @@ int CompraBaston(stPersonaje *player, int bastoncant)                   ///Funci
         compra = preciobaston;
         if( player->inv.dinero >= compra)
         {
-            /**el bastón sube 5 de magia*/
+            /**el bastÃ³n sube 5 de magia*/
             player->atribPersonaje.magia = player->atribPersonaje.magia + 5;
             /** y ademas sube 3 de inteligencia*/
             player->atribPersonaje.inteligencia = player->atribPersonaje.inteligencia + 3;
@@ -1173,7 +1180,7 @@ void NuevoJuego(stPersonaje *player)                                        ///F
         GuardarProgreso(player); /**escribe en el archivo**/
 
         printf("SE GUARDO EL PROGRESO, SE ESCRIBE EN MARCADORES.\n");
-
+        continuar();
         guardarEnArchivoMarcadores(player);
     }
     else
@@ -1182,23 +1189,54 @@ void NuevoJuego(stPersonaje *player)                                        ///F
     }
 
 }
+void mostrarSaves()
+{
+    FILE *pArchi = fopen(SAVE,"rb");
+    stPersonaje aux;
+
+    printf("CUENTA REGISTROS:    %d\n", cuentaRegistros());
+
+    if(pArchi){
+
+        while(fread(&aux,sizeof(stPersonaje),1,pArchi)>0){
+
+            printf("------------------------\n");
+            printf("Nombre:..........: %s\n",aux.nombre);
+            printf("Nivel:..........: %d\n",aux.nivelDeJuego);
+
+        }
+
+        fclose(pArchi);
+    }
+
+}
+int cuentaRegistros (){
+    FILE * pArchi = fopen(SAVE,"rb");
+    int i=0;
+
+    if(pArchi){
+        fseek(pArchi, 0,SEEK_END);
+        i=ftell(pArchi)/sizeof(stPersonaje);
+        fclose(pArchi);
+    }
+    return i;
+}
 
 void GuardarProgreso(stPersonaje *player)                                             ///Guarda el progreso realizado en la partida
 {
-    /**el maximo de slots para guardar la partida son 3*/
-    int haypartidas = 0;
+    FILE* pfile = NULL;
+    stPersonaje aux = *player;
 
-    haypartidas = CuentaRegistros(); /**segun el numero de registros del archivo save*/
 
-    if(haypartidas == 0) /**si no hay registros abre el archivo save  en modo wb y guarda*/
-    {
-        printf("Se guardara en el primer slot.\n");
-        CrearNuevoSlot(player);
-    }
-    else if(haypartidas > 0 && haypartidas < 3)
-    {
-        printf("Se guardara en el ultimo slot disponible.\n");
-        GuardarSiguienteSlot(player); /**si ya hay registros abre el archivo en ab y guarda*/
+    pfile = fopen(SAVE,"ab");
+
+    if (pfile){
+        fwrite(&aux,DIM,1,pfile);
+
+        fclose(pfile);
+
+    }else {
+        printf("NO SE PUDO ABRIR EL ARCHIVO.\n");
     }
 }
 
@@ -1472,8 +1510,6 @@ int Jugar(stPersonaje *player)                                                  
             flagGame = 0;
         }
 
-
-        //flagGame = 0;
         finReloj = clock();
 
     }
@@ -1631,269 +1667,123 @@ void RecompensaPelea(stPersonaje * aux,int mejoraAtrib,int dinero)              
     MostrarPersonaje(aux);
 }
 
-void CargaJuego(stPersonaje*player)                     ///Funcion que carga una partida, es invocada desde el main
+void CargaJuego(stPersonaje *player)                     ///Funcion que carga una partida, es invocada desde el main
 {
     int correjuego = 0;
     char decisionguarda = 0;
-    int opcionpartida = 0;
-
-    MuestraArchivoSave();
-
-    printf("Selecciona la partida para cargar.\n");
-    scanf("%i",&opcionpartida);
-    *player = CargaDePersonaje(opcionpartida);
-    system("cls");
-    MostrarPersonaje(player);
-
-    PausaLimpia();
+    char opcionPartida[15];
+    int encontroPartida = 0;
+    char reintentar = 0;
 
     do
     {
-        cascadaTexto("*EMPIEZA EL JUEGO*\n",0,4);
-        correjuego = Jugar(player);
-    }
-    while(correjuego == 1);
 
-    PausaLimpia();
+        printf("Ingrese el nombre de su personaje:\n");
+        fflush(stdin);
+        gets(opcionPartida);
 
-    printf("DESEA GUARDAR EL PROGRESO? s/n\n");
-    scanf("\n%c",&decisionguarda);
+        encontroPartida = CargaDePersonaje(opcionPartida,player);
 
-    if(decisionguarda =='s')
-    {
-        printf("*SE GUARDARA TU PROGRESO EN EL ARCHIVO\n");
-
-        GuardarProgreso(&player); /**escribe en el archivo**/
-
-        printf("SE GUARDO EL PROGRESO, SE ESCRIBE EN MARCADORES...\n");
-
-        guardarEnArchivoMarcadores(&player);
-    }
-    else
-    {
-        printf("NO SE GUARDARA TU PROGRESO...\n");
-    }
-}
-
-void MuestraArchivoSave()                                                           ///Muestra el contenido del archivo de partidas guardadas
-{
-    FILE* pfile = NULL;
-    stPersonaje aux;
-    int cerroarchivo = 0;
-    int opc = 0;
-    char nombreBuscar[15];
-    pfile = fopen(SAVE,"rb");
-    char opcion = 0;
-    int i = 1;
-
-    if(pfile!=NULL)
-    {
-        rewind(pfile);
-
-        printf("1:\tMostrar todas las partidas\n2:\tBuscar por nombre\n");
-        scanf("%i", &opc);
-        system("cls");
-
-        switch(opc)
+        if(encontroPartida == 0)
         {
-        case 1:
+            printf("Esa partida no existe. Buscar otra? s/n\n");
+            scanf("\n%c",&reintentar);
+        }
+        else
+        {
+            reintentar = 'n';
 
-            rewind(pfile);
+            system("cls");
+            MostrarPersonaje(player);
 
-            while(fread(&aux,DIM,1,pfile) > 0  )
-            {
-                printf("%i:\n",i);
-                MuestraUnaPartida(aux);
-            }
-            break;
-
-        case 2:
+            PausaLimpia();
 
             do
             {
-                printf("Introduzca su nombre:\n");
-                fflush(stdin);
-                gets(nombreBuscar);
+                cascadaTexto("*EMPIEZA EL JUEGO*\n",0,4);
+                correjuego = Jugar(player);
+            }
+            while(correjuego == 1);
 
-                while(fread(&aux,DIM,1,pfile) > 0)
+            PausaLimpia();
+
+            printf("DESEA GUARDAR EL PROGRESO? s/n\n");
+            scanf("\n%c",&decisionguarda);
+
+            if(decisionguarda =='s')
+            {
+                printf("*SE GUARDARA TU PROGRESO EN EL ARCHIVO\n");
+
+                GuardarProgreso(player); /**escribe en el archivo**/
+
+                printf("SE GUARDO EL PROGRESO, SE ESCRIBE EN MARCADORES...\n");
+
+                guardarEnArchivoMarcadores(player);
+
+            }
+            else
+            {
+                printf("NO SE GUARDARA TU PROGRESO...\n");
+            }
+
+        }
+
+    }while(encontroPartida == 0 && reintentar == 's' );
+}
+
+int CargaDePersonaje(char nombreBuscar[],stPersonaje *player)
+{
+    FILE* pfile = NULL;
+    stPersonaje aux;
+    stPersonaje mayor;
+    int flag = 0;
+    pfile = fopen(SAVE,"rb");
+    int cerrarArchivo = 0;
+    int mayorN = 0;
+
+    if(pfile!=NULL)
+    {
+
+        while(flag == 0 && fread(&aux,DIM,1,pfile) > 0)
+        {
+
+            if(strcmp(aux.nombre,nombreBuscar) == 0)
+            {
+                flag = 1;
+                mayor = aux;
+                mayorN = aux.nivelDeJuego;
+
+            }
+        }
+
+        while( fread(&aux,DIM,1,pfile) > 0 )
+        {
+
+            if(strcmp(aux.nombre,nombreBuscar) == 0)
+            {
+                if(aux.nivelDeJuego > mayorN)
                 {
-                    if(strcmp(aux.nombre,nombreBuscar) == 0)
-                    {
-                        printf("%i:\n");
-                        MuestraUnaPartida(aux);
-                        opcion = 'n';
-                    }
-                    else
-                    {
-                        printf("No se encontro el nombre %s\n. Buscar otro? s/n\n");
-                        scanf("\n%c",&opcion);
-                    }
+                    mayor = aux;
+                    mayorN = aux.nivelDeJuego;
+
                 }
             }
-            while(opcion == 's');
-            break;
         }
-
-        cerroarchivo = fclose(pfile);
-
-        if(cerroarchivo!=0)
-        {
-            printf("NO SE PUDO CERRAR EL ARCHIVO EN MuestraArchivo()\n");
-        }
-
-    }
-    else
-    {
-        printf("NO SE PUDO ABRIR EL ARCHIVO SAVE EN MuestraArchivo().\n");
-    }
-}
-
-void MuestraUnaPartida(stPersonaje player)                                      ///Version simplificada del jugador, se muestra a la hora de cargar una partida
-{
-    stPersonaje aux = player;
-    printf("*********************************************************\n");
-    printf("Nombre.................: %s\n",player.nombre);
-    printf("Clase..................: %s\n",player.tipoClase);
-    printf("Nivel..................: %i\n",player.nivelDeJuego);
-    printf("*********************************************************\n");
-}
-
-
-
-int CuentaRegistros()
-{
-    FILE* pfile = NULL;
-    int cerrarArchivo = 0;
-    long bytesArchivo = 0;                                  /**nos va a decir los bytes del archivo*/
-    int numRegistros = 0;                                   /**cantidad de registros**/
-    int punteroSeek = 0;
-
-    pfile = fopen(SAVE,"rb");
-
-    if(pfile!=NULL)
-    {
-        punteroSeek = fseek(pfile,0,SEEK_SET);
-
-        if(punteroSeek!=0)
-            printf("SE HA SOBREPASADO LOS LIMITES DEL ARCHIVO.\n");
-
-        bytesArchivo = ftell(pfile);
-
-        if(bytesArchivo > 0)
-        {
-            numRegistros = (int) bytesArchivo/DIM;
-        }
+        *player = mayor;
 
         cerrarArchivo = fclose(pfile);
 
         if(cerrarArchivo!=0)
         {
-            printf("NO SE PUDO CERRAR EL ARCHIVO EN CuentaRegistros()\n");
+            printf("NO SE PUDO CERRAR EL ARCHIVO.\n");
         }
     }
     else
     {
-        printf("NO SE PUDO ABRIR EL ARCHIVO EN CuentaRegistros()\n");
+        printf("NO SE PUDO ABRIR EL ARCHIVO.\n");
     }
 
-    return numRegistros;
-}
-
-void CrearNuevoSlot(stPersonaje *player)                                        ///Crea un nuevo slot para guardar una partida
-{
-    FILE* pfile = NULL;
-    pfile = fopen(SAVE,"wb");
-    int cerrarArchivo = 0;
-    int escribirArchivo = 0;
-
-    if(pfile!=NULL)
-    {
-
-        escribirArchivo = fwrite(player,DIM,1,pfile);
-
-        if(escribirArchivo < 1)
-        {
-            printf("ERROR AL ESCRIBIR EN ARCHIVO EN CrearNuevoSlot()\n");
-        }
-
-        cerrarArchivo = fclose(pfile);
-
-        if(cerrarArchivo!=0)
-        {
-            printf("NO SE PUDO ABRIR EL ARCHIVO EN CrearNuevoSlot()\n");
-        }
-
-    }
-    else
-    {
-        printf("NO SE PUDO ABRIR EL ARCHIVO EN CrearNuevoSlot()\n");
-    }
-}
-
-void GuardarSiguienteSlot(stPersonaje *player)
-{
-    FILE* pfile = NULL;
-    int cerrarArchivo = 0;
-    int escribirArchivo = 0;
-    pfile = fopen(SAVE,"ab");
-
-    if(pfile!=NULL)
-    {
-        escribirArchivo = fwrite(player,DIM,1,pfile);
-
-        if(escribirArchivo < 1)
-        {
-            printf("NO SE PUDO ESCRIBIR EN EL ARCHIVO EN GuardarSiguienteSlot()\n");
-        }
-
-        cerrarArchivo = fclose(pfile);
-
-        if(cerrarArchivo!=0)
-        {
-            printf("NO SE PUEDE CERRAR EL ARCHIVO EN GuardarSiguienteSlot()\n");
-        }
-    }
-    else
-    {
-        printf("NO SE PUDO ABRIR EL ARCHIVO EN GuardarSiguienteSlot()\n");
-    }
-}
-
-stPersonaje CargaDePersonaje(int registroPartida)
-{
-    FILE* pfile = NULL;
-    int cerrarArchivo = 0;
-    int leerArchivo = 0;
-    stPersonaje aux;
-    int limitesArchivo = 0; /** para fseek si devuelve distinto de cero, hubo error*/
-    pfile = fopen(SAVE,"r+b");
-
-    if(pfile!=NULL)
-    {
-        /**leer desde el principio del archivo**/
-        rewind(pfile);
-        /**bajar hasta la partida que indicó el jugador por parametro**/
-        limitesArchivo = fseek(pfile,DIM*(registroPartida - 1),SEEK_SET);
-        leerArchivo = fread(&aux,DIM,1,pfile);
-
-        if(leerArchivo < 1)
-        {
-            printf("NO SE PUDO LEER EL ARCHIVO EN CargaDePersonaje()\n");
-        }
-
-        cerrarArchivo = fclose(pfile);
-
-        if(cerrarArchivo!= 0)
-        {
-            printf("NO SE PUDO CERRAR EL ARCHIVO EN CargaDePersonaje()\n");
-        }
-    }
-    else
-    {
-        printf("NO SE PUDO ABRIR EL ARCHIVO EN CargaDePersonaje()\n");
-    }
-
-    return aux;
+    return flag;
 }
 
 int Nivel1(stPersonaje *player)
@@ -1916,11 +1806,11 @@ int Nivel1(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 int Nivel2(stPersonaje *player)
@@ -1944,11 +1834,11 @@ int Nivel2(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -1972,11 +1862,11 @@ int Nivel3(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2000,11 +1890,11 @@ int Nivel4(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2028,11 +1918,11 @@ int Nivel5(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2057,11 +1947,11 @@ int Nivel7(stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2086,11 +1976,11 @@ int Nivel8 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2115,11 +2005,11 @@ int Nivel9 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2144,11 +2034,11 @@ int Nivel11 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2174,11 +2064,11 @@ int Nivel12 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2203,11 +2093,11 @@ int Nivel13 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2232,11 +2122,11 @@ int Nivel14 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2300,14 +2190,14 @@ int acertijoEsfigie ()
         pasaSinPelear=validacionYresultado(opcion,3);
         break;
     case 6:
-        cascadaTexto("Qué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?",0,9);
+        cascadaTexto("QuÃ© puede ser lleno mas nunca se vacia? Â¿QuÃ© cosa tira pero empujar, nunca?",0,9);
         _sleep(500);
         fadeIN("1. n-u-l-a      2. p-e-z-a-e-r-n-s-a     3. o-c-p-a ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,1);
         break;
     default:
-        cascadaTexto("Cual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ",0,9);
+        cascadaTexto("Cual es la criatura que en la maÃ±ana camina en cuatro patas, al medio dÃ­a en dos y en la nocheen tres? ",0,9);
         _sleep(500);
         fadeIN("1. m-r-b-e-h-o     2. g-t-t-r-o-u-a      3. o-m-o-n   ",0,11);
         scanf("%d",&opcion);
@@ -2390,11 +2280,11 @@ int peleaEsfigie (stPersonaje * player)
 
         accedetienda = 0;
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 }
 
@@ -2432,7 +2322,6 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
     {
         fadeIN("*BATALLA*",65,3);
         gotoxy(65,13);
-        //printf("HP PJ: %i\nMP PJ: %i\n\nHP MON: %i\n\nPocionesHP:%i\nPocionesMP: %i\n\n",aux->hp,aux->mp,hpMon,aux->inv.pocioneshp,aux->inv.pocionesmp);
         printf("HP PJ: %i",aux->hp);
         gotoxy(65,14);
         printf("MP PJ: %i",aux->mp);
@@ -2443,7 +2332,7 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
         gotoxy(65,17);
         printf("PocionesMP: %i",aux->inv.pocionesmp);
 
-        gotoxy(58,21);    //printf("1:\tAtaque normal\n2:\tAtaque Especial\n3:\tTomar pocion hp\n4:\tTomar pocion mp\n");
+        gotoxy(58,21);
         printf("1:\tAtaque normal");
         gotoxy(58,22);
         printf("2:\tAtaque Especial");
@@ -2505,7 +2394,6 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
             continuar();
             limpiaLinea(0,linea1);
         }
-        //getch();
 
         ///turno del monstruo
         switch(aux->clase)
@@ -2546,7 +2434,6 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
         continuar();
         limpiaLinea(0,27);
         limpiaLinea(0,28);
-        //PausaLimpia();
     }
     while ( (aux->hp > 0) && ( hpMon > 0 ));
 
@@ -2581,11 +2468,11 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
         }
 
 
-        return 1; /**superó este nivel*/
+        return 1; /**superÃ³ este nivel*/
     }
     else
     {
-        return 0; /**no superó este nivel*/
+        return 0; /**no superÃ³ este nivel*/
     }
 
     continuar();
@@ -2727,11 +2614,11 @@ int nivelBossN (stPersonaje * player)
             Tienda(player);
         }
 
-        return pasaNivel; //superó este nivel*/
+        return pasaNivel; //superÃ³ este nivel*/
     }
     else
     {
-        return pasaNivel; //no superó este nivel*/
+        return pasaNivel; //no superÃ³ este nivel*/
     }
 }
 
@@ -3007,26 +2894,6 @@ void PausaLimpia()
     system("cls");
 }
 
-
-/*
-0 = Black
-1 = Blue
-2 = Green
-3 = Aqua
-4 = Red
-5 = Purple
-6 = Yellow
-7 = White
-8 = Gray
-9 = Light Blue
-A = Light Green
-B = Light Aqua
-C = Light Red
-D = Light Purple
-E = Light Yellow
-F = Bright White
-*/
-
 ///Funciones de archivo Marcadores
 void guardarEnArchivoMarcadores(stPersonaje *aux)
 {
@@ -3129,6 +2996,7 @@ void mostrarMarcadores()
 
 void mostrarUnMarcador(stMarcador aux)
 {
+    printf("------------------------------------------\n");
     printf("Nombre: %s\n",aux.nombre);
     printf("Clase: %s\n",aux.clase);
     printf("Arma: %s\n",aux.invMarcador.arma);
