@@ -2,10 +2,10 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="main.c" open="1" top="1" tabpos="1" split="2" active="2" splitpos="822" zoom_1="1" zoom_2="1">
+	<File name="main.c" open="1" top="1" tabpos="1" split="2" active="1" splitpos="822" zoom_1="1" zoom_2="1">
 		<Cursor>
-			<Cursor1 position="67827" topLine="0" />
-			<Cursor2 position="49352" topLine="1550" />
+			<Cursor1 position="286" topLine="0" />
+			<Cursor2 position="49313" topLine="1548" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

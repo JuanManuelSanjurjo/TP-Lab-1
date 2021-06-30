@@ -12,8 +12,6 @@
 /**archivos*/
 #define SAVE "save.dat"
 #define MARCADORES "marcadores.dat"
-#define UTILIDADES "utilidades.txt"
-
 
 typedef struct
 {
