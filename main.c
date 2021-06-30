@@ -175,8 +175,7 @@ int main()
     system("mode 150, 50");
 
 
-
-    pantallaInicio();
+    //pantallaInicio();
     int controlmenu=0;
 
     stPersonaje partida; /**estructura de la partida: se modifica segun la save o se crea
