@@ -12,50 +12,9 @@
 /**archivos*/
 #define SAVE "save.dat"
 #define MARCADORES "marcadores.dat"
+#include "LibreriaTp.h"
 
-typedef struct
-{
-    int fuerza;
-    int inteligencia;
-    int destreza;
-    int magia;
-    int defensa;
-} stAtributos ; ///Estructura N1 la cual se usa en stPersonaje, define los atributos del personaje el cual iran cambiando
-
-typedef struct
-{
-    int dinero;
-    int pocioneshp;
-    int pocionesmp;
-    char arma[20];
-    char escudo[20];
-} stInventario; ///Estructura N2, Es el inventario del personaje, la cual tambien ira modificandose en el correr del juego
-
-typedef struct
-{
-    char nombre[15];                                            /**Nombre que elegiÃ³ el jugador*/
-    char genero[15];                                            /**Elegido por el jugador*/
-    char tipoClase[15];                                         /**guerrero, hechicero, nigromante o asesino*/
-    int clase;                                                  /**Entero el cual se asigna el numero de clase para el manejo de ataque y defensa*/
-    int nivelDeJuego;                                           /**nivel en que se quedÃ³ el jugador*/
-    stAtributos atribPersonaje;                                 /**estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia segÃºn la clase elegida*/
-    stInventario inv;                                           /**Estructura inventario*/
-    int hp;                                                     /**Vida del personaje*/
-    int mp;                                                     /**Mana del personaje*/
-    int tiempo;                                                 /**Tiempo jugado*/
-} stPersonaje;                                                  /**Estructura de personaje con la cual se juega*/
-
-
-typedef struct
-{
-    char nombre[15];
-    char clase[15];
-    int nivelMaximo;
-    stInventario invMarcador;
-    int tiempoJuego;
-} stMarcador;                                                   /**Estructura de marcadores se guarda cuando termina de jugar*/
-
-/**Constantes tamaÃ±o de estructuras**/
+/**Constantes tamaño de estructuras**/
 const int DIM = sizeof(stPersonaje); /** para las funciones de archivo**/
 const int DIMMAR = sizeof(stMarcador); /**para las funciones de archivo**/
 
@@ -754,7 +713,7 @@ int CompraBaston(stPersonaje *player, int bastoncant)                   ///Funci
         compra = preciobaston;
         if( player->inv.dinero >= compra)
         {
-            /**el bastÃ³n sube 5 de magia*/
+            /**el bastón sube 5 de magia*/
             player->atribPersonaje.magia = player->atribPersonaje.magia + 5;
             /** y ademas sube 3 de inteligencia*/
             player->atribPersonaje.inteligencia = player->atribPersonaje.inteligencia + 3;
@@ -1805,11 +1764,11 @@ int Nivel1(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 int Nivel2(stPersonaje *player)
@@ -1833,11 +1792,11 @@ int Nivel2(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1861,11 +1820,11 @@ int Nivel3(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1889,11 +1848,11 @@ int Nivel4(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1917,11 +1876,11 @@ int Nivel5(stPersonaje *player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1946,11 +1905,11 @@ int Nivel7(stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -1975,11 +1934,11 @@ int Nivel8 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -2004,11 +1963,11 @@ int Nivel9 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -2033,11 +1992,11 @@ int Nivel11 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -2063,11 +2022,11 @@ int Nivel12 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -2092,11 +2051,11 @@ int Nivel13 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -2121,11 +2080,11 @@ int Nivel14 (stPersonaje * player)
             Tienda(player);
         }
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -2189,14 +2148,14 @@ int acertijoEsfigie ()
         pasaSinPelear=validacionYresultado(opcion,3);
         break;
     case 6:
-        cascadaTexto("QuÃ© puede ser lleno mas nunca se vacia? Â¿QuÃ© cosa tira pero empujar, nunca?",0,9);
+        cascadaTexto("Qué puede ser lleno mas nunca se vacia? ¿Qué cosa tira pero empujar, nunca?",0,9);
         _sleep(500);
         fadeIN("1. n-u-l-a      2. p-e-z-a-e-r-n-s-a     3. o-c-p-a ",0,11);
         scanf("%d",&opcion);
         pasaSinPelear=validacionYresultado(opcion,1);
         break;
     default:
-        cascadaTexto("Cual es la criatura que en la maÃ±ana camina en cuatro patas, al medio dÃ­a en dos y en la nocheen tres? ",0,9);
+        cascadaTexto("Cual es la criatura que en la mañana camina en cuatro patas, al medio día en dos y en la nocheen tres? ",0,9);
         _sleep(500);
         fadeIN("1. m-r-b-e-h-o     2. g-t-t-r-o-u-a      3. o-m-o-n   ",0,11);
         scanf("%d",&opcion);
@@ -2279,11 +2238,11 @@ int peleaEsfigie (stPersonaje * player)
 
         accedetienda = 0;
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 }
 
@@ -2467,11 +2426,11 @@ int nergalYereshkigal(stPersonaje *aux,int hpMon,int danoMon)
         }
 
 
-        return 1; /**superÃ³ este nivel*/
+        return 1; /**superó este nivel*/
     }
     else
     {
-        return 0; /**no superÃ³ este nivel*/
+        return 0; /**no superó este nivel*/
     }
 
     continuar();
@@ -2633,11 +2592,11 @@ int nivelBossN (stPersonaje * player)
             Tienda(player);
         }
 
-        return pasaNivel; //superÃ³ este nivel*/
+        return pasaNivel; //superó este nivel*/
     }
     else
     {
-        return pasaNivel; //no superÃ³ este nivel*/
+        return pasaNivel; //no superó este nivel*/
     }
 }
 

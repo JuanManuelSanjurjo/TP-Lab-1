@@ -46,7 +46,7 @@ typedef struct
     int clase;                                                  /**Entero el cual se asigna el numero de clase para el manejo de ataque y defensa*/
     int nivelDeJuego;                                           /**nivel en que se quedó el jugador*/
     stAtributos atribPersonaje;                                 /**estructura anidada,dentro tiene otra estructura,que tiene atributos como fuerza,destreza. Varia según la clase elegida*/
-    celdaInventario inv [10];                                           /**Estructura inventario*/
+    celdaInventario inv [10];                                   /**Estructura inventario*/
     int hp;                                                     /**Vida del personaje*/
     int mp;                                                     /**Mana del personaje*/
     int tiempo;                                                 /**Tiempo jugado*/
