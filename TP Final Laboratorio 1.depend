@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1624570645 source:c:\users\mariano\documents\github\tp-lab-1\main.c
+1635797861 source:c:\users\mariano\documents\github\tp-lab-1\main.c
 	<stdlib.h>
 	<conio.h>
 	<stdio.h>
@@ -30,4 +30,16 @@
 	<windows.h>
 
 1624307419 c:\users\mariano\documents\github\tp-lab-1\gotoxy.h
+
+1635895648 source:c:\users\mariano\documents\github\tp-lab-1\libreriatp.c
+	"LibreriaTp.h"
+
+1635985406 c:\users\mariano\documents\github\tp-lab-1\libreriatp.h
+	<stdlib.h>
+	<conio.h>
+	<stdio.h>
+	<time.h>
+	<windows.h>
+	<string.h>
+	"gotoxy.h"
 

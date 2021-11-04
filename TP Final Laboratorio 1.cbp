@@ -31,6 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="LibreriaTp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="LibreriaTp.h" />
 		<Unit filename="gotoxy.c">
 			<Option compilerVar="CC" />
 		</Unit>
